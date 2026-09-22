@@ -100,3 +100,34 @@ export function composeHandoffMessage(
   }
   return `${demand.code} pasa de ${stageLabel(fromStage)} a ${stageLabel(toStage)} y entra en la bandeja de ${toAgentName}. Se verificaron ${checksPassed} requisitos acumulados.`;
 }
+
+/**
+ * Mensaje del formulario de la demanda al intentar guardar.
+ *
+ * Mismo criterio que el resto: una sola alerta con todo lo que falta.
+ * Aquí se nota especialmente, porque uno de los campos obligatorios no lleva
+ * marca visual y el usuario solo se entera al guardar.
+ */
+export function composeIntakeReport(missing: RequirementCheck[]): BlockingReport {
+  const total = missing.length;
+  const headline =
+    total === 1
+      ? 'No se puede registrar la demanda: falta un dato obligatorio.'
+      : `No se puede registrar la demanda: faltan ${countWord(total)} datos obligatorios.`;
+
+  const items: BlockingItem[] = missing.map((check) => ({
+    requirementId: check.requirement.id,
+    sentence: check.sentence,
+    originLabel: check.originLabel,
+    inherited: false,
+    resolveIn: check.requirement.resolveIn,
+    where: check.requirement.where,
+  }));
+
+  return {
+    headline,
+    aside: null,
+    items,
+    text: [headline, ...items.map((item) => `· ${item.sentence}`)].join('\n'),
+  };
+}
