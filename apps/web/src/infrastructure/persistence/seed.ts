@@ -30,7 +30,7 @@ const dateOnly = (offset: number): string => day(offset).slice(0, 10);
 const TEAMS: Team[] = [
   {
     id: 'team-aurora',
-    name: 'Equipo Aurora',
+    name: 'Aurora',
     clientName: 'Lakeside Bank',
     practice: 'digital-products',
     deliveryManager: 'Catalina Restrepo',
@@ -38,7 +38,7 @@ const TEAMS: Team[] = [
   },
   {
     id: 'team-bitacora',
-    name: 'Equipo Bitácora',
+    name: 'Bitácora',
     clientName: 'Ridgefield Insurance',
     practice: 'quality-engineering',
     deliveryManager: 'Julián Betancur',
@@ -46,7 +46,7 @@ const TEAMS: Team[] = [
   },
   {
     id: 'team-cardume',
-    name: 'Equipo Cardume',
+    name: 'Cardume',
     clientName: 'Summit Retail Group',
     practice: 'cloud-data',
     deliveryManager: 'Paula Ossa',
@@ -54,7 +54,7 @@ const TEAMS: Team[] = [
   },
   {
     id: 'team-delta',
-    name: 'Equipo Delta',
+    name: 'Delta',
     clientName: 'Blue Ridge Airlines',
     practice: 'ai-automation',
     deliveryManager: 'Mauricio Cadavid',
@@ -224,7 +224,7 @@ function buildRequests(): { requests: StaffingRequest[]; positions: Position[] }
       stack: '',
       costCenter: '',
       description:
-        'Quieren rehacer el portal de trámites ciudadanos y necesitan reforzar el equipo de front.',
+        'They want to rebuild the citizen services portal and need to reinforce the front-end team.',
       expectedStart: dateOnly(30),
       billingModel: 'time-and-materials',
       priority: 'media',
@@ -242,7 +242,7 @@ function buildRequests(): { requests: StaffingRequest[]; positions: Position[] }
       stack: '',
       costCenter: 'CC-2207',
       description:
-        'La suite de regresión tarda seis horas y bloquea las liberaciones de los viernes.',
+        'The regression suite takes six hours and blocks every Friday release.',
       expectedStart: dateOnly(21),
       billingModel: 'capacity',
       priority: 'alta',
@@ -250,9 +250,9 @@ function buildRequests(): { requests: StaffingRequest[]; positions: Position[] }
     profile: {
       seniority: 'semi-senior',
       consultantRole: 'qa',
-      skills: ['Testing automatizado'],
+      skills: ['automated-testing'],
       englishLevel: '',
-      notes: 'El cliente pide experiencia previa en seguros.',
+      notes: 'The client asks for previous experience in insurance.',
     },
   };
 
@@ -267,7 +267,7 @@ function buildRequests(): { requests: StaffingRequest[]; positions: Position[] }
       stack: 'Databricks + Spark',
       costCenter: 'CC-3390',
       description:
-        'Migración del almacén analítico y necesitan una persona que sostenga los pipelines diarios.',
+        'Migrating the analytics warehouse; they need someone to keep the daily pipelines running.',
       expectedStart: dateOnly(18),
       billingModel: 'time-and-materials',
       priority: 'alta',
@@ -275,7 +275,7 @@ function buildRequests(): { requests: StaffingRequest[]; positions: Position[] }
     profile: {
       seniority: 'senior',
       consultantRole: 'desarrollador',
-      skills: ['Modelado de datos', 'CI/CD', 'Observabilidad'],
+      skills: ['data-modelling', 'ci-cd', 'observability'],
       englishLevel: 'B2',
       notes: '',
     },
@@ -297,7 +297,7 @@ function buildRequests(): { requests: StaffingRequest[]; positions: Position[] }
       stack: 'React + TypeScript',
       costCenter: 'CC-4410',
       description:
-        'Refuerzo del equipo de canales digitales para sacar la nueva app de pagos antes de diciembre.',
+        'Reinforcing the digital channels team to ship the new payments app before December.',
       expectedStart: dateOnly(14),
       billingModel: 'time-and-materials',
       priority: 'alta',
@@ -305,9 +305,9 @@ function buildRequests(): { requests: StaffingRequest[]; positions: Position[] }
     profile: {
       seniority: 'senior',
       consultantRole: 'desarrollador',
-      skills: ['CI/CD', 'Testing automatizado', 'Accesibilidad', 'Performance'],
+      skills: ['ci-cd', 'automated-testing', 'accessibility', 'performance'],
       englishLevel: 'B2',
-      notes: 'Trabajo directo con el equipo de diseño del banco.',
+      notes: 'Works directly with the bank design team.',
     },
     assignment: {
       teamId: 'team-aurora',
@@ -317,7 +317,7 @@ function buildRequests(): { requests: StaffingRequest[]; positions: Position[] }
     vacancy: {
       title: 'Desarrollador Senior React — Lakeside Bank',
       jobDescription: '',
-      channels: ['LinkedIn'],
+      channels: ['linkedin'],
       salaryBand: 'banda-3',
       draftSource: null,
       draftedAt: null,
@@ -354,7 +354,7 @@ function buildRequests(): { requests: StaffingRequest[]; positions: Position[] }
       stack: 'Python + LangChain',
       costCenter: 'CC-5108',
       description:
-        'Asistente interno para el centro de atención al pasajero: necesitan alguien que lo lleve a producción.',
+        'Internal assistant for passenger support: they need someone to take it to production.',
       expectedStart: dateOnly(10),
       billingModel: 'precio-fijo',
       priority: 'critica',
@@ -362,7 +362,7 @@ function buildRequests(): { requests: StaffingRequest[]; positions: Position[] }
     profile: {
       seniority: 'senior',
       consultantRole: 'desarrollador',
-      skills: ['Seguridad de aplicaciones', 'Observabilidad', 'Comunicación con cliente'],
+      skills: ['application-security', 'observability', 'client-communication'],
       englishLevel: 'C1',
       notes: '',
     },
@@ -375,8 +375,8 @@ function buildRequests(): { requests: StaffingRequest[]; positions: Position[] }
     vacancy: {
       title: 'Desarrollador Senior de IA — Blue Ridge Airlines',
       jobDescription:
-        'Buscamos un desarrollador senior para llevar a producción el asistente interno del centro de atención de Blue Ridge Airlines. El trabajo combina integración con sistemas existentes, evaluación de calidad de respuestas y puesta en marcha con observabilidad desde el primer día.',
-      channels: ['LinkedIn', 'Referidos internos'],
+        'We are looking for a senior developer to take the internal support assistant at Blue Ridge Airlines to production. The work combines integration with existing systems, response quality evaluation, and a rollout with observability from day one.',
+      channels: ['linkedin', 'referrals'],
       salaryBand: 'banda-4',
       draftSource: 'manual',
       draftedAt: day(-12),
@@ -419,7 +419,7 @@ function buildRequests(): { requests: StaffingRequest[]; positions: Position[] }
       stack: 'Playwright + TypeScript',
       costCenter: 'CC-2207',
       description:
-        'Automatizar la regresión de pólizas para poder liberar dos veces por semana.',
+        'Automate the policy regression suite so they can release twice a week.',
       expectedStart: dateOnly(7),
       billingModel: 'capacity',
       priority: 'alta',
@@ -427,7 +427,7 @@ function buildRequests(): { requests: StaffingRequest[]; positions: Position[] }
     profile: {
       seniority: 'senior',
       consultantRole: 'qa',
-      skills: ['Testing automatizado', 'CI/CD', 'Performance'],
+      skills: ['automated-testing', 'ci-cd', 'performance'],
       englishLevel: 'B2',
       notes: '',
     },
@@ -440,7 +440,7 @@ function buildRequests(): { requests: StaffingRequest[]; positions: Position[] }
       title: 'QA Automation Senior — Ridgefield Insurance',
       jobDescription:
         'Buscamos un QA senior para automatizar la regresión de pólizas de Ridgefield Insurance dentro del Equipo Bitácora. El objetivo es bajar la suite de seis horas a menos de una y sostenerla en cada liberación, trabajando codo a codo con el equipo de desarrollo del cliente.',
-      channels: ['LinkedIn', 'Portal de empleo propio'],
+      channels: ['linkedin', 'own-job-board'],
       salaryBand: 'banda-3',
       draftSource: 'manual',
       draftedAt: day(-24),
@@ -450,12 +450,12 @@ function buildRequests(): { requests: StaffingRequest[]; positions: Position[] }
       technicalScore: 9,
       decision: 'contratar',
       feedback:
-        'Resolvió el ejercicio de automatización con criterio y explicó bien por qué descartó las alternativas. Encaja con el equipo.',
+        'Solved the automation exercise with good judgement and explained clearly why the alternatives were discarded. A good fit for the team.',
     },
     onboarding: {
       contractType: 'indefinido',
       equipmentDelivered: true,
-      accesses: ['Correo corporativo', 'Repositorio del cliente', 'VPN del cliente'],
+      accesses: ['corporate-email', 'client-repository', 'client-vpn'],
       buddyName: 'Camilo Marín',
       startDate: dateOnly(7),
     },
@@ -488,7 +488,10 @@ function seedEvents(requests: StaffingRequest[]): OrchestrationEvent[] {
     toAgent: 'sales' as const,
     fromStage: null,
     toStage: 'registro' as const,
-    summary: `Sales registra ${request.code} para ${request.intake.clientName}.`,
+    summary: {
+      key: 'events.created',
+      params: { code: request.code, client: request.intake.clientName },
+    },
     checks: [],
   }));
 }

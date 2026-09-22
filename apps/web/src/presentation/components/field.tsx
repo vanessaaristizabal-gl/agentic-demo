@@ -46,11 +46,14 @@ export function ChipGroup({
   selected,
   onToggle,
   emptyLabel,
+  labelFor,
 }: {
   options: string[];
   selected: string[];
   onToggle: (value: string) => void;
   emptyLabel?: string;
+  /** Los valores son identificadores estables; esto los convierte en texto. */
+  labelFor?: (value: string) => string;
 }) {
   if (options.length === 0 && emptyLabel) {
     return <p className="text-xs text-muted-foreground">{emptyLabel}</p>;
@@ -72,7 +75,7 @@ export function ChipGroup({
                 : 'border-input bg-background text-muted-foreground hover:bg-accent hover:text-foreground',
             )}
           >
-            {option}
+            {labelFor ? labelFor(option) : option}
           </button>
         );
       })}

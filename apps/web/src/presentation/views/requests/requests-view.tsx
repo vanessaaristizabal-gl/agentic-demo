@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { buildFlowMetrics } from '@/application/use-cases';
 import { BlockersChart } from '@/presentation/components/blockers-chart';
 import { CollapsibleSection } from '@/presentation/components/collapsible-section';
@@ -20,12 +21,13 @@ import { TraceLog } from './trace-log';
  */
 export function RequestsView() {
   const { data, isLoading } = useWorkspace();
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const blockersOpen = useAppSelector((state) => state.ui.blockersOpen);
   const traceOpen = useAppSelector((state) => state.ui.traceOpen);
 
   if (isLoading || !data) {
-    return <p className="py-16 text-center text-sm text-muted-foreground">Cargando el estado…</p>;
+    return <p className="py-16 text-center text-sm text-muted-foreground">{t('common.loading')}</p>;
   }
 
   const metrics = buildFlowMetrics(data);
@@ -34,10 +36,9 @@ export function RequestsView() {
     <div className="space-y-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="text-xl font-semibold tracking-tight">Solicitudes</h1>
+          <h1 className="text-xl font-semibold tracking-tight">{t('requests.title')}</h1>
           <p className="mt-1 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-            Cada solicitud espera en la bandeja de un rol. Ábrela para ver qué le falta y
-            entregarla al siguiente; nunca avanza sola.
+            {t('requests.subtitle')}
           </p>
         </div>
         <NewRequestDialog />
@@ -49,25 +50,24 @@ export function RequestsView() {
 
       <div className="space-y-3">
         <CollapsibleSection
-          title="Qué frena el flujo"
+          title={t('requests.blockers.title')}
           description={
             metrics.totalBlockers === 0
-              ? 'No falta ningún requisito.'
-              : `${metrics.totalBlockers} requisitos sin cumplir, por la etapa que los pide.`
+              ? t('requests.blockers.none')
+              : t('requests.blockers.summary', { count: metrics.totalBlockers })
           }
           open={blockersOpen}
           onToggle={() => dispatch(toggleBlockers())}
         >
           <p className="mb-4 text-xs leading-relaxed text-muted-foreground">
-            Como los requisitos se acumulan, una etapa temprana puede seguir frenando solicitudes
-            que ya van por el final.
+            {t('requests.blockers.explanation')}
           </p>
           <BlockersChart data={metrics.blockersByStage} />
         </CollapsibleSection>
 
         <CollapsibleSection
-          title="Traza de orquestación"
-          description={`${data.events.length} movimientos entre agentes, con lo que se verificó en cada uno.`}
+          title={t('requests.trace.title')}
+          description={t('requests.trace.summary', { count: data.events.length })}
           open={traceOpen}
           onToggle={() => dispatch(toggleTrace())}
         >

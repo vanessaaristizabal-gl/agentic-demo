@@ -1,137 +1,109 @@
-import type { StaffingRequest } from './entities';
+import type { Message } from './messages-types';
 import type { RequirementCheck } from './requirements';
-import { stageLabel } from './stages';
-import type { StageId } from './types';
+import type { ResolutionView, StageId } from './types';
+
+export type { Message } from './messages-types';
 
 /**
- * Composición de mensajes de error.
+ * Composición de mensajes.
  *
  * Regla del producto: cuando algo falta, se nombra TODO lo que falta de una
  * vez, en un solo mensaje. Nunca de a uno, nunca «hay errores en el
  * formulario». Cada frase dice qué falta, por qué se pide y dónde se arregla.
+ *
+ * Aquí se decide QUÉ se dice y con qué datos; el texto concreto vive en las
+ * traducciones, así que el dominio no sabe en qué idioma se está mostrando.
  */
 
 export interface BlockingItem {
   requirementId: string;
-  sentence: string;
-  originLabel: string;
+  message: Message;
+  /** Etapa que lo pide. */
+  originStage: StageId;
   inherited: boolean;
-  resolveIn: 'solicitudes' | 'equipos';
-  where: string;
+  resolveIn: ResolutionView;
 }
 
 export interface BlockingReport {
-  headline: string;
-  /** Frase adicional cuando parte de lo que falta se resuelve en otra pantalla. */
-  aside: string | null;
+  headline: Message;
+  /** Frase adicional cuando parte de lo que falta viene de antes o de otra pantalla. */
+  aside: Message | null;
   items: BlockingItem[];
-  /** Todo el mensaje en texto plano, para portapapeles o avisos cortos. */
-  text: string;
 }
 
-const COUNT_WORDS = ['cero', 'un', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve'];
-
-function countWord(value: number): string {
-  return COUNT_WORDS[value] ?? String(value);
+function toItems(missing: RequirementCheck[]): BlockingItem[] {
+  return missing.map((check) => ({
+    requirementId: check.requirement.id,
+    message: check.message!,
+    originStage: check.originStage,
+    inherited: check.inherited,
+    resolveIn: check.requirement.resolveIn,
+  }));
 }
 
 export function composeBlockingReport(
-  request: StaffingRequest,
+  code: string,
   targetStage: StageId,
   missing: RequirementCheck[],
 ): BlockingReport {
-  const total = missing.length;
-  const target = stageLabel(targetStage);
+  const inherited = missing.filter((check) => check.inherited).length;
+  const elsewhere = missing.filter((check) => check.requirement.resolveIn === 'equipos').length;
 
-  const headline =
-    total === 1
-      ? `La solicitud ${request.code} no puede pasar a la etapa ${target}: falta un requisito por cumplir.`
-      : `La solicitud ${request.code} no puede pasar a la etapa ${target}: quedan ${countWord(total)} requisitos sin cumplir.`;
-
-  const inheritedCount = missing.filter((check) => check.inherited).length;
-  const elsewhere = missing.filter((check) => check.requirement.resolveIn === 'equipos');
-
-  const asideParts: string[] = [];
-  if (elsewhere.length === 1) {
-    asideParts.push(
-      total === 1
-        ? 'Lo que falta no se resuelve en esta pantalla: la dedicación de la posición se fija en la vista Equipos.'
-        : 'Uno de ellos no se resuelve en esta pantalla: la dedicación de la posición se fija en la vista Equipos.',
-    );
-  } else if (elsewhere.length > 1) {
-    asideParts.push(
-      `${countWord(elsewhere.length).replace(/^un$/, 'Uno')} de ellos no se resuelven en esta pantalla, sino en la vista Equipos.`,
-    );
-  }
-  if (inheritedCount > 0) {
-    asideParts.push(
-      inheritedCount === 1
-        ? total === 1
-          ? 'Viene de una etapa anterior: los requisitos no se cierran al avanzar, se siguen exigiendo hasta el final.'
-          : 'Uno viene de una etapa anterior: los requisitos no se cierran al avanzar, se siguen exigiendo hasta el final.'
-        : `${countWord(inheritedCount).charAt(0).toUpperCase()}${countWord(inheritedCount).slice(1)} vienen de etapas anteriores: los requisitos no se cierran al avanzar, se siguen exigiendo hasta el final.`,
-    );
+  // Una sola frase de contexto: la de otra pantalla pesa más que la heredada,
+  // porque es la que el usuario no encontrará si nadie se lo dice.
+  let aside: Message | null = null;
+  if (elsewhere > 0) {
+    aside = { key: 'blocking.aside.elsewhere', params: { count: elsewhere, total: missing.length } };
+  } else if (inherited > 0) {
+    aside = { key: 'blocking.aside.inherited', params: { count: inherited, total: missing.length } };
   }
 
-  const items: BlockingItem[] = missing.map((check) => ({
-    requirementId: check.requirement.id,
-    sentence: check.sentence,
-    originLabel: check.originLabel,
-    inherited: check.inherited,
-    resolveIn: check.requirement.resolveIn,
-    where: check.requirement.where,
-  }));
+  return {
+    headline: {
+      key: 'blocking.headline',
+      params: { count: missing.length, code, stage: targetStage },
+    },
+    aside,
+    items: toItems(missing),
+  };
+}
 
-  const aside = asideParts.length > 0 ? asideParts.join(' ') : null;
-
-  const text = [headline, aside, ...items.map((item) => `· ${item.sentence}`)]
-    .filter(Boolean)
-    .join('\n');
-
-  return { headline, aside, items, text };
+/** La solicitud ya estaba en la última etapa: no hay nada que entregar. */
+export function composeFinalStageReport(code: string, stage: StageId): BlockingReport {
+  return {
+    headline: { key: 'blocking.alreadyFinal', params: { code, stage } },
+    aside: null,
+    items: [],
+  };
 }
 
 /** Mensaje de confirmación cuando un agente entrega el trabajo al siguiente. */
 export function composeHandoffMessage(
-  request: StaffingRequest,
+  code: string,
   fromStage: StageId,
   toStage: StageId,
-  toAgentName: string,
   checksPassed: number,
-): string {
+): Message {
   if (toStage === 'activo') {
-    return `${request.code} queda activa. El consultor ya figura trabajando en el equipo y se han verificado ${checksPassed} requisitos acumulados desde la etapa ${stageLabel('registro')}.`;
+    return { key: 'handoff.activated', params: { code, checks: checksPassed } };
   }
-  return `${request.code} pasa de ${stageLabel(fromStage)} a ${stageLabel(toStage)} y entra en la bandeja de ${toAgentName}. Se verificaron ${checksPassed} requisitos acumulados.`;
+  return {
+    key: 'handoff.delivered',
+    params: { code, from: fromStage, to: toStage, checks: checksPassed },
+  };
 }
 
 /**
  * Mensaje del formulario de la solicitud al intentar guardar.
  *
- * Mismo criterio que el resto: una sola alerta con todo lo que falta.
- * Aquí se nota especialmente, porque uno de los campos obligatorios no lleva
- * marca visual y el usuario solo se entera al guardar.
+ * Mismo criterio que el resto: una sola alerta con todo lo que falta. Aquí se
+ * nota especialmente, porque uno de los campos obligatorios no lleva marca
+ * visual y el usuario solo se entera al guardar.
  */
 export function composeIntakeReport(missing: RequirementCheck[]): BlockingReport {
-  const total = missing.length;
-  const headline =
-    total === 1
-      ? 'No se puede registrar la solicitud: falta un dato obligatorio.'
-      : `No se puede registrar la solicitud: faltan ${countWord(total)} datos obligatorios.`;
-
-  const items: BlockingItem[] = missing.map((check) => ({
-    requirementId: check.requirement.id,
-    sentence: check.sentence,
-    originLabel: check.originLabel,
-    inherited: false,
-    resolveIn: check.requirement.resolveIn,
-    where: check.requirement.where,
-  }));
-
   return {
-    headline,
+    headline: { key: 'blocking.intakeHeadline', params: { count: missing.length } },
     aside: null,
-    items,
-    text: [headline, ...items.map((item) => `· ${item.sentence}`)].join('\n'),
+    items: toItems(missing),
   };
 }

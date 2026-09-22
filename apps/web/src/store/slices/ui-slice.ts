@@ -1,9 +1,12 @@
 import { createSlice, nanoid, type PayloadAction } from '@reduxjs/toolkit';
 
+import type { Message } from '@/domain';
+
+/** El aviso guarda claves, no texto: se traduce en el momento de pintarlo. */
 export interface Toast {
   id: string;
-  title: string;
-  description?: string;
+  title: Message;
+  description?: Message;
   variant: 'default' | 'success' | 'error';
 }
 

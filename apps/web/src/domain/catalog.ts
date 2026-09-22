@@ -8,22 +8,25 @@ import type {
   Seniority,
 } from './types';
 
-export interface Option<T extends string = string> {
-  value: T;
-  label: string;
-}
+/**
+ * Catálogos del negocio.
+ *
+ * Solo guardan identificadores estables, nunca texto visible: lo que se guarda
+ * en la base de datos no puede cambiar porque alguien cambie de idioma. La
+ * etiqueta se resuelve en la presentación con la clave que devuelve
+ * `catalogKey`.
+ */
 
-export const PRACTICES: Option<PracticeId>[] = [
-  { value: 'cloud-data', label: 'Cloud & Data' },
-  { value: 'digital-products', label: 'Digital Products' },
-  { value: 'quality-engineering', label: 'Quality Engineering' },
-  { value: 'ai-automation', label: 'AI & Automation' },
+export const PRACTICES: PracticeId[] = [
+  'cloud-data',
+  'digital-products',
+  'quality-engineering',
+  'ai-automation',
 ];
 
 /**
- * El stack disponible depende de la practica elegida.
- * Es intencional: hasta que no hay practica, no hay stack que elegir,
- * y cambiar de practica invalida el stack seleccionado.
+ * El stack disponible depende de la práctica elegida.
+ * Son nombres de tecnología: no se traducen.
  */
 export const STACKS_BY_PRACTICE: Record<PracticeId, string[]> = {
   'cloud-data': [
@@ -46,15 +49,15 @@ export const STACKS_BY_PRACTICE: Record<PracticeId, string[]> = {
     'Playwright + TypeScript',
     'Cypress',
     'Selenium + Java',
-    'k6 (performance)',
-    'Appium (móvil)',
-    'Pact (contract testing)',
+    'k6',
+    'Appium',
+    'Pact',
   ],
   'ai-automation': [
     'Python + LangChain',
     'RAG sobre Bedrock',
     'Vertex AI + MLOps',
-    'n8n + integraciones',
+    'n8n',
     'Semantic Kernel',
   ],
 };
@@ -64,82 +67,53 @@ export function stacksFor(practice: PracticeId | ''): string[] {
   return STACKS_BY_PRACTICE[practice] ?? [];
 }
 
-export const SENIORITIES: Option<Seniority>[] = [
-  { value: 'junior', label: 'Junior' },
-  { value: 'semi-senior', label: 'Semi Senior' },
-  { value: 'senior', label: 'Senior' },
-  { value: 'staff', label: 'Staff' },
-];
+export const SENIORITIES: Seniority[] = ['junior', 'semi-senior', 'senior', 'staff'];
 
-export const CONSULTANT_ROLES: Option<ConsultantRole>[] = [
-  { value: 'desarrollador', label: 'Desarrollador' },
-  { value: 'qa', label: 'QA' },
-  { value: 'tech-manager', label: 'Tech Manager' },
-];
+export const CONSULTANT_ROLES: ConsultantRole[] = ['desarrollador', 'qa', 'tech-manager'];
 
-export const ENGLISH_LEVELS: Option<EnglishLevel>[] = [
-  { value: 'A2', label: 'A2 — basico' },
-  { value: 'B1', label: 'B1 — intermedio' },
-  { value: 'B2', label: 'B2 — intermedio alto' },
-  { value: 'C1', label: 'C1 — avanzado' },
-];
+export const ENGLISH_LEVELS: EnglishLevel[] = ['A2', 'B1', 'B2', 'C1'];
 
-export const BILLING_MODELS: Option<BillingModel>[] = [
-  { value: 'time-and-materials', label: 'Time & Materials' },
-  { value: 'precio-fijo', label: 'Precio fijo' },
-  { value: 'capacity', label: 'Capacity / célula dedicada' },
-];
+export const BILLING_MODELS: BillingModel[] = ['time-and-materials', 'precio-fijo', 'capacity'];
 
-export const PRIORITIES: Option<Priority>[] = [
-  { value: 'baja', label: 'Baja' },
-  { value: 'media', label: 'Media' },
-  { value: 'alta', label: 'Alta' },
-  { value: 'critica', label: 'Crítica' },
-];
+export const PRIORITIES: Priority[] = ['baja', 'media', 'alta', 'critica'];
 
-export const CONTRACT_TYPES: Option<ContractType>[] = [
-  { value: 'indefinido', label: 'Término indefinido' },
-  { value: 'obra-labor', label: 'Obra o labor' },
-  { value: 'contractor', label: 'Contractor' },
-];
+export const CONTRACT_TYPES: ContractType[] = ['indefinido', 'obra-labor', 'contractor'];
 
-export const VACANCY_CHANNELS: string[] = [
-  'LinkedIn',
-  'Referidos internos',
-  'Portal de empleo propio',
-  'Comunidades técnicas',
-  'Base de datos interna',
-];
+export const VACANCY_CHANNELS = [
+  'linkedin',
+  'referrals',
+  'own-job-board',
+  'tech-communities',
+  'internal-database',
+] as const;
 
-export const ONBOARDING_ACCESSES: string[] = [
-  'Correo corporativo',
-  'Repositorio del cliente',
-  'VPN del cliente',
-  'Jira y Confluence',
-  'Herramientas de CI/CD',
-];
+export const ONBOARDING_ACCESSES = [
+  'corporate-email',
+  'client-repository',
+  'client-vpn',
+  'jira-confluence',
+  'ci-cd',
+] as const;
 
-export const SKILL_LIBRARY: string[] = [
-  'Arquitectura hexagonal',
-  'Testing automatizado',
-  'CI/CD',
-  'Observabilidad',
-  'Modelado de datos',
-  'Seguridad de aplicaciones',
-  'Comunicación con cliente',
-  'Mentoring',
-  'Performance',
-  'Accesibilidad',
-];
+export const SKILL_LIBRARY = [
+  'hexagonal-architecture',
+  'automated-testing',
+  'ci-cd',
+  'observability',
+  'data-modelling',
+  'application-security',
+  'client-communication',
+  'mentoring',
+  'performance',
+  'accessibility',
+] as const;
 
-export const SALARY_BANDS: Option[] = [
-  { value: 'banda-1', label: 'Banda 1 — hasta 4.500 USD/mes' },
-  { value: 'banda-2', label: 'Banda 2 — 4.500 a 6.500 USD/mes' },
-  { value: 'banda-3', label: 'Banda 3 — 6.500 a 8.500 USD/mes' },
-  { value: 'banda-4', label: 'Banda 4 — más de 8.500 USD/mes' },
-];
+export const SALARY_BANDS = ['banda-1', 'banda-2', 'banda-3', 'banda-4'] as const;
 
-export function labelOf(options: Option<string>[], value: string | undefined | null): string {
-  if (!value) return '';
-  return options.find((option) => option.value === value)?.label ?? value;
+/**
+ * Clave de traducción de un valor de catálogo. La presentación la pasa por
+ * `t()`; el dominio nunca ve texto.
+ */
+export function catalogKey(group: string, value: string): string {
+  return `catalog.${group}.${value}`;
 }

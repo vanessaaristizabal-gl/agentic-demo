@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import type { FlowMetrics } from '@/application/use-cases';
 import { cn } from '@/lib/utils';
 import { useAppDispatch, useAppSelector } from '@/store';
@@ -11,19 +12,25 @@ import { setBoardFilter, type BoardFilter } from '@/store/slices/ui-slice';
  */
 export function BoardFilters({ metrics }: { metrics: FlowMetrics }) {
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
   const active = useAppSelector((state) => state.ui.boardFilter);
 
   const options: { id: BoardFilter; label: string; value: number; tone: string }[] = [
-    { id: 'todas', label: 'En curso', value: metrics.inFlight, tone: 'text-foreground' },
+    {
+      id: 'todas',
+      label: t('requests.filters.inFlight'),
+      value: metrics.inFlight,
+      tone: 'text-foreground',
+    },
     {
       id: 'listas',
-      label: 'Listas para entregar',
+      label: t('requests.filters.ready'),
       value: metrics.ready,
       tone: 'text-emerald-700 dark:text-emerald-400',
     },
     {
       id: 'bloqueadas',
-      label: 'Sin poder avanzar',
+      label: t('requests.filters.blocked'),
       value: metrics.blocked,
       tone: 'text-destructive',
     },
@@ -56,7 +63,7 @@ export function BoardFilters({ metrics }: { metrics: FlowMetrics }) {
 
       {metrics.closed > 0 ? (
         <span className="px-1 text-xs text-muted-foreground">
-          {metrics.closed} ya {metrics.closed === 1 ? 'cerrada' : 'cerradas'}
+          {t('requests.filters.closed', { count: metrics.closed })}
         </span>
       ) : null}
     </div>

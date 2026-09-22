@@ -1,5 +1,6 @@
 import { CheckCircle2, Info, TriangleAlert, X } from 'lucide-react';
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import { useAppDispatch, useAppSelector } from '@/store';
 import { dismissToast, type Toast } from '@/store/slices/ui-slice';
@@ -12,6 +13,7 @@ const ICONS = {
 
 function ToastCard({ toast }: { toast: Toast }) {
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
   const Icon = ICONS[toast.variant];
 
   useEffect(() => {
@@ -37,16 +39,18 @@ function ToastCard({ toast }: { toast: Toast }) {
         )}
       />
       <div className="min-w-0 flex-1">
-        <p className="text-sm font-medium">{toast.title}</p>
+        <p className="text-sm font-medium">{t(toast.title.key, toast.title.params)}</p>
         {toast.description ? (
-          <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">{toast.description}</p>
+          <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
+            {t(toast.description.key, toast.description.params)}
+          </p>
         ) : null}
       </div>
       <button
         type="button"
         onClick={() => dispatch(dismissToast(toast.id))}
         className="rounded-sm text-muted-foreground transition-colors hover:text-foreground"
-        aria-label="Cerrar aviso"
+        aria-label={t('common.close')}
       >
         <X className="h-4 w-4" />
       </button>

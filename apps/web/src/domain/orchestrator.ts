@@ -1,14 +1,20 @@
 import { agentForStage, type AgentDefinition } from './agents';
 import type { Consultant, StaffingRequest, OrchestrationEvent, Position } from './entities';
 import { buildConsultantFromRequest } from './lifecycle';
-import { composeBlockingReport, composeHandoffMessage, type BlockingReport } from './messages';
+import {
+  composeBlockingReport,
+  composeFinalStageReport,
+  composeHandoffMessage,
+  type BlockingReport,
+  type Message,
+} from './messages';
 import {
   evaluate,
   positionForRequest,
   type EvaluationContext,
   type RequirementCheck,
 } from './requirements';
-import { isFinalStage, nextStage, stageLabel } from './stages';
+import { isFinalStage, nextStage } from './stages';
 import type { StageId } from './types';
 
 /**
@@ -59,7 +65,8 @@ export function inspect(context: EvaluationContext): Inspection {
     missing,
     canAdvance: !final && missing.length === 0,
     isFinal: final,
-    report: missing.length > 0 && target ? composeBlockingReport(request, target, missing) : null,
+    report:
+      missing.length > 0 && target ? composeBlockingReport(request.code, target, missing) : null,
   };
 }
 
@@ -71,7 +78,7 @@ export interface HandoffTransaction {
   /** Consultor creado al llegar la solicitud a `activo`. */
   consultant: Consultant | null;
   events: OrchestrationEvent[];
-  message: string;
+  message: Message;
 }
 
 export type AdvanceResult =
@@ -88,17 +95,13 @@ export function advance(context: EvaluationContext, ports: RuntimePorts): Advanc
   const now = ports.now();
 
   if (inspection.isFinal || !inspection.nextStage) {
-    const report = composeBlockingReport(request, request.stage, []);
     return {
       ok: false,
-      report: {
-        ...report,
-        headline: `La solicitud ${request.code} ya está en la etapa ${stageLabel(request.stage)}, que es la última del flujo.`,
-        items: [],
-        aside: null,
-        text: `La solicitud ${request.code} ya está en la etapa ${stageLabel(request.stage)}, que es la última del flujo.`,
-      },
-      event: blockedEvent(request, null, [], ports, 'La solicitud ya estaba en la última etapa.'),
+      report: composeFinalStageReport(request.code, request.stage),
+      event: blockedEvent(request, null, [], ports, {
+        key: 'events.alreadyFinal',
+        params: { code: request.code },
+      }),
     };
   }
 
@@ -110,7 +113,7 @@ export function advance(context: EvaluationContext, ports: RuntimePorts): Advanc
       event: blockedEvent(
         request,
         inspection.nextStage,
-        inspection.missing.map((check) => check.sentence),
+        inspection.missing.map((check) => check.requirement.id),
         ports,
         report.headline,
       ),
@@ -138,8 +141,11 @@ export function advance(context: EvaluationContext, ports: RuntimePorts): Advanc
       toAgent: nextAgent.id,
       fromStage: request.stage,
       toStage: target,
-      summary: `${inspection.agent.name} entrega ${request.code} a ${nextAgent.name}.`,
-      checks: inspection.checks.map((check) => check.requirement.label),
+      summary: {
+        key: 'events.handoff',
+        params: { from: inspection.agent.id, to: nextAgent.id, code: request.code },
+      },
+      checks: inspection.checks.map((check) => check.requirement.id),
     },
   ];
 
@@ -175,7 +181,7 @@ export function advance(context: EvaluationContext, ports: RuntimePorts): Advanc
       toAgent: 'consultant',
       fromStage: 'onboarding',
       toStage: 'activo',
-      summary: `${consultant.name} se incorpora al equipo y empieza su ramp-up.`,
+      summary: { key: 'events.consultantActive', params: { name: consultant.name } },
       checks: [],
     });
   }
@@ -187,13 +193,7 @@ export function advance(context: EvaluationContext, ports: RuntimePorts): Advanc
       positions,
       consultant,
       events,
-      message: composeHandoffMessage(
-        request,
-        request.stage,
-        target,
-        nextAgent.name,
-        inspection.checks.length,
-      ),
+      message: composeHandoffMessage(request.code, request.stage, target, inspection.checks.length),
     },
   };
 }
@@ -203,7 +203,7 @@ function blockedEvent(
   target: StageId | null,
   checks: string[],
   ports: RuntimePorts,
-  summary: string,
+  summary: Message,
 ): OrchestrationEvent {
   return {
     id: ports.id('evt'),

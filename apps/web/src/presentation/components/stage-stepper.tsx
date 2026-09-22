@@ -1,5 +1,6 @@
 import { Check } from 'lucide-react';
-import { STAGES, agentForStage, stageDef, type StageId } from '@/domain';
+import { useTranslation } from 'react-i18next';
+import { STAGES, agentForStage, agentKey, stageDef, stageKey, type StageId } from '@/domain';
 import { cn } from '@/lib/utils';
 
 /**
@@ -25,6 +26,7 @@ export function StageStepper({
   current: StageId;
   className?: string;
 }) {
+  const { t } = useTranslation();
   const currentIndex = stageDef(current).index;
   const owner = agentForStage(current);
 
@@ -89,7 +91,7 @@ export function StageStepper({
                   state === 'pendiente' && 'text-muted-foreground/60',
                 )}
               >
-                {stage.label}
+                {t(stageKey(stage.id, 'label'))}
               </span>
             </li>
           );
@@ -97,11 +99,11 @@ export function StageStepper({
       </ol>
 
       <p className="mt-2 text-center text-xs text-muted-foreground sm:text-left">
-        Etapa {currentIndex + 1} de {STAGES.length} ·{' '}
-        <span className="font-medium text-foreground">{stageDef(current).label}</span> ·{' '}
+        {t('stepper.position', { current: currentIndex + 1, total: STAGES.length })} ·{' '}
+        <span className="font-medium text-foreground">{t(stageKey(current, 'label'))}</span> ·{' '}
         {currentIndex === STAGES.length - 1
-          ? 'el flujo de la solicitud ha terminado'
-          : `en la bandeja de ${owner.name}`}
+          ? t('stepper.finished')
+          : t('stepper.inInbox', { agent: t(agentKey(owner.id, 'name')) })}
       </p>
     </div>
   );
@@ -112,12 +114,13 @@ export function StageStepper({
  * un hueco del color de la superficie, no por un borde.
  */
 export function StageProgress({ current }: { current: StageId }) {
+  const { t } = useTranslation();
   const currentIndex = stageDef(current).index;
   return (
     <div
       className="flex gap-0.5"
       role="img"
-      aria-label={`Etapa ${currentIndex + 1} de ${STAGES.length}: ${stageDef(current).label}`}
+      aria-label={`${t('stepper.position', { current: currentIndex + 1, total: STAGES.length })}: ${t(stageKey(current, 'label'))}`}
     >
       {STAGES.map((stage, index) => (
         <span

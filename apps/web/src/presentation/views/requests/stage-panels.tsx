@@ -1,7 +1,9 @@
 import { ArrowUpRight, Sparkles } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import {
+  catalogKey,
   CONSULTANT_ROLES,
   CONTRACT_TYPES,
   ENGLISH_LEVELS,
@@ -108,57 +110,58 @@ function toggle(list: string[], value: string): string[] {
 /* ---------------------------- Etapa 2 · Perfil --------------------------- */
 
 export function ProfilePanel({ request, onPatch }: PanelProps) {
+  const { t } = useTranslation();
   const { profile } = request;
   return (
     <div className="grid gap-4 sm:grid-cols-2">
-      <Field id="seniority" label="Seniority" required>
+      <Field id="seniority" label={t('form.seniority')} required>
         <Select
           value={profile.seniority || undefined}
           onValueChange={(next) => onPatch({ profile: { seniority: next as never } })}
         >
           <SelectTrigger id="seniority">
-            <SelectValue placeholder="Elige el seniority" />
+            <SelectValue placeholder={t('form.seniorityPlaceholder')} />
           </SelectTrigger>
           <SelectContent>
             {SENIORITIES.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
+              <SelectItem key={option} value={option}>
+                {t(catalogKey('seniorities', option))}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
       </Field>
 
-      <Field id="consultantRole" label="Rol del consultor" required>
+      <Field id="consultantRole" label={t('form.consultantRole')} required>
         <Select
           value={profile.consultantRole || undefined}
           onValueChange={(next) => onPatch({ profile: { consultantRole: next as never } })}
         >
           <SelectTrigger id="consultantRole">
-            <SelectValue placeholder="Desarrollador, QA o Tech Manager" />
+            <SelectValue placeholder={t('form.consultantRolePlaceholder')} />
           </SelectTrigger>
           <SelectContent>
             {CONSULTANT_ROLES.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
+              <SelectItem key={option} value={option}>
+                {t(catalogKey('roles', option))}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
       </Field>
 
-      <Field id="englishLevel" label="Nivel de inglés" required>
+      <Field id="englishLevel" label={t('form.englishLevel')} required>
         <Select
           value={profile.englishLevel || undefined}
           onValueChange={(next) => onPatch({ profile: { englishLevel: next as never } })}
         >
           <SelectTrigger id="englishLevel">
-            <SelectValue placeholder="Elige el nivel exigido" />
+            <SelectValue placeholder={t('form.englishPlaceholder')} />
           </SelectTrigger>
           <SelectContent>
             {ENGLISH_LEVELS.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
+              <SelectItem key={option} value={option}>
+                {t(catalogKey('english', option))}
               </SelectItem>
             ))}
           </SelectContent>
@@ -167,23 +170,24 @@ export function ProfilePanel({ request, onPatch }: PanelProps) {
 
       <Field
         id="skills"
-        label={`Habilidades (${profile.skills.length} de 3 mínimas)`}
+        label={t('form.skills', { count: profile.skills.length })}
         required
         className="sm:col-span-2"
       >
         <ChipGroup
-          options={SKILL_LIBRARY}
+          options={[...SKILL_LIBRARY]}
+          labelFor={(value) => t(catalogKey('skills', value))}
           selected={profile.skills}
           onToggle={(value) => onPatch({ profile: { skills: toggle(profile.skills, value) } })}
         />
       </Field>
 
-      <Field id="profileNotes" label="Notas del arquitecto" className="sm:col-span-2">
+      <Field id="profileNotes" label={t('form.profileNotes')} className="sm:col-span-2">
         <DebouncedTextarea
           id="profileNotes"
           rows={2}
           value={profile.notes}
-          placeholder="Condiciones del cliente, restricciones, contexto técnico"
+          placeholder={t('form.profileNotesPlaceholder')}
           onCommit={(next) => onPatch({ profile: { notes: next } })}
         />
       </Field>
@@ -194,19 +198,20 @@ export function ProfilePanel({ request, onPatch }: PanelProps) {
 /* ---------------------------- Etapa 3 · Equipo --------------------------- */
 
 export function TeamPanel({ request, teams, onPatch, onAssignTeam }: PanelProps) {
+  const { t } = useTranslation();
   const { assignment } = request;
   return (
     <div className="grid gap-4 sm:grid-cols-2">
       <Field
         id="teamId"
-        label="Equipo"
+        label={t('form.team')}
         required
         className="sm:col-span-2"
-        hint="Al elegir equipo se abre la posición. La dedicación se fija después, en la vista Equipos."
+        hint={t('form.teamHint')}
       >
         <Select value={assignment.teamId || undefined} onValueChange={onAssignTeam}>
           <SelectTrigger id="teamId">
-            <SelectValue placeholder="Elige el equipo que recibe la solicitud" />
+            <SelectValue placeholder={t('form.teamPlaceholder')} />
           </SelectTrigger>
           <SelectContent>
             {teams.map((team) => (
@@ -218,7 +223,7 @@ export function TeamPanel({ request, teams, onPatch, onAssignTeam }: PanelProps)
         </Select>
       </Field>
 
-      <Field id="joinDate" label="Fecha de incorporación al equipo" required>
+      <Field id="joinDate" label={t('form.joinDate')} required>
         <DebouncedInput
           id="joinDate"
           type="date"
@@ -229,24 +234,29 @@ export function TeamPanel({ request, teams, onPatch, onAssignTeam }: PanelProps)
 
       <Field
         id="technicalReferent"
-        label="Referente técnico"
+        label={t('form.technicalReferent')}
         required
-        hint="Quien acompaña al consultor durante el ramp-up."
+        hint={t('form.technicalReferentHint')}
       >
         <DebouncedInput
           id="technicalReferent"
           value={assignment.technicalReferent}
-          placeholder="Nombre de la persona del equipo"
+          placeholder={t('form.technicalReferentPlaceholder')}
           onCommit={(next) => onPatch({ assignment: { technicalReferent: next } })}
         />
       </Field>
 
       <div className="sm:col-span-2 rounded-md border bg-muted/40 p-3 text-xs leading-relaxed text-muted-foreground">
-        La dedicación de esta posición no se decide aquí. Se fija en la vista{' '}
-        <Link to="/equipos" className="font-medium text-foreground underline underline-offset-2">
-          Equipos
-        </Link>
-        , y sin ella la solicitud no podrá cerrarse en la última etapa.
+        <Trans
+          i18nKey="form.allocationNotice"
+          components={[
+            <Link
+              key="teams"
+              to="/equipos"
+              className="font-medium text-foreground underline underline-offset-2"
+            />,
+          ]}
+        />
       </div>
     </div>
   );
@@ -255,33 +265,34 @@ export function TeamPanel({ request, teams, onPatch, onAssignTeam }: PanelProps)
 /* --------------------------- Etapa 4 · Vacante --------------------------- */
 
 export function VacancyPanel({ request, onPatch, onDraft, drafting }: PanelProps) {
+  const { t } = useTranslation();
   const { vacancy } = request;
   const length = vacancy.jobDescription.trim().length;
 
   return (
     <div className="space-y-4">
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field id="vacancyTitle" label="Título de la vacante" required>
+        <Field id="vacancyTitle" label={t('form.vacancyTitle')} required>
           <DebouncedInput
             id="vacancyTitle"
             value={vacancy.title}
-            placeholder="Desarrollador Senior React — Cliente"
+            placeholder={t('form.vacancyTitlePlaceholder')}
             onCommit={(next) => onPatch({ vacancy: { title: next } })}
           />
         </Field>
 
-        <Field id="salaryBand" label="Banda salarial" required>
+        <Field id="salaryBand" label={t('form.salaryBand')} required>
           <Select
             value={vacancy.salaryBand || undefined}
             onValueChange={(next) => onPatch({ vacancy: { salaryBand: next } })}
           >
             <SelectTrigger id="salaryBand">
-              <SelectValue placeholder="Elige la banda" />
+              <SelectValue placeholder={t('form.salaryBandPlaceholder')} />
             </SelectTrigger>
             <SelectContent>
               {SALARY_BANDS.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
+                <SelectItem key={option} value={option}>
+                  {t(catalogKey('salaryBands', option))}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -291,40 +302,39 @@ export function VacancyPanel({ request, onPatch, onDraft, drafting }: PanelProps
 
       <Field
         id="jobDescription"
-        label="Descripción del puesto"
+        label={t('form.jobDescription')}
         required
         hint={
           <span>
-            {length} de 120 caracteres mínimos.
-            {vacancy.draftSource === 'anthropic' ? ' Último borrador generado con el modelo del servidor.' : null}
-            {vacancy.draftSource === 'gemini-nano' ? ' Último borrador generado con el modelo local del navegador.' : null}
-            {vacancy.draftSource === 'reserva' ? ' Último borrador compuesto con el texto de reserva.' : null}
+            {t('form.jobDescriptionHint', { count: length })}
+            {vacancy.draftSource && vacancy.draftSource !== 'manual'
+              ? ` ${t(`form.jobDescriptionSource.${vacancy.draftSource}`)}`
+              : null}
           </span>
         }
       >
         <div className="space-y-2">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <p className="text-xs text-muted-foreground">
-              Se genera a partir del perfil técnico ya definido.
-            </p>
+            <p className="text-xs text-muted-foreground">{t('form.draftFrom')}</p>
             <Button type="button" variant="outline" size="sm" onClick={onDraft} disabled={drafting}>
               <Sparkles className={drafting ? 'animate-pulse' : undefined} />
-              {drafting ? 'Redactando…' : 'Redactar con IA'}
+              {drafting ? t('form.drafting') : t('form.draftWithAi')}
             </Button>
           </div>
           <DebouncedTextarea
             id="jobDescription"
             rows={10}
             value={vacancy.jobDescription}
-            placeholder="Escríbela a mano o pulsa «Redactar con IA»"
+            placeholder={t('form.jobDescriptionPlaceholder')}
             onCommit={(next) => onPatch({ vacancy: { jobDescription: next, draftSource: 'manual' } })}
           />
         </div>
       </Field>
 
-      <Field id="channels" label="Canales de publicación" required>
+      <Field id="channels" label={t('form.channels')} required>
         <ChipGroup
-          options={VACANCY_CHANNELS}
+          options={[...VACANCY_CHANNELS]}
+          labelFor={(value) => t(catalogKey('channels', value))}
           selected={vacancy.channels}
           onToggle={(value) => onPatch({ vacancy: { channels: toggle(vacancy.channels, value) } })}
         />
@@ -335,27 +345,28 @@ export function VacancyPanel({ request, onPatch, onDraft, drafting }: PanelProps
 
 /* -------------------------- Etapa 5 · Entrevista ------------------------- */
 
-const DECISIONS = [
-  { value: 'pendiente', label: 'Pendiente' },
-  { value: 'segunda-ronda', label: 'Segunda ronda' },
-  { value: 'contratar', label: 'Contratar' },
-  { value: 'descartar', label: 'Descartar' },
-];
+const DECISIONS = ['pendiente', 'segunda-ronda', 'contratar', 'descartar'] as const;
 
 export function InterviewPanel({ request, onPatch }: PanelProps) {
+  const { t } = useTranslation();
   const { interview } = request;
   return (
     <div className="grid gap-4 sm:grid-cols-2">
-      <Field id="candidateName" label="Candidato" required>
+      <Field id="candidateName" label={t('form.candidate')} required>
         <DebouncedInput
           id="candidateName"
           value={interview.candidateName}
-          placeholder="Nombre y apellidos"
+          placeholder={t('form.candidatePlaceholder')}
           onCommit={(next) => onPatch({ interview: { candidateName: next } })}
         />
       </Field>
 
-      <Field id="technicalScore" label="Puntuación técnica" required hint="De 0 a 10. Se contrata desde 7.">
+      <Field
+        id="technicalScore"
+        label={t('form.technicalScore')}
+        required
+        hint={t('form.technicalScoreHint')}
+      >
         <DebouncedInput
           id="technicalScore"
           type="number"
@@ -368,7 +379,7 @@ export function InterviewPanel({ request, onPatch }: PanelProps) {
         />
       </Field>
 
-      <Field id="decision" label="Decisión" required className="sm:col-span-2">
+      <Field id="decision" label={t('form.decision')} required className="sm:col-span-2">
         <Select
           value={interview.decision}
           onValueChange={(next) => onPatch({ interview: { decision: next as never } })}
@@ -378,8 +389,8 @@ export function InterviewPanel({ request, onPatch }: PanelProps) {
           </SelectTrigger>
           <SelectContent>
             {DECISIONS.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
+              <SelectItem key={option} value={option}>
+                {t(catalogKey('decisions', option))}
               </SelectItem>
             ))}
           </SelectContent>
@@ -388,16 +399,16 @@ export function InterviewPanel({ request, onPatch }: PanelProps) {
 
       <Field
         id="feedback"
-        label="Feedback de la entrevista"
+        label={t('form.feedback')}
         required
         className="sm:col-span-2"
-        hint={`${interview.feedback.trim().length} de 40 caracteres mínimos.`}
+        hint={t('form.feedbackHint', { count: interview.feedback.trim().length })}
       >
         <DebouncedTextarea
           id="feedback"
           rows={4}
           value={interview.feedback}
-          placeholder="En qué se basó la decisión"
+          placeholder={t('form.feedbackPlaceholder')}
           onCommit={(next) => onPatch({ interview: { feedback: next } })}
         />
       </Field>
@@ -408,28 +419,29 @@ export function InterviewPanel({ request, onPatch }: PanelProps) {
 /* -------------------------- Etapa 6 · Onboarding ------------------------- */
 
 export function OnboardingPanel({ request, onPatch }: PanelProps) {
+  const { t } = useTranslation();
   const { onboarding } = request;
   return (
     <div className="grid gap-4 sm:grid-cols-2">
-      <Field id="contractType" label="Tipo de contrato" required>
+      <Field id="contractType" label={t('form.contractType')} required>
         <Select
           value={onboarding.contractType || undefined}
           onValueChange={(next) => onPatch({ onboarding: { contractType: next as never } })}
         >
           <SelectTrigger id="contractType">
-            <SelectValue placeholder="Elige el contrato" />
+            <SelectValue placeholder={t('form.contractTypePlaceholder')} />
           </SelectTrigger>
           <SelectContent>
             {CONTRACT_TYPES.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
+              <SelectItem key={option} value={option}>
+                {t(catalogKey('contracts', option))}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
       </Field>
 
-      <Field id="startDate" label="Fecha de alta" required>
+      <Field id="startDate" label={t('form.startDate')} required>
         <DebouncedInput
           id="startDate"
           type="date"
@@ -438,18 +450,18 @@ export function OnboardingPanel({ request, onPatch }: PanelProps) {
         />
       </Field>
 
-      <Field id="buddyName" label="Buddy" required>
+      <Field id="buddyName" label={t('form.buddy')} required>
         <DebouncedInput
           id="buddyName"
           value={onboarding.buddyName}
-          placeholder="Quien lo acompaña las dos primeras semanas"
+          placeholder={t('form.buddyPlaceholder')}
           onCommit={(next) => onPatch({ onboarding: { buddyName: next } })}
         />
       </Field>
 
       <div className="flex items-end">
         <label className="flex w-full items-center justify-between gap-3 rounded-md border p-3">
-          <span className="text-sm font-medium">Equipo de trabajo entregado</span>
+          <span className="text-sm font-medium">{t('form.equipmentDelivered')}</span>
           <Switch
             checked={onboarding.equipmentDelivered}
             onCheckedChange={(checked) => onPatch({ onboarding: { equipmentDelivered: checked } })}
@@ -459,12 +471,13 @@ export function OnboardingPanel({ request, onPatch }: PanelProps) {
 
       <Field
         id="accesses"
-        label={`Accesos (${onboarding.accesses.length} de 3 mínimos)`}
+        label={t('form.accesses', { count: onboarding.accesses.length })}
         required
         className="sm:col-span-2"
       >
         <ChipGroup
-          options={ONBOARDING_ACCESSES}
+          options={[...ONBOARDING_ACCESSES]}
+          labelFor={(value) => t(catalogKey('accesses', value))}
           selected={onboarding.accesses}
           onToggle={(value) =>
             onPatch({ onboarding: { accesses: toggle(onboarding.accesses, value) } })
@@ -478,6 +491,7 @@ export function OnboardingPanel({ request, onPatch }: PanelProps) {
 /* ---------------------------- Etapa 7 · Activo --------------------------- */
 
 export function ActivePanel({ request, teams, consultants }: PanelProps) {
+  const { t } = useTranslation();
   const team = teams.find((candidate) => candidate.id === request.assignment.teamId);
   const consultant = consultants.find((candidate) => candidate.id === request.consultantId);
 
@@ -486,26 +500,25 @@ export function ActivePanel({ request, teams, consultants }: PanelProps) {
       <div className="rounded-md border bg-muted/40 p-4">
         <p className="text-sm leading-relaxed">
           {consultant ? (
-            <>
-              <span className="font-medium">{consultant.name}</span> está trabajando en{' '}
-              <span className="font-medium">{team?.name ?? 'su equipo'}</span>. El flujo de la
-              solicitud terminó aquí; a partir de ahora lo que avanza es el ciclo de vida de la
-              persona.
-            </>
+            <Trans
+              i18nKey="form.activeSummary"
+              values={{ name: consultant.name, team: team?.name ?? '' }}
+              components={[<span key="n" className="font-medium" />, <span key="t" className="font-medium" />]}
+            />
           ) : (
-            <>La solicitud está cerrada y el consultor figura activo en {team?.name ?? 'su equipo'}.</>
+            t('form.activeSummaryNoConsultant', { team: team?.name ?? '' })
           )}
         </p>
         <div className="mt-3 flex flex-wrap gap-2">
           <Badge variant="success" className="font-normal">
-            Solicitud cerrada
+            {t('form.closedBadge')}
           </Badge>
           {consultant ? (
             <Link
               to="/ciclo"
               className="inline-flex items-center gap-1 rounded-md border border-input px-2 py-0.5 text-xs font-medium transition-colors hover:bg-accent"
             >
-              Ver su ciclo
+              {t('form.seeCycle')}
               <ArrowUpRight className="h-3 w-3" />
             </Link>
           ) : null}

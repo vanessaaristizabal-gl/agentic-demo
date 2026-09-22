@@ -45,8 +45,8 @@ export function useCreateRequest() {
       dispatch(
         pushToast({
           variant: 'success',
-          title: `${request.code} registrada`,
-          description: `La solicitud entra en la bandeja de Sales, en la etapa Registro.`,
+          title: { key: 'requests.toast.created', params: { code: request.code } },
+          description: { key: 'requests.toast.createdDetail' },
         }),
       );
     },
@@ -70,12 +70,18 @@ export function useAdvanceRequest() {
     onSuccess: async (outcome) => {
       await invalidate();
       if (outcome.ok) {
-        dispatch(pushToast({ variant: 'success', title: 'Solicitud entregada', description: outcome.message }));
+        dispatch(
+          pushToast({
+            variant: 'success',
+            title: { key: 'requests.toast.delivered' },
+            description: outcome.message,
+          }),
+        );
       } else {
         dispatch(
           pushToast({
             variant: 'error',
-            title: 'No se puede avanzar todavía',
+            title: { key: 'requests.toast.blocked' },
             description: outcome.report.headline,
           }),
         );
@@ -105,11 +111,14 @@ export function useDraftVacancy() {
           variant: outcome.source === 'anthropic' ? 'success' : 'default',
           title:
             outcome.source === 'anthropic'
-              ? `Descripción generada con ${outcome.model}`
+              ? { key: 'requests.toast.draftAnthropic', params: { model: outcome.model ?? '' } }
               : outcome.source === 'gemini-nano'
-                ? 'Descripción generada en el navegador'
-                : 'Descripción compuesta con el texto de reserva',
-          description: outcome.reason ?? 'La descripción ya está en la vacante.',
+                ? { key: 'requests.toast.draftLocal' }
+                : { key: 'requests.toast.draftFallback' },
+          // El motivo lo redacta el servidor, en su propio idioma: se muestra tal cual.
+          description: outcome.reason
+            ? { key: 'requests.toast.raw', params: { text: outcome.reason } }
+            : { key: 'requests.toast.draftDone' },
         }),
       );
     },
@@ -117,8 +126,8 @@ export function useDraftVacancy() {
       dispatch(
         pushToast({
           variant: 'error',
-          title: 'No se pudo redactar la descripción',
-          description: 'Escríbela a mano en el panel del Recruiter para seguir adelante.',
+          title: { key: 'requests.toast.draftFailed' },
+          description: { key: 'requests.toast.draftFailedDetail' },
         }),
       );
     },
@@ -144,9 +153,8 @@ export function useReleasePosition() {
       dispatch(
         pushToast({
           variant: 'default',
-          title: 'Posición liberada',
-          description:
-            'La solicitud vuelve a necesitar equipo: el requisito de la etapa Equipo deja de cumplirse.',
+          title: { key: 'requests.toast.released' },
+          description: { key: 'requests.toast.releasedDetail' },
         }),
       );
     },
@@ -190,8 +198,8 @@ export function useResetWorkspace() {
       dispatch(
         pushToast({
           variant: 'success',
-          title: 'Datos reiniciados',
-          description: 'Vuelve a haber una solicitud parada en cada etapa del flujo.',
+          title: { key: 'requests.toast.reset' },
+          description: { key: 'requests.toast.resetDetail' },
         }),
       );
     },

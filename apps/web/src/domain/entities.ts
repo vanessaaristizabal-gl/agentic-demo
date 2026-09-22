@@ -1,3 +1,4 @@
+import type { Message } from './messages-types';
 import type {
   BillingModel,
   ConsultantRole,
@@ -213,17 +214,15 @@ export type LifecyclePhaseId =
 export type PhaseStatus = 'pendiente' | 'en-curso' | 'completada';
 
 export interface PhaseRequirement {
-  label: string;
-  detail: string;
+  /** Identificador; el texto se traduce con `phaseRequirementKey`. */
+  id: string;
   /** Fecha ISO en la que se cumplio, o null si sigue pendiente. */
   completedAt: string | null;
 }
 
 export interface LifecyclePhase {
   id: LifecyclePhaseId;
-  label: string;
   owner: RoleId;
-  summary: string;
   status: PhaseStatus;
   startedAt: string | null;
   completedAt: string | null;
@@ -268,8 +267,8 @@ export interface OrchestrationEvent {
   toAgent: RoleId | null;
   fromStage: StageId | null;
   toStage: StageId | null;
-  /** Titular corto del evento. */
-  summary: string;
-  /** Requisitos verificados (entrega) o incumplidos (bloqueo). */
+  /** Titular corto del evento, como clave de traducción. */
+  summary: Message;
+  /** Identificadores de requisitos verificados (entrega) o incumplidos (bloqueo). */
   checks: string[];
 }

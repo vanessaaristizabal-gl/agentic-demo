@@ -1,5 +1,6 @@
 import { Check, Circle } from 'lucide-react';
-import type { RequirementCheck } from '@/domain';
+import { useTranslation } from 'react-i18next';
+import { requirementLabelKey, stageKey, type RequirementCheck } from '@/domain';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
@@ -9,12 +10,10 @@ import { cn } from '@/lib/utils';
  * se cierra al avanzar.
  */
 export function RequirementList({ checks }: { checks: RequirementCheck[] }) {
+  const { t } = useTranslation();
+
   if (checks.length === 0) {
-    return (
-      <p className="text-sm text-muted-foreground">
-        Esta etapa no exige nada: la solicitud ya está en el final del flujo.
-      </p>
-    );
+    return <p className="text-sm text-muted-foreground">{t('requests.dialog.noneRequired')}</p>;
   }
 
   return (
@@ -34,16 +33,16 @@ export function RequirementList({ checks }: { checks: RequirementCheck[] }) {
           )}
           <span className="min-w-0 flex-1">
             <span className={cn(!check.satisfied && 'font-medium text-foreground')}>
-              {check.requirement.label}
+              {t(requirementLabelKey(check.requirement.id))}
             </span>
             {check.inherited ? (
               <Badge variant="outline" className="ml-2 align-middle font-normal">
-                {check.originLabel}
+                {t(stageKey(check.originStage, 'label'))}
               </Badge>
             ) : null}
             {!check.satisfied && check.requirement.resolveIn === 'equipos' ? (
               <Badge variant="warning" className="ml-2 align-middle font-normal">
-                Se fija en Equipos
+                {t('blocking.fixedInTeams')}
               </Badge>
             ) : null}
           </span>

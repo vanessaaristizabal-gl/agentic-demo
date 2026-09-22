@@ -18,68 +18,52 @@ import type { ConsultantRole, RoleId, Seniority } from './types';
 
 interface PhaseBlueprint {
   id: LifecyclePhaseId;
-  label: string;
   owner: RoleId;
-  summary: string;
-  requirements: { label: string; detail: string }[];
+  /** Identificadores de lo que exige la fase. El texto vive en las traducciones. */
+  requirements: string[];
+}
+
+/**
+ * Claves de traduccion del ciclo de vida:
+ * `lifecycle.<phase>.label`, `.summary`, y `.requirements.<id>.label` / `.detail`.
+ */
+export function phaseKey(id: LifecyclePhaseId, part: 'label' | 'summary'): string {
+  return `lifecycle.${id}.${part}`;
+}
+
+export function phaseRequirementKey(
+  phase: LifecyclePhaseId,
+  requirement: string,
+  part: 'label' | 'detail',
+): string {
+  return `lifecycle.${phase}.requirements.${requirement}.${part}`;
 }
 
 export const PHASE_BLUEPRINTS: PhaseBlueprint[] = [
   {
     id: 'onboarding',
-    label: 'Onboarding',
     owner: 'hr',
-    summary: 'Alta administrativa: contrato, equipo de trabajo y accesos.',
-    requirements: [
-      { label: 'Contrato firmado', detail: 'Recursos Humanos formaliza el tipo de contrato acordado en la solicitud.' },
-      { label: 'Equipo de trabajo entregado', detail: 'El portátil y los periféricos están en manos del consultor.' },
-      { label: 'Accesos concedidos', detail: 'Al menos tres accesos activos, incluidos correo y repositorio del cliente.' },
-      { label: 'Buddy asignado', detail: 'Una persona del equipo acompaña al consultor las dos primeras semanas.' },
-    ],
+    requirements: ['contract', 'equipment', 'accesses', 'buddy'],
   },
   {
     id: 'ramp-up',
-    label: 'Ramp-up',
     owner: 'delivery-manager',
-    summary: 'Puesta en contexto hasta que el consultor entrega sin apoyo continuo.',
-    requirements: [
-      { label: 'Sesión de contexto con el cliente', detail: 'El consultor conoce el negocio, el producto y a quién preguntar.' },
-      { label: 'Primer cambio en producción', detail: 'Una entrega real, por pequeña que sea, revisada por el referente técnico.' },
-      { label: 'Plan de ramp-up acordado', detail: 'El referente técnico y el Delivery Manager fijan objetivos de las primeras seis semanas.' },
-    ],
+    requirements: ['context-session', 'first-change', 'ramp-up-plan'],
   },
   {
     id: 'productivo',
-    label: 'Productivo',
     owner: 'engineering-manager',
-    summary: 'El consultor sostiene el compromiso del equipo de forma autónoma.',
-    requirements: [
-      { label: 'Un sprint completo sin apoyo del referente', detail: 'El consultor toma, resuelve y entrega su trabajo por su cuenta.' },
-      { label: 'Dedicación estable en el equipo', detail: 'La dedicación fijada en la vista Equipos se mantiene sin cambios durante un mes.' },
-      { label: 'Feedback del cliente registrado', detail: 'El Delivery Manager recoge la valoración del cliente por escrito.' },
-    ],
+    requirements: ['unsupported-sprint', 'stable-allocation', 'client-feedback'],
   },
   {
     id: 'evaluacion',
-    label: 'Evaluación',
     owner: 'engineering-manager',
-    summary: 'Revisión formal de desempeño y decisión sobre la continuidad.',
-    requirements: [
-      { label: 'Evaluación de desempeño', detail: 'El Engineering Manager evalúa al consultor a los tres meses de estar productivo.' },
-      { label: 'Feedback del equipo', detail: 'Se recoge la valoración de quienes trabajan con el consultor a diario.' },
-      { label: 'Plan de carrera acordado', detail: 'Consultor y Engineering Manager fijan el siguiente paso.' },
-    ],
+    requirements: ['performance-review', 'team-feedback', 'career-plan'],
   },
   {
     id: 'salida',
-    label: 'Salida o rotación',
     owner: 'hr',
-    summary: 'Cierre del ciclo: el consultor rota a otro equipo o sale de la cuenta.',
-    requirements: [
-      { label: 'Decisión registrada', detail: 'Queda por escrito si el consultor rota a otro equipo o sale de la cuenta.' },
-      { label: 'Traspaso documentado', detail: 'El conocimiento del consultor queda en manos del equipo antes de su último día.' },
-      { label: 'Accesos revocados', detail: 'Recursos Humanos retira los accesos al cliente en las 24 horas siguientes.' },
-    ],
+    requirements: ['decision-recorded', 'handover', 'access-revoked'],
   },
 ];
 
@@ -93,14 +77,12 @@ function buildPhase(
 ): LifecyclePhase {
   return {
     id: blueprint.id,
-    label: blueprint.label,
     owner: blueprint.owner,
-    summary: blueprint.summary,
     status,
     startedAt,
     completedAt,
-    requirements: blueprint.requirements.map((requirement) => ({
-      ...requirement,
+    requirements: blueprint.requirements.map((id) => ({
+      id,
       completedAt: status === 'completada' ? completedAt : null,
     })),
   };

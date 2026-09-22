@@ -1,4 +1,4 @@
-import { STAGES, stageLabel, type StageId } from '@/domain';
+import { STAGES, type StageId } from '@/domain';
 import type { Workspace } from './workspace';
 
 /**
@@ -10,7 +10,6 @@ import type { Workspace } from './workspace';
 
 export interface StageBlockers {
   stage: StageId;
-  label: string;
   /** Requisitos sin cumplir que introdujo esta etapa, sumando todas las solicitudes. */
   count: number;
   /** Cuántas solicitudes distintas están frenadas por algo que pidió esta etapa. */
@@ -72,7 +71,6 @@ export function buildFlowMetrics(workspace: Workspace): FlowMetrics {
     const bucket = counts.get(stage.id)!;
     return {
       stage: stage.id,
-      label: stageLabel(stage.id),
       count: bucket.count,
       requests: bucket.requests.size,
     };

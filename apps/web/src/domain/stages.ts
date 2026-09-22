@@ -4,13 +4,18 @@ export interface StageDefinition {
   id: StageId;
   /** Posicion en el flujo, 0-indexada. */
   index: number;
-  label: string;
   /** Rol responsable de la etapa: el agente que tiene la solicitud en su bandeja. */
   owner: RoleId;
-  /** Que hace el responsable mientras la solicitud esta aqui. */
-  purpose: string;
-  /** Verbo del boton que avanza la solicitud desde esta etapa. */
-  action: string;
+}
+
+/**
+ * Claves de traduccion de una etapa. El dominio no guarda texto visible:
+ * `stages.<id>.label` es el nombre, `.purpose` lo que hace el responsable
+ * mientras la solicitud esta aqui, y `.action` el verbo del boton que la
+ * entrega a la etapa siguiente.
+ */
+export function stageKey(id: StageId, part: 'label' | 'purpose' | 'action'): string {
+  return `stages.${id}.${part}`;
 }
 
 /**
@@ -22,58 +27,37 @@ export const STAGES: StageDefinition[] = [
   {
     id: 'registro',
     index: 0,
-    label: 'Registro',
     owner: 'sales',
-    purpose: 'Sales registra la necesidad del cliente y la encuadra en una práctica.',
-    action: 'Enviar a Solution Architect',
   },
   {
     id: 'perfil',
     index: 1,
-    label: 'Perfil',
     owner: 'solution-architect',
-    purpose: 'El Solution Architect traduce la necesidad a un perfil técnico concreto.',
-    action: 'Enviar a Delivery Manager',
   },
   {
     id: 'equipo',
     index: 2,
-    label: 'Equipo',
     owner: 'delivery-manager',
-    purpose: 'El Delivery Manager asigna la solicitud a un equipo y abre la posicion.',
-    action: 'Enviar a Recruiter',
   },
   {
     id: 'vacante',
     index: 3,
-    label: 'Vacante',
     owner: 'recruiter',
-    purpose: 'Recruiter publica la vacante con una descripción de puesto utilizable.',
-    action: 'Enviar a Engineering Manager',
   },
   {
     id: 'entrevista',
     index: 4,
-    label: 'Entrevista',
     owner: 'engineering-manager',
-    purpose: 'El Engineering Manager evalúa al candidato y decide.',
-    action: 'Enviar a Recursos Humanos',
   },
   {
     id: 'onboarding',
     index: 5,
-    label: 'Onboarding',
     owner: 'hr',
-    purpose: 'Recursos Humanos gestiona contrato, equipo y accesos.',
-    action: 'Activar en el equipo',
   },
   {
     id: 'activo',
     index: 6,
-    label: 'Activo',
     owner: 'consultant',
-    purpose: 'El consultor queda trabajando en el equipo.',
-    action: '',
   },
 ];
 
@@ -89,10 +73,6 @@ export function stageDef(id: StageId): StageDefinition {
 
 export function stageIndex(id: StageId): number {
   return stageDef(id).index;
-}
-
-export function stageLabel(id: StageId): string {
-  return stageDef(id).label;
 }
 
 /** La etapa siguiente, o null si la solicitud ya esta en `activo`. */

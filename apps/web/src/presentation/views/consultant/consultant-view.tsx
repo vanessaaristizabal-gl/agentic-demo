@@ -1,12 +1,13 @@
 import { ArrowRight, Check, Circle, LogOut, Repeat } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
-  agentById,
-  CONSULTANT_ROLES,
+  agentKey,
+  catalogKey,
   currentPhase,
-  labelOf,
   lifecycleProgress,
-  SENIORITIES,
+  phaseKey,
+  phaseRequirementKey,
   type Consultant,
   type LifecyclePhase,
   type Team,
@@ -39,12 +40,6 @@ import { selectConsultant } from '@/store/slices/ui-slice';
  * cuándo se cumplió. El ciclo avanza igual que la solicitud: a mano, paso a paso.
  */
 
-const STATUS_LABEL = {
-  completada: 'Completada',
-  'en-curso': 'En curso',
-  pendiente: 'Pendiente',
-} as const;
-
 function PersonRow({
   consultant,
   team,
@@ -56,6 +51,7 @@ function PersonRow({
   active: boolean;
   onSelect: () => void;
 }) {
+  const { t } = useTranslation();
   const phase = currentPhase(consultant);
   return (
     <button
@@ -73,17 +69,17 @@ function PersonRow({
       <span className="min-w-0 flex-1">
         <span className="block truncate text-sm font-medium">{consultant.name}</span>
         <span className="block truncate text-[11px] text-muted-foreground">
-          {labelOf(CONSULTANT_ROLES, consultant.role)} · {team?.name ?? 'Sin equipo'}
+          {t(catalogKey('roles', consultant.role))} · {team?.name ?? t('consultant.noTeam')}
         </span>
       </span>
       <span className="shrink-0 text-right">
         {consultant.outcome === 'en-curso' ? (
           <Badge variant="outline" className="font-normal">
-            {phase?.label ?? 'Cerrado'}
+            {phase ? t(phaseKey(phase.id, 'label')) : t('consultant.closedCycle')}
           </Badge>
         ) : (
           <Badge variant="secondary" className="font-normal">
-            {consultant.outcome === 'rotacion' ? 'Rotación' : 'Salida'}
+            {consultant.outcome === 'rotacion' ? t('consultant.rotation') : t('consultant.exit')}
           </Badge>
         )}
       </span>
@@ -92,7 +88,7 @@ function PersonRow({
 }
 
 function PhaseCard({ phase, index }: { phase: LifecyclePhase; index: number }) {
-  const owner = agentById(phase.owner);
+  const { t } = useTranslation();
   const done = phase.status === 'completada';
   const running = phase.status === 'en-curso';
 
@@ -118,22 +114,24 @@ function PhaseCard({ phase, index }: { phase: LifecyclePhase; index: number }) {
       >
         <div className="flex flex-wrap items-start justify-between gap-2">
           <div className="min-w-0">
-            <h3 className="text-sm font-medium">{phase.label}</h3>
-            <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">{phase.summary}</p>
+            <h3 className="text-sm font-medium">{t(phaseKey(phase.id, 'label'))}</h3>
+            <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
+              {t(phaseKey(phase.id, 'summary'))}
+            </p>
           </div>
           <div className="flex shrink-0 flex-wrap gap-1.5">
             <Badge variant={running ? 'default' : done ? 'success' : 'outline'} className="font-normal">
-              {STATUS_LABEL[phase.status]}
+              {t(`consultant.status.${phase.status}`)}
             </Badge>
             <Badge variant="outline" className="font-normal text-muted-foreground">
-              {owner.name}
+              {t(agentKey(phase.owner, 'name'))}
             </Badge>
           </div>
         </div>
 
         <dl className="mt-3 space-y-2 border-t pt-3">
           {phase.requirements.map((requirement) => (
-            <div key={requirement.label} className="flex items-start gap-2.5">
+            <div key={requirement.id} className="flex items-start gap-2.5">
               {requirement.completedAt ? (
                 <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-600" />
               ) : (
@@ -142,14 +140,16 @@ function PhaseCard({ phase, index }: { phase: LifecyclePhase; index: number }) {
               <div className="min-w-0 flex-1">
                 <dt className="flex flex-wrap items-baseline justify-between gap-2 text-sm">
                   <span className={cn(!requirement.completedAt && 'text-muted-foreground')}>
-                    {requirement.label}
+                    {t(phaseRequirementKey(phase.id, requirement.id, 'label'))}
                   </span>
                   <span className="text-[11px] tabular-nums text-muted-foreground">
-                    {requirement.completedAt ? formatDate(requirement.completedAt) : 'Sin cumplir'}
+                    {requirement.completedAt
+                      ? formatDate(requirement.completedAt)
+                      : t('consultant.notMet')}
                   </span>
                 </dt>
                 <dd className="text-xs leading-relaxed text-muted-foreground">
-                  {requirement.detail}
+                  {t(phaseRequirementKey(phase.id, requirement.id, 'detail'))}
                 </dd>
               </div>
             </div>
@@ -158,8 +158,10 @@ function PhaseCard({ phase, index }: { phase: LifecyclePhase; index: number }) {
 
         {phase.startedAt ? (
           <p className="mt-3 border-t pt-2 text-[11px] text-muted-foreground">
-            Empezó el {formatDate(phase.startedAt)}
-            {phase.completedAt ? ` · se cerró el ${formatDate(phase.completedAt)}` : null}
+            {t('consultant.startedOn', { date: formatDate(phase.startedAt) })}
+            {phase.completedAt
+              ? t('consultant.closedOn', { date: formatDate(phase.completedAt) })
+              : null}
           </p>
         ) : null}
       </div>
@@ -171,6 +173,7 @@ function CloseCycleDialog({ consultant }: { consultant: Consultant }) {
   const [open, setOpen] = useState(false);
   const [outcome, setOutcome] = useState<'rotacion' | 'salida'>('rotacion');
   const [note, setNote] = useState('');
+  const { t } = useTranslation();
   const close = useCloseLifecycle();
 
   const start = (next: 'rotacion' | 'salida') => {
@@ -184,11 +187,11 @@ function CloseCycleDialog({ consultant }: { consultant: Consultant }) {
       <div className="flex flex-wrap gap-2">
         <Button variant="outline" size="sm" onClick={() => start('rotacion')}>
           <Repeat className="h-3.5 w-3.5" />
-          Cerrar con rotación
+          {t('consultant.closeWithRotation')}
         </Button>
         <Button variant="outline" size="sm" onClick={() => start('salida')}>
           <LogOut className="h-3.5 w-3.5" />
-          Cerrar con salida
+          {t('consultant.closeWithExit')}
         </Button>
       </div>
 
@@ -196,11 +199,12 @@ function CloseCycleDialog({ consultant }: { consultant: Consultant }) {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {outcome === 'rotacion' ? 'Rotar a otro equipo' : 'Salida de la cuenta'}
+              {outcome === 'rotacion'
+                ? t('consultant.closeDialogRotation')
+                : t('consultant.closeDialogExit')}
             </DialogTitle>
             <DialogDescription>
-              Queda registrado en el ciclo de {consultant.name}. Recursos Humanos cierra la fase de
-              salida con esta nota.
+              {t('consultant.closeDialogDescription', { name: consultant.name })}
             </DialogDescription>
           </DialogHeader>
 
@@ -210,14 +214,14 @@ function CloseCycleDialog({ consultant }: { consultant: Consultant }) {
             onChange={(event) => setNote(event.target.value)}
             placeholder={
               outcome === 'rotacion'
-                ? 'A qué equipo rota y desde cuándo'
-                : 'Motivo de la salida y fecha del último día'
+                ? t('consultant.closeDialogPlaceholderRotation')
+                : t('consultant.closeDialogPlaceholderExit')
             }
           />
 
           <DialogFooter>
             <Button variant="outline" onClick={() => setOpen(false)}>
-              Cancelar
+              {t('common.cancel')}
             </Button>
             <Button
               onClick={() =>
@@ -228,7 +232,7 @@ function CloseCycleDialog({ consultant }: { consultant: Consultant }) {
               }
               disabled={close.isPending}
             >
-              Cerrar el ciclo
+              {t('consultant.closeCycle')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -239,6 +243,7 @@ function CloseCycleDialog({ consultant }: { consultant: Consultant }) {
 
 export function ConsultantView() {
   const { data, isLoading } = useWorkspace();
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const selectedId = useAppSelector((state) => state.ui.selectedConsultantId);
   const advance = useAdvanceLifecycle();
@@ -251,16 +256,15 @@ export function ConsultantView() {
   }, [data, selectedId, dispatch]);
 
   if (isLoading || !data) {
-    return <p className="py-16 text-center text-sm text-muted-foreground">Cargando las personas…</p>;
+    return (
+      <p className="py-16 text-center text-sm text-muted-foreground">{t('consultant.loading')}</p>
+    );
   }
 
   if (data.consultants.length === 0) {
     return (
       <div className="rounded-lg border border-dashed p-10 text-center">
-        <p className="text-sm text-muted-foreground">
-          Todavía no hay ningún consultor activo. Lleva una solicitud hasta la etapa <em>activo</em>{' '}
-          desde Orquestación y aparecerá aquí.
-        </p>
+        <p className="text-sm text-muted-foreground">{t('consultant.empty')}</p>
       </div>
     );
   }
@@ -276,18 +280,19 @@ export function ConsultantView() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-semibold tracking-tight">Ciclo del consultor</h1>
+        <h1 className="text-xl font-semibold tracking-tight">{t('consultant.title')}</h1>
         <p className="mt-1 max-w-3xl text-sm leading-relaxed text-muted-foreground">
-          El recorrido completo de una persona después de la solicitud: onboarding, ramp-up,
-          productivo, evaluación y salida o rotación. Cada paso dice qué exigió y cuándo se cumplió.
+          {t('consultant.subtitle')}
         </p>
       </div>
 
       <div className="grid gap-5 lg:grid-cols-[280px_minmax(0,1fr)]">
         <aside className="overflow-hidden rounded-lg border bg-card lg:sticky lg:top-20 lg:self-start">
           <header className="border-b px-4 py-3">
-            <h2 className="text-sm font-medium">Personas</h2>
-            <p className="text-xs text-muted-foreground">{data.consultants.length} en plantilla</p>
+            <h2 className="text-sm font-medium">{t('consultant.people')}</h2>
+            <p className="text-xs text-muted-foreground">
+              {t('consultant.headcount', { count: data.consultants.length })}
+            </p>
           </header>
           <div className="max-h-[420px] overflow-y-auto scrollbar-thin lg:max-h-[70vh]">
             {data.consultants.map((candidate) => (
@@ -312,18 +317,21 @@ export function ConsultantView() {
                 <div className="min-w-0">
                   <h2 className="truncate font-medium">{consultant.name}</h2>
                   <p className="truncate text-xs text-muted-foreground">
-                    {labelOf(CONSULTANT_ROLES, consultant.role)} ·{' '}
-                    {labelOf(SENIORITIES, consultant.seniority)} · {team?.name ?? 'Sin equipo'}
+                    {t(catalogKey('roles', consultant.role))} ·{' '}
+                    {t(catalogKey('seniorities', consultant.seniority))} ·{' '}
+                    {team?.name ?? t('consultant.noTeam')}
                   </p>
                 </div>
               </div>
               <div className="text-right">
                 <p className="text-xs text-muted-foreground">
-                  En la empresa desde {formatDate(consultant.joinedAt)}
+                  {t('consultant.since', { date: formatDate(consultant.joinedAt) })}
                 </p>
                 {closed ? (
                   <Badge variant="secondary" className="mt-1 font-normal">
-                    {consultant.outcome === 'rotacion' ? 'Rota de equipo' : 'Salió de la cuenta'}
+                    {consultant.outcome === 'rotacion'
+                      ? t('consultant.rotated')
+                      : t('consultant.left')}
                   </Badge>
                 ) : null}
               </div>
@@ -332,7 +340,11 @@ export function ConsultantView() {
             <div className="mt-4 space-y-1.5">
               <div className="flex items-baseline justify-between text-xs">
                 <span className="text-muted-foreground">
-                  {closed ? 'Ciclo cerrado' : `Fase actual: ${phase?.label ?? '—'}`}
+                  {closed
+                    ? t('consultant.closedCycle')
+                    : t('consultant.currentPhase', {
+                        phase: phase ? t(phaseKey(phase.id, 'label')) : t('common.none'),
+                      })}
                 </span>
                 <span className="tabular-nums">{progress}%</span>
               </div>
@@ -352,7 +364,9 @@ export function ConsultantView() {
                   onClick={() => advance.mutate(consultant.id)}
                   disabled={advance.isPending || !phase}
                 >
-                  Cerrar «{phase?.label}» y pasar a la siguiente
+                  {t('consultant.advancePhase', {
+                    phase: phase ? t(phaseKey(phase.id, 'label')) : '',
+                  })}
                   <ArrowRight />
                 </Button>
                 {atFinalPhase ? <CloseCycleDialog consultant={consultant} /> : null}

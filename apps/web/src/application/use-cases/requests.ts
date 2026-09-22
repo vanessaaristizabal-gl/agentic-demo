@@ -10,7 +10,7 @@ import {
   type TechProfile,
   type Vacancy,
 } from '@/domain';
-import type { BlockingReport } from '@/domain';
+import type { BlockingReport, Message } from '@/domain';
 import type { Container } from '../ports';
 
 /** Secciones editables de una solicitud, una por etapa. */
@@ -47,7 +47,10 @@ export async function createNewRequest(
       toAgent: 'sales',
       fromStage: null,
       toStage: 'registro',
-      summary: `Sales registra ${request.code} para ${request.intake.clientName || 'un cliente sin nombre'}.`,
+      summary: {
+        key: 'events.created',
+        params: { code: request.code, client: request.intake.clientName },
+      },
       checks: [],
     },
   ]);
@@ -84,7 +87,7 @@ export async function updateRequest(
 }
 
 export type AdvanceOutcome =
-  | { ok: true; message: string; request: StaffingRequest }
+  | { ok: true; message: Message; request: StaffingRequest }
   | { ok: false; report: BlockingReport };
 
 /**
@@ -225,13 +228,11 @@ export async function draftVacancyDescription(
       toAgent: agentForStage('vacante').id,
       fromStage: 'vacante',
       toStage: 'vacante',
-      summary:
-        outcome.source === 'anthropic'
-          ? `Recruiter genera la descripción de ${request.code} con ${outcome.model}.`
-          : outcome.source === 'gemini-nano'
-            ? `Recruiter genera la descripción de ${request.code} con el modelo local del navegador.`
-            : `Recruiter compone la descripción de ${request.code} con el texto de reserva.`,
-      checks: outcome.reason ? [outcome.reason] : [],
+      summary: {
+        key: `events.draft.${outcome.source}`,
+        params: { code: request.code, model: outcome.model ?? '' },
+      },
+      checks: [],
     },
   ]);
 

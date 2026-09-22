@@ -2,132 +2,38 @@ import { STAGES } from './stages';
 import type { RoleId, StageId } from './types';
 
 /**
- * Cada rol de la consultora se modela como un agente del sistema:
- * tiene una bandeja, un conjunto de capacidades declaradas, una etapa
- * de la que es responsable y un unico destinatario al que entrega el trabajo.
+ * Cada rol de la consultora se modela como un agente del sistema: tiene una
+ * bandeja, una etapa de la que es responsable y un unico destinatario al que
+ * entrega el trabajo.
  *
- * El orquestador (orchestrator.ts) es quien decide que agente esta activo
- * para cada solicitud y registra cada entrega en la traza.
+ * Como en el resto del dominio, aqui no hay texto visible. El nombre, el cargo
+ * y las capacidades se traducen en la presentacion a partir del identificador.
  */
 export interface AgentDefinition {
   id: RoleId;
-  name: string;
-  /** Nombre del rol tal y como lo usa la empresa. */
-  title: string;
   /** Etapa de la que es responsable. */
   owns: StageId;
   /** A quien entrega la solicitud cuando termina. */
   handoffTo: RoleId | null;
-  /** Que sabe hacer este agente. Se muestra en la ficha del rol. */
-  capabilities: string[];
   /**
-   * Como decide. Todo el sistema es determinista salvo el Recruiter,
-   * que puede apoyarse en un modelo de lenguaje para redactar la vacante.
+   * Como decide. Todo el sistema es determinista salvo el Recruiter, que puede
+   * apoyarse en un modelo de lenguaje para redactar la vacante.
    */
   autonomy: 'determinista' | 'asistido-por-modelo';
-  /** Dos letras para el avatar. */
+  /** Dos letras para el avatar. No se traducen: identifican al agente. */
   initials: string;
+  /** Cuantas capacidades declara, para recorrerlas al traducirlas. */
+  capabilityCount: number;
 }
 
 export const AGENTS: AgentDefinition[] = [
-  {
-    id: 'sales',
-    name: 'Sales',
-    title: 'Ejecutivo comercial',
-    owns: 'registro',
-    handoffTo: 'solution-architect',
-    capabilities: [
-      'Registrar la necesidad del cliente',
-      'Encuadrar la solicitud en una práctica',
-      'Asignar centro de costo y modelo de facturacion',
-    ],
-    autonomy: 'determinista',
-    initials: 'SA',
-  },
-  {
-    id: 'solution-architect',
-    name: 'Solution Architect',
-    title: 'Arquitecto de soluciones',
-    owns: 'perfil',
-    handoffTo: 'delivery-manager',
-    capabilities: [
-      'Definir el perfil técnico',
-      'Elegir stack dentro de la practica',
-      'Fijar seniority, habilidades y nivel de inglés',
-    ],
-    autonomy: 'determinista',
-    initials: 'SC',
-  },
-  {
-    id: 'delivery-manager',
-    name: 'Delivery Manager',
-    title: 'Responsable de entrega',
-    owns: 'equipo',
-    handoffTo: 'recruiter',
-    capabilities: [
-      'Asignar la solicitud a un equipo',
-      'Abrir la posicion en el equipo',
-      'Fijar la dedicación desde la vista Equipos',
-    ],
-    autonomy: 'determinista',
-    initials: 'DM',
-  },
-  {
-    id: 'recruiter',
-    name: 'Recruiter',
-    title: 'Reclutador técnico',
-    owns: 'vacante',
-    handoffTo: 'engineering-manager',
-    capabilities: [
-      'Publicar la vacante',
-      'Redactar la descripción del puesto con ayuda de un modelo',
-      'Elegir canales y banda salarial',
-    ],
-    autonomy: 'asistido-por-modelo',
-    initials: 'RC',
-  },
-  {
-    id: 'engineering-manager',
-    name: 'Engineering Manager',
-    title: 'Responsable de ingeniería',
-    owns: 'entrevista',
-    handoffTo: 'hr',
-    capabilities: [
-      'Evaluar técnicamente al candidato',
-      'Puntuar y dejar feedback escrito',
-      'Decidir contratación',
-    ],
-    autonomy: 'determinista',
-    initials: 'EM',
-  },
-  {
-    id: 'hr',
-    name: 'Recursos Humanos',
-    title: 'Gestión de personas',
-    owns: 'onboarding',
-    handoffTo: 'consultant',
-    capabilities: [
-      'Formalizar el contrato',
-      'Entregar equipo de trabajo',
-      'Gestionar accesos y asignar buddy',
-    ],
-    autonomy: 'determinista',
-    initials: 'RH',
-  },
-  {
-    id: 'consultant',
-    name: 'Consultor',
-    title: 'Desarrollador, QA o Tech Manager',
-    owns: 'activo',
-    handoffTo: null,
-    capabilities: [
-      'Incorporarse al equipo',
-      'Recorrer ramp-up hasta ser productivo',
-      'Ser evaluado y, en su caso, rotar',
-    ],
-    autonomy: 'determinista',
-    initials: 'CO',
-  },
+  { id: 'sales', owns: 'registro', handoffTo: 'solution-architect', autonomy: 'determinista', initials: 'SA', capabilityCount: 3 },
+  { id: 'solution-architect', owns: 'perfil', handoffTo: 'delivery-manager', autonomy: 'determinista', initials: 'SC', capabilityCount: 3 },
+  { id: 'delivery-manager', owns: 'equipo', handoffTo: 'recruiter', autonomy: 'determinista', initials: 'DM', capabilityCount: 3 },
+  { id: 'recruiter', owns: 'vacante', handoffTo: 'engineering-manager', autonomy: 'asistido-por-modelo', initials: 'RC', capabilityCount: 3 },
+  { id: 'engineering-manager', owns: 'entrevista', handoffTo: 'hr', autonomy: 'determinista', initials: 'EM', capabilityCount: 3 },
+  { id: 'hr', owns: 'onboarding', handoffTo: 'consultant', autonomy: 'determinista', initials: 'RH', capabilityCount: 3 },
+  { id: 'consultant', owns: 'activo', handoffTo: null, autonomy: 'determinista', initials: 'CO', capabilityCount: 3 },
 ];
 
 const AGENT_BY_ID = new Map<RoleId, AgentDefinition>(AGENTS.map((agent) => [agent.id, agent]));
@@ -147,6 +53,11 @@ export function agentForStage(stage: StageId): AgentDefinition {
   return found;
 }
 
-export function agentName(id: RoleId): string {
-  return agentById(id).name;
+/** `agents.<id>.name`, `.title` o `.capabilities.<n>`. */
+export function agentKey(id: RoleId, part: 'name' | 'title'): string {
+  return `agents.${id}.${part}`;
+}
+
+export function agentCapabilityKey(id: RoleId, index: number): string {
+  return `agents.${id}.capabilities.${index}`;
 }

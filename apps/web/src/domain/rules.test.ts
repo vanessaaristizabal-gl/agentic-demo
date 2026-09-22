@@ -51,7 +51,7 @@ function completeRequest(): StaffingRequest {
     profile: {
       seniority: 'senior',
       consultantRole: 'desarrollador',
-      skills: ['CI/CD', 'Testing automatizado', 'Performance'],
+      skills: ['ci-cd', 'automated-testing', 'performance'],
       englishLevel: 'B2',
       notes: '',
     },
@@ -77,7 +77,7 @@ function completeRequest(): StaffingRequest {
     onboarding: {
       contractType: 'indefinido',
       equipmentDelivered: true,
-      accesses: ['Correo corporativo', 'Repositorio del cliente', 'VPN del cliente'],
+      accesses: ['corporate-email', 'client-repository', 'client-vpn'],
       buddyName: 'Marcela Rueda',
       startDate: '2026-03-15',
     },
@@ -100,8 +100,11 @@ describe('formulario de la solicitud', () => {
     const request = createRequest({ id: 'dem-1', code: 'SOL-2026-002', now: '2026-02-01T00:00:00.000Z' });
     const result = inspect(ctx(request, []));
     expect(result.missing).toHaveLength(3);
+    // Un solo informe que nombra las tres cosas de una vez, cada una con la
+    // clave de su explicación y la etapa que la pide.
     expect(result.report?.items).toHaveLength(3);
-    expect(result.report?.text.split('\n').length).toBeGreaterThan(3);
+    expect(result.report?.headline.params?.count).toBe(3);
+    expect(result.report?.items.every((item) => item.message.key.length > 0)).toBe(true);
   });
 });
 
@@ -133,7 +136,9 @@ describe('cierre de la última etapa', () => {
     const result = inspect(ctx(request));
     expect(result.canAdvance).toBe(false);
     expect(result.missing.map((check) => check.requirement.id)).toEqual(['team.allocation']);
-    expect(result.report?.aside).toContain('vista Equipos');
+    // Lo que falta se resuelve en otra pantalla, y el informe lo dice.
+    expect(result.report?.aside?.key).toBe('blocking.aside.elsewhere');
+    expect(result.missing[0].requirement.resolveIn).toBe('equipos');
   });
 
   it('se bloquea si la dedicación supera la capacidad del equipo', () => {
@@ -144,7 +149,7 @@ describe('cierre de la última etapa', () => {
     ];
     const result = inspect(ctx(request, positions));
     expect(result.missing.map((check) => check.requirement.id)).toEqual(['team.capacity']);
-    expect(result.report?.items[0].sentence).toContain('350');
+    expect(result.report?.items[0].message.params).toMatchObject({ used: 350, capacity: 300, excess: 50 });
   });
 
   it('activa al consultor cuando todo está cumplido', () => {

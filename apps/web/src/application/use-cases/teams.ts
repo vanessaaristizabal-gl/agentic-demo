@@ -31,8 +31,8 @@ export async function setPositionAllocation(
           toStage: request.stage,
           summary:
             allocationPct === null
-              ? `Delivery Manager retira la dedicación de la posición de ${request.code}.`
-              : `Delivery Manager fija la dedicación de ${request.code} en ${allocationPct} puntos.`,
+              ? { key: 'events.allocationCleared', params: { code: request.code } }
+              : { key: 'events.allocationSet', params: { code: request.code, pct: allocationPct } },
           checks: [],
         },
       ]);
@@ -60,7 +60,7 @@ export async function releasePosition(container: Container, positionId: string):
           toAgent: null,
           fromStage: request.stage,
           toStage: null,
-          summary: `Se liberó la posición de ${request.code}: la solicitud vuelve a necesitar equipo.`,
+          summary: { key: 'events.positionReleased', params: { code: request.code } },
           checks: [],
         },
       ]);

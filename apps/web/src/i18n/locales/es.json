@@ -1,0 +1,714 @@
+{
+  "app": {
+    "name": "Consultora",
+    "tagline": "Simulador de operaciones",
+    "title": "Consultora · Simulador de operaciones"
+  },
+  "nav": {
+    "requests": "Solicitudes",
+    "consultant": "Ciclo del consultor",
+    "teams": "Equipos",
+    "open": "Abrir menú",
+    "language": "Idioma"
+  },
+  "common": {
+    "cancel": "Cancelar",
+    "close": "Cerrar",
+    "loading": "Cargando…",
+    "none": "—",
+    "reset": "Reiniciar datos",
+    "resetHint": "Reiniciar datos: vuelve a dejar una solicitud parada en cada etapa.",
+    "saving": "Guardando…",
+    "of": "de"
+  },
+  "model": {
+    "serverDown": "Servidor apagado",
+    "configured": "Modelo configurado",
+    "noKey": "Sin clave: texto de reserva",
+    "serverDownWithLocal": "La API no responde. «Redactar con IA» probará el modelo local del navegador y, si no está, usará el texto de reserva.",
+    "serverDownDetail": "La API no responde. «Redactar con IA» usará el texto de reserva y la aplicación seguirá funcionando igual.",
+    "configuredDetail": "El servidor tiene ANTHROPIC_API_KEY y usará {{model}} para redactar la vacante.",
+    "noKeyDetail": "El servidor no tiene ANTHROPIC_API_KEY. «Redactar con IA» devolverá una descripción compuesta con los datos del perfil."
+  },
+  "stages": {
+    "registro": {
+      "label": "Registro",
+      "purpose": "Sales registra la necesidad del cliente y la encuadra en una práctica.",
+      "action": "Enviar a Solution Architect"
+    },
+    "perfil": {
+      "label": "Perfil",
+      "purpose": "El Solution Architect traduce la necesidad a un perfil técnico concreto.",
+      "action": "Enviar a Delivery Manager"
+    },
+    "equipo": {
+      "label": "Equipo",
+      "purpose": "El Delivery Manager asigna la solicitud a un equipo y abre la posición.",
+      "action": "Enviar a Recruiter"
+    },
+    "vacante": {
+      "label": "Vacante",
+      "purpose": "Recruiter publica la vacante con una descripción de puesto utilizable.",
+      "action": "Enviar a Engineering Manager"
+    },
+    "entrevista": {
+      "label": "Entrevista",
+      "purpose": "El Engineering Manager evalúa al candidato y decide.",
+      "action": "Enviar a Recursos Humanos"
+    },
+    "onboarding": {
+      "label": "Onboarding",
+      "purpose": "Recursos Humanos gestiona contrato, equipo y accesos.",
+      "action": "Activar en el equipo"
+    },
+    "activo": {
+      "label": "Activo",
+      "purpose": "El consultor queda trabajando en el equipo.",
+      "action": ""
+    }
+  },
+  "agents": {
+    "sales": {
+      "name": "Sales",
+      "title": "Ejecutivo comercial",
+      "capabilities": [
+        "Registrar la necesidad del cliente",
+        "Encuadrar la solicitud en una práctica",
+        "Asignar centro de costo y modelo de facturación"
+      ]
+    },
+    "solution-architect": {
+      "name": "Solution Architect",
+      "title": "Arquitecto de soluciones",
+      "capabilities": [
+        "Definir el perfil técnico",
+        "Elegir stack dentro de la práctica",
+        "Fijar seniority, habilidades y nivel de inglés"
+      ]
+    },
+    "delivery-manager": {
+      "name": "Delivery Manager",
+      "title": "Responsable de entrega",
+      "capabilities": [
+        "Asignar la solicitud a un equipo",
+        "Abrir la posición en el equipo",
+        "Fijar la dedicación desde la vista Equipos"
+      ]
+    },
+    "recruiter": {
+      "name": "Recruiter",
+      "title": "Reclutador técnico",
+      "capabilities": [
+        "Publicar la vacante",
+        "Redactar la descripción del puesto con ayuda de un modelo",
+        "Elegir canales y banda salarial"
+      ]
+    },
+    "engineering-manager": {
+      "name": "Engineering Manager",
+      "title": "Responsable de ingeniería",
+      "capabilities": [
+        "Evaluar técnicamente al candidato",
+        "Puntuar y dejar feedback escrito",
+        "Decidir contratación"
+      ]
+    },
+    "hr": {
+      "name": "Recursos Humanos",
+      "title": "Gestión de personas",
+      "capabilities": [
+        "Formalizar el contrato",
+        "Entregar equipo de trabajo",
+        "Gestionar accesos y asignar buddy"
+      ]
+    },
+    "consultant": {
+      "name": "Consultor",
+      "title": "Desarrollador, QA o Tech Manager",
+      "capabilities": [
+        "Incorporarse al equipo",
+        "Recorrer ramp-up hasta ser productivo",
+        "Ser evaluado y, en su caso, rotar"
+      ]
+    }
+  },
+  "catalog": {
+    "practices": {
+      "cloud-data": "Cloud & Data",
+      "digital-products": "Digital Products",
+      "quality-engineering": "Quality Engineering",
+      "ai-automation": "AI & Automation"
+    },
+    "seniorities": {
+      "junior": "Junior",
+      "semi-senior": "Semi Senior",
+      "senior": "Senior",
+      "staff": "Staff"
+    },
+    "roles": {
+      "desarrollador": "Desarrollador",
+      "qa": "QA",
+      "tech-manager": "Tech Manager"
+    },
+    "english": {
+      "A2": "A2 — básico",
+      "B1": "B1 — intermedio",
+      "B2": "B2 — intermedio alto",
+      "C1": "C1 — avanzado"
+    },
+    "billing": {
+      "time-and-materials": "Time & Materials",
+      "precio-fijo": "Precio fijo",
+      "capacity": "Capacity / célula dedicada"
+    },
+    "priorities": {
+      "baja": "Baja",
+      "media": "Media",
+      "alta": "Alta",
+      "critica": "Crítica"
+    },
+    "contracts": {
+      "indefinido": "Término indefinido",
+      "obra-labor": "Obra o labor",
+      "contractor": "Contractor"
+    },
+    "channels": {
+      "linkedin": "LinkedIn",
+      "referrals": "Referidos internos",
+      "own-job-board": "Portal de empleo propio",
+      "tech-communities": "Comunidades técnicas",
+      "internal-database": "Base de datos interna"
+    },
+    "accesses": {
+      "corporate-email": "Correo corporativo",
+      "client-repository": "Repositorio del cliente",
+      "client-vpn": "VPN del cliente",
+      "jira-confluence": "Jira y Confluence",
+      "ci-cd": "Herramientas de CI/CD"
+    },
+    "skills": {
+      "hexagonal-architecture": "Arquitectura hexagonal",
+      "automated-testing": "Testing automatizado",
+      "ci-cd": "CI/CD",
+      "observability": "Observabilidad",
+      "data-modelling": "Modelado de datos",
+      "application-security": "Seguridad de aplicaciones",
+      "client-communication": "Comunicación con cliente",
+      "mentoring": "Mentoring",
+      "performance": "Performance",
+      "accessibility": "Accesibilidad"
+    },
+    "salaryBands": {
+      "banda-1": "Banda 1 — hasta 4.500 USD/mes",
+      "banda-2": "Banda 2 — 4.500 a 6.500 USD/mes",
+      "banda-3": "Banda 3 — 6.500 a 8.500 USD/mes",
+      "banda-4": "Banda 4 — más de 8.500 USD/mes"
+    },
+    "decisions": {
+      "pendiente": "Pendiente",
+      "segunda-ronda": "Segunda ronda",
+      "contratar": "Contratar",
+      "descartar": "Descartar"
+    }
+  },
+  "requirements": {
+    "intake": {
+      "client": {
+        "label": "Cliente",
+        "explain": "La solicitud todavía no tiene cliente. Escribe el nombre del cliente en el campo «Cliente» del formulario de la solicitud."
+      },
+      "practice": {
+        "label": "Práctica",
+        "explain": "Falta elegir la práctica en el formulario de la solicitud. Mientras no haya práctica, el campo «Stack tecnológico» permanece vacío y bloqueado, porque sus opciones dependen de ella."
+      },
+      "cost-center": {
+        "label": "Centro de costo",
+        "explain": "El centro de costo está vacío. Es obligatorio para registrar la solicitud, aunque el formulario no lo marque como tal: sin él, Finanzas no puede imputar las horas del consultor."
+      },
+      "stack": {
+        "label": "Stack tecnológico",
+        "explain": {
+          "with-practice": "Falta el stack tecnológico. Lo eliges en el formulario de la solicitud, y solo se ofrecen los stacks de la práctica ya seleccionada.",
+          "without-practice": "Falta el stack tecnológico, pero no se puede elegir mientras la solicitud no tenga práctica: las opciones de stack dependen de la práctica."
+        }
+      }
+    },
+    "profile": {
+      "seniority": {
+        "label": "Seniority",
+        "explain": "El perfil técnico no tiene seniority. Defínelo en el panel del Solution Architect; de él dependen la banda salarial y la posición que se abrirá en el equipo."
+      },
+      "role": {
+        "label": "Rol del consultor",
+        "explain": "Falta decir si la solicitud pide un desarrollador, un QA o un tech manager. Elige el rol en el panel del Solution Architect."
+      },
+      "skills": {
+        "label": "Habilidades (mínimo 3)",
+        "explain_one": "El perfil tiene una habilidad marcada y el mínimo para publicar una vacante es 3. Añade las que falten en el panel del Solution Architect.",
+        "explain_other": "El perfil tiene {{count}} habilidades marcadas y el mínimo para publicar una vacante es 3. Añade las que falten en el panel del Solution Architect."
+      },
+      "english": {
+        "label": "Nivel de inglés",
+        "explain": "Falta el nivel de inglés exigido al consultor. Es obligatorio en el perfil técnico porque condiciona qué candidatos puede presentar Recruiter."
+      }
+    },
+    "assignment": {
+      "team": {
+        "label": "Equipo asignado",
+        "explain": {
+          "none": "La solicitud no está asignada a ningún equipo. Elige el equipo en el panel del Delivery Manager: al hacerlo se abre la posición correspondiente.",
+          "missing-team": "El equipo que tenía asignado la solicitud ya no existe. Vuelve a asignarla desde el panel del Delivery Manager.",
+          "released": "La solicitud dice estar en {{team}}, pero ya no hay una posición abierta para ella en ese equipo: se liberó desde la vista Equipos. Vuelve a asignarla desde el panel del Delivery Manager."
+        }
+      },
+      "join-date": {
+        "label": "Fecha de incorporación al equipo",
+        "explain": "Falta la fecha de incorporación al equipo. El Delivery Manager la fija en su panel y es la que Recursos Humanos usa después para el contrato."
+      },
+      "referent": {
+        "label": "Referente técnico",
+        "explain": "Falta el referente técnico dentro del equipo. Es la persona que acompaña al consultor durante el ramp-up y se indica en el panel del Delivery Manager."
+      }
+    },
+    "vacancy": {
+      "title": {
+        "label": "Título de la vacante",
+        "explain": "La vacante no tiene título. Escríbelo en el panel del Recruiter: es lo que ve el candidato en el anuncio."
+      },
+      "description": {
+        "label": "Descripción del puesto (mínimo 120 caracteres)",
+        "explain": {
+          "empty": "La vacante no tiene descripción del puesto. Puedes escribirla a mano o pulsar «Redactar con IA» para generarla a partir del perfil técnico ya definido.",
+          "short": "La descripción del puesto tiene {{count}} caracteres y no se publica con menos de 120. Amplíala a mano o vuelve a pulsar «Redactar con IA»."
+        }
+      },
+      "channels": {
+        "label": "Canales de publicación",
+        "explain": "La vacante no está publicada en ningún canal. Marca al menos uno en el panel del Recruiter."
+      },
+      "salary-band": {
+        "label": "Banda salarial",
+        "explain": "Falta la banda salarial de la vacante. Sin ella, el Engineering Manager no puede cerrar una oferta después de la entrevista."
+      }
+    },
+    "interview": {
+      "candidate": {
+        "label": "Candidato evaluado",
+        "explain": "No hay ningún candidato registrado en la entrevista. Escribe su nombre en el panel del Engineering Manager: será la persona que aparezca después en el equipo."
+      },
+      "score": {
+        "label": "Puntuación técnica de 7 o más",
+        "explain": {
+          "none": "La entrevista no tiene puntuación técnica. Puntúa al candidato de 0 a 10 en el panel del Engineering Manager.",
+          "low": "El candidato tiene una puntuación técnica de {{score}} sobre 10 y el mínimo para contratar es 7. Revisa la evaluación o descarta al candidato y busca otro."
+        }
+      },
+      "decision": {
+        "label": "Decisión de contratación",
+        "explain": {
+          "pending": "La decisión de la entrevista sigue en «pendiente». Cámbiala a «contratar» en el panel del Engineering Manager para poder continuar.",
+          "second-round": "La entrevista está marcada como «segunda ronda». Mientras la decisión no sea «contratar», Recursos Humanos no puede abrir el onboarding.",
+          "rejected": "El candidato está descartado. Registra otro candidato y vuelve a evaluarlo, o cambia la decisión a «contratar»."
+        }
+      },
+      "feedback": {
+        "label": "Feedback escrito (mínimo 40 caracteres)",
+        "explain": {
+          "empty": "La entrevista no tiene feedback escrito. Es obligatorio dejar constancia de la evaluación antes de pasar el caso a Recursos Humanos.",
+          "short": "El feedback de la entrevista tiene {{count}} caracteres y se piden al menos 40. Explica en qué se basó la decisión."
+        }
+      }
+    },
+    "onboarding": {
+      "contract": {
+        "label": "Tipo de contrato",
+        "explain": "Falta el tipo de contrato. Recursos Humanos lo elige en su panel antes de dar de alta al consultor."
+      },
+      "equipment": {
+        "label": "Equipo de trabajo entregado",
+        "explain": "El equipo de trabajo todavía no consta como entregado. Márcalo en el panel de Recursos Humanos cuando el portátil esté en manos del consultor."
+      },
+      "accesses": {
+        "label": "Accesos concedidos (mínimo 3)",
+        "explain_one": "El consultor tiene un acceso concedido y no puede empezar con menos de 3. Complétalos en el panel de Recursos Humanos.",
+        "explain_other": "El consultor tiene {{count}} accesos concedidos y no puede empezar con menos de 3. Complétalos en el panel de Recursos Humanos."
+      },
+      "buddy": {
+        "label": "Buddy asignado",
+        "explain": "Nadie figura como buddy del consultor. Asigna uno en el panel de Recursos Humanos: es quien lo acompaña las dos primeras semanas."
+      }
+    },
+    "team": {
+      "allocation": {
+        "label": "Dedicación fijada en el equipo",
+        "explain": {
+          "no-position": "No hay ninguna posición abierta para esta solicitud, así que no hay dedicación que fijar. Vuelve a asignar la solicitud a un equipo y después fija la dedicación en la vista Equipos.",
+          "no-allocation": "La posición de esta solicitud en {{team}} no tiene dedicación asignada. La dedicación no se fija aquí: ve a la vista Equipos, busca la posición abierta y asígnale un porcentaje mayor que cero."
+        }
+      },
+      "capacity": {
+        "label": "Capacidad del equipo respetada",
+        "explain": {
+          "no-team": "No se puede comprobar la capacidad porque la solicitud no tiene un equipo válido asignado.",
+          "over": "{{team}} quedaría con {{used}} puntos de dedicación comprometidos sobre una capacidad de {{capacity}}, es decir {{excess}} por encima. Baja la dedicación de alguna posición del equipo en la vista Equipos antes de activar al consultor."
+        }
+      }
+    }
+  },
+  "blocking": {
+    "headline_one": "La solicitud {{code}} no puede pasar a la etapa $t(stages.{{stage}}.label): falta un requisito por cumplir.",
+    "headline_other": "La solicitud {{code}} no puede pasar a la etapa $t(stages.{{stage}}.label): quedan {{count}} requisitos sin cumplir.",
+    "intakeHeadline_one": "No se puede registrar la solicitud: falta un dato obligatorio.",
+    "intakeHeadline_other": "No se puede registrar la solicitud: faltan {{count}} datos obligatorios.",
+    "alreadyFinal": "La solicitud {{code}} ya está en la etapa $t(stages.{{stage}}.label), que es la última del flujo.",
+    "aside": {
+      "elsewhere_one": "Eso no se resuelve en esta pantalla: la dedicación de la posición se fija en la vista Equipos.",
+      "elsewhere_other": "{{count}} de ellos no se resuelven en esta pantalla, sino en la vista Equipos.",
+      "inherited_one": "Viene de una etapa anterior: los requisitos no se cierran al avanzar, se siguen exigiendo hasta el final.",
+      "inherited_other": "{{count}} vienen de etapas anteriores: los requisitos no se cierran al avanzar, se siguen exigiendo hasta el final."
+    },
+    "requestedBy": "Lo pide la etapa $t(stages.{{stage}}.label)",
+    "inheritedTag": "Requisito heredado",
+    "goToTeams": "Ir a Equipos",
+    "fixedInTeams": "Se fija en Equipos"
+  },
+  "handoff": {
+    "delivered": "{{code}} pasa de $t(stages.{{from}}.label) a $t(stages.{{to}}.label) y entra en la bandeja de $t(agents.{{toAgent}}.name). Se verificaron {{checks}} requisitos acumulados.",
+    "activated": "{{code}} queda activa. El consultor ya figura trabajando en el equipo y se han verificado {{checks}} requisitos acumulados desde el principio del flujo."
+  },
+  "events": {
+    "created": "Sales registra {{code}} para {{client}}.",
+    "handoff": "$t(agents.{{from}}.name) entrega {{code}} a $t(agents.{{to}}.name).",
+    "consultantActive": "{{name}} se incorpora al equipo y empieza su ramp-up.",
+    "alreadyFinal": "{{code}} ya estaba en la última etapa.",
+    "allocationSet": "Delivery Manager fija la dedicación de {{code}} en {{pct}} puntos.",
+    "allocationCleared": "Delivery Manager retira la dedicación de la posición de {{code}}.",
+    "positionReleased": "Se liberó la posición de {{code}}: la solicitud vuelve a necesitar equipo.",
+    "draft": {
+      "anthropic": "Recruiter genera la descripción de {{code}} con {{model}}.",
+      "gemini-nano": "Recruiter genera la descripción de {{code}} con el modelo local del navegador.",
+      "reserva": "Recruiter compone la descripción de {{code}} con el texto de reserva."
+    },
+    "kind": {
+      "solicitud-creada": "Alta",
+      "entrega": "Entrega",
+      "bloqueo": "Bloqueo",
+      "borrador-ia": "Borrador",
+      "dedicacion": "Dedicación",
+      "consultor-activo": "Activación"
+    }
+  },
+  "lifecycle": {
+    "onboarding": {
+      "label": "Onboarding",
+      "summary": "Alta administrativa: contrato, equipo de trabajo y accesos.",
+      "requirements": {
+        "contract": {
+          "label": "Contrato firmado",
+          "detail": "Recursos Humanos formaliza el tipo de contrato acordado en la solicitud."
+        },
+        "equipment": {
+          "label": "Equipo de trabajo entregado",
+          "detail": "El portátil y los periféricos están en manos del consultor."
+        },
+        "accesses": {
+          "label": "Accesos concedidos",
+          "detail": "Al menos tres accesos activos, incluidos correo y repositorio del cliente."
+        },
+        "buddy": {
+          "label": "Buddy asignado",
+          "detail": "Una persona del equipo acompaña al consultor las dos primeras semanas."
+        }
+      }
+    },
+    "ramp-up": {
+      "label": "Ramp-up",
+      "summary": "Puesta en contexto hasta que el consultor entrega sin apoyo continuo.",
+      "requirements": {
+        "context-session": {
+          "label": "Sesión de contexto con el cliente",
+          "detail": "El consultor conoce el negocio, el producto y a quién preguntar."
+        },
+        "first-change": {
+          "label": "Primer cambio en producción",
+          "detail": "Una entrega real, por pequeña que sea, revisada por el referente técnico."
+        },
+        "ramp-up-plan": {
+          "label": "Plan de ramp-up acordado",
+          "detail": "El referente técnico y el Delivery Manager fijan objetivos de las primeras seis semanas."
+        }
+      }
+    },
+    "productivo": {
+      "label": "Productivo",
+      "summary": "El consultor sostiene el compromiso del equipo de forma autónoma.",
+      "requirements": {
+        "unsupported-sprint": {
+          "label": "Un sprint completo sin apoyo del referente",
+          "detail": "El consultor toma, resuelve y entrega su trabajo por su cuenta."
+        },
+        "stable-allocation": {
+          "label": "Dedicación estable en el equipo",
+          "detail": "La dedicación fijada en la vista Equipos se mantiene sin cambios durante un mes."
+        },
+        "client-feedback": {
+          "label": "Feedback del cliente registrado",
+          "detail": "El Delivery Manager recoge la valoración del cliente por escrito."
+        }
+      }
+    },
+    "evaluacion": {
+      "label": "Evaluación",
+      "summary": "Revisión formal de desempeño y decisión sobre la continuidad.",
+      "requirements": {
+        "performance-review": {
+          "label": "Evaluación de desempeño",
+          "detail": "El Engineering Manager evalúa al consultor a los tres meses de estar productivo."
+        },
+        "team-feedback": {
+          "label": "Feedback del equipo",
+          "detail": "Se recoge la valoración de quienes trabajan con el consultor a diario."
+        },
+        "career-plan": {
+          "label": "Plan de carrera acordado",
+          "detail": "Consultor y Engineering Manager fijan el siguiente paso."
+        }
+      }
+    },
+    "salida": {
+      "label": "Salida o rotación",
+      "summary": "Cierre del ciclo: el consultor rota a otro equipo o sale de la cuenta.",
+      "requirements": {
+        "decision-recorded": {
+          "label": "Decisión registrada",
+          "detail": "Queda por escrito si el consultor rota a otro equipo o sale de la cuenta."
+        },
+        "handover": {
+          "label": "Traspaso documentado",
+          "detail": "El conocimiento del consultor queda en manos del equipo antes de su último día."
+        },
+        "access-revoked": {
+          "label": "Accesos revocados",
+          "detail": "Recursos Humanos retira los accesos al cliente en las 24 horas siguientes."
+        }
+      }
+    }
+  },
+  "requests": {
+    "title": "Solicitudes",
+    "subtitle": "Cada solicitud espera en la bandeja de un rol. Ábrela para ver qué le falta y entregarla al siguiente; nunca avanza sola.",
+    "new": "Nueva solicitud",
+    "filters": {
+      "inFlight": "En curso",
+      "ready": "Listas para entregar",
+      "blocked": "Sin poder avanzar",
+      "closed_one": "{{count}} ya cerrada",
+      "closed_other": "{{count}} ya cerradas"
+    },
+    "board": {
+      "emptyInbox": "Bandeja vacía",
+      "noRequests": "Sin solicitudes",
+      "noneWithFilter": "Nada con este filtro",
+      "blocked_one": "{{count}} sin poder avanzar",
+      "blocked_other": "{{count}} sin poder avanzar",
+      "ready_one": "{{count}} lista",
+      "ready_other": "{{count}} listas",
+      "closed_one": "{{count}} cerrada",
+      "closed_other": "{{count}} cerradas",
+      "missing": "Faltan {{count}}",
+      "readyBadge": "Lista para entregar",
+      "activeBadge": "Activo",
+      "aiTooltip": "Es el único agente que puede apoyarse en un modelo de lenguaje, y solo para redactar la descripción del puesto.",
+      "noClient": "Cliente sin nombre",
+      "aiBadge": "IA"
+    },
+    "dialog": {
+      "requirements": "Requisitos acumulados",
+      "requirementsHint": "Para entregar a $t(agents.{{agent}}.name) se comprueban {{count}} requisitos, incluidos los de etapas anteriores.",
+      "finalHint": "La solicitud está cerrada.",
+      "finalNote": "El consultor ya está trabajando en el equipo.",
+      "noneRequired": "Esta etapa no exige nada: la solicitud ya está en el final del flujo."
+    },
+    "create": {
+      "title": "Registrar una solicitud",
+      "description": "Sales recoge la necesidad del cliente. La solicitud entra en la etapa Registro y no avanza hasta que alguien la mueve a mano.",
+      "submit": "Registrar solicitud"
+    },
+    "blockers": {
+      "title": "Qué frena el flujo",
+      "none": "No falta ningún requisito.",
+      "summary": "{{count}} requisitos sin cumplir, por la etapa que los pide.",
+      "explanation": "Como los requisitos se acumulan, una etapa temprana puede seguir frenando solicitudes que ya van por el final.",
+      "empty": "No hay ningún requisito sin cumplir: todas las solicitudes podrían avanzar.",
+      "tooltip_one": "Un requisito que pide la etapa $t(stages.{{stage}}.label) sigue sin cumplirse.",
+      "tooltip_other": "{{count}} requisitos que pide la etapa $t(stages.{{stage}}.label) siguen sin cumplirse.",
+      "affects_one": "Frena una solicitud.",
+      "affects_other": "Frena {{count}} solicitudes.",
+      "tableToggle": "Ver los datos en tabla",
+      "tableStage": "Etapa que lo pide",
+      "tableRequirements": "Requisitos",
+      "tableRequests": "Solicitudes"
+    },
+    "trace": {
+      "title": "Traza de orquestación",
+      "summary": "{{count}} movimientos entre agentes, con lo que se verificó en cada uno.",
+      "empty": "Todavía no hay movimientos registrados."
+    },
+    "toast": {
+      "created": "{{code}} registrada",
+      "createdDetail": "La solicitud entra en la bandeja de Sales, en la etapa Registro.",
+      "delivered": "Solicitud entregada",
+      "blocked": "No se puede avanzar todavía",
+      "reset": "Datos reiniciados",
+      "resetDetail": "Vuelve a haber una solicitud parada en cada etapa del flujo.",
+      "released": "Posición liberada",
+      "releasedDetail": "La solicitud vuelve a necesitar equipo: el requisito de la etapa Equipo deja de cumplirse.",
+      "draftAnthropic": "Descripción generada con {{model}}",
+      "draftLocal": "Descripción generada en el navegador",
+      "draftFallback": "Descripción compuesta con el texto de reserva",
+      "draftDone": "La descripción ya está en la vacante.",
+      "draftFailed": "No se pudo redactar la descripción",
+      "draftFailedDetail": "Escríbela a mano en el panel del Recruiter para seguir adelante.",
+      "raw": "{{text}}"
+    }
+  },
+  "form": {
+    "client": "Cliente",
+    "clientPlaceholder": "Nombre de la empresa que hace la petición",
+    "practice": "Práctica",
+    "practiceHint": "Determina qué stacks se pueden elegir en el campo siguiente.",
+    "practicePlaceholder": "Elige una práctica",
+    "stack": "Stack tecnológico",
+    "stackHintReady": "Solo se ofrecen los stacks de la práctica elegida.",
+    "stackHintBlocked": "Elige antes una práctica: sus opciones dependen de ella.",
+    "stackPlaceholder": "Elige un stack",
+    "stackBlocked": "Bloqueado hasta elegir práctica",
+    "costCenter": "Centro de costo",
+    "expectedStart": "Fecha estimada de inicio",
+    "billingModel": "Modelo de facturación",
+    "priority": "Prioridad",
+    "undefined": "Sin definir",
+    "description": "Descripción de la necesidad",
+    "descriptionHint": "Lo que contó el cliente, en sus palabras. Se usa después para redactar la vacante.",
+    "descriptionPlaceholder": "Qué problema tiene el cliente y qué espera de nosotros",
+    "seniority": "Seniority",
+    "seniorityPlaceholder": "Elige el seniority",
+    "consultantRole": "Rol del consultor",
+    "consultantRolePlaceholder": "Desarrollador, QA o Tech Manager",
+    "englishLevel": "Nivel de inglés",
+    "englishPlaceholder": "Elige el nivel exigido",
+    "skills": "Habilidades ({{count}} de 3 mínimas)",
+    "profileNotes": "Notas del arquitecto",
+    "profileNotesPlaceholder": "Condiciones del cliente, restricciones, contexto técnico",
+    "team": "Equipo",
+    "teamHint": "Al elegir equipo se abre la posición. La dedicación se fija después, en la vista Equipos.",
+    "teamPlaceholder": "Elige el equipo que recibe la solicitud",
+    "joinDate": "Fecha de incorporación al equipo",
+    "technicalReferent": "Referente técnico",
+    "technicalReferentHint": "Quien acompaña al consultor durante el ramp-up.",
+    "technicalReferentPlaceholder": "Nombre de la persona del equipo",
+    "allocationNotice": "La dedicación de esta posición no se decide aquí. Se fija en la vista <0>Equipos</0>, y sin ella la solicitud no podrá cerrarse en la última etapa.",
+    "vacancyTitle": "Título de la vacante",
+    "vacancyTitlePlaceholder": "Desarrollador Senior React — Cliente",
+    "salaryBand": "Banda salarial",
+    "salaryBandPlaceholder": "Elige la banda",
+    "jobDescription": "Descripción del puesto",
+    "jobDescriptionHint": "{{count}} de 120 caracteres mínimos.",
+    "jobDescriptionSource": {
+      "anthropic": "Último borrador generado con el modelo del servidor.",
+      "gemini-nano": "Último borrador generado con el modelo local del navegador.",
+      "reserva": "Último borrador compuesto con el texto de reserva."
+    },
+    "jobDescriptionPlaceholder": "Escríbela a mano o pulsa «Redactar con IA»",
+    "draftWithAi": "Redactar con IA",
+    "drafting": "Redactando…",
+    "draftFrom": "Se genera a partir del perfil técnico ya definido.",
+    "channels": "Canales de publicación",
+    "candidate": "Candidato",
+    "candidatePlaceholder": "Nombre y apellidos",
+    "technicalScore": "Puntuación técnica",
+    "technicalScoreHint": "De 0 a 10. Se contrata desde 7.",
+    "decision": "Decisión",
+    "feedback": "Feedback de la entrevista",
+    "feedbackHint": "{{count}} de 40 caracteres mínimos.",
+    "feedbackPlaceholder": "En qué se basó la decisión",
+    "contractType": "Tipo de contrato",
+    "contractTypePlaceholder": "Elige el contrato",
+    "startDate": "Fecha de alta",
+    "buddy": "Buddy",
+    "buddyPlaceholder": "Quien lo acompaña las dos primeras semanas",
+    "equipmentDelivered": "Equipo de trabajo entregado",
+    "accesses": "Accesos ({{count}} de 3 mínimos)",
+    "activeSummary": "<0>{{name}}</0> está trabajando en <1>{{team}}</1>. El flujo de la solicitud terminó aquí; a partir de ahora lo que avanza es el ciclo de vida de la persona.",
+    "activeSummaryNoConsultant": "La solicitud está cerrada y el consultor figura activo en {{team}}.",
+    "closedBadge": "Solicitud cerrada",
+    "seeCycle": "Ver su ciclo"
+  },
+  "teams": {
+    "title": "Equipos",
+    "subtitle": "La vista del Delivery Manager: qué posiciones están cubiertas, cuáles siguen abiertas y cuánta dedicación tiene comprometida cada equipo. La dedicación de una posición se fija aquí, no en la solicitud, y sin ella la solicitud no puede llegar a <0>activo</0>.",
+    "loading": "Cargando los equipos…",
+    "count": "{{count}} equipos",
+    "openPositions_one": "1 posición abierta",
+    "openPositions_other": "{{count}} posiciones abiertas",
+    "awaitingAllocation": "{{count}} esperando dedicación",
+    "covered_one": "{{count}} cubierta",
+    "covered_other": "{{count}} cubiertas",
+    "open_one": "{{count}} abierta",
+    "open_other": "{{count}} abiertas",
+    "withoutAllocation": "{{count}} sin dedicación",
+    "deliveryManager": "Delivery Manager",
+    "committed": "Dedicación comprometida",
+    "overCapacity": "{{count}} puntos por encima de la capacidad del equipo.",
+    "full": "El equipo está al completo: no queda hueco.",
+    "free": "Quedan {{points}} puntos libres, es decir hueco para {{people}} a tiempo completo.",
+    "people_one": "{{count}} persona",
+    "people_other": "{{count}} personas",
+    "noPositions": "Este equipo no tiene posiciones todavía.",
+    "openPosition": "Posición abierta",
+    "noAllocation": "Sin dedicación",
+    "noAllocationTooltip": "Mientras esta posición no tenga dedicación, la solicitud no puede cerrarse en la etapa Onboarding.",
+    "allocationLabel": "Dedicación en puntos",
+    "points": "pts",
+    "release": "Liberar posición",
+    "releaseTooltip": "Liberar la posición. La solicitud deja de cumplir el requisito de la etapa Equipo y habrá que reasignarla."
+  },
+  "consultant": {
+    "title": "Ciclo del consultor",
+    "subtitle": "El recorrido completo de una persona después de la solicitud: onboarding, ramp-up, productivo, evaluación y salida o rotación. Cada paso dice qué exigió y cuándo se cumplió.",
+    "loading": "Cargando las personas…",
+    "empty": "Todavía no hay ningún consultor activo. Lleva una solicitud hasta la etapa activo desde Solicitudes y aparecerá aquí.",
+    "people": "Personas",
+    "headcount": "{{count}} en plantilla",
+    "since": "En la empresa desde {{date}}",
+    "currentPhase": "Fase actual: {{phase}}",
+    "closedCycle": "Ciclo cerrado",
+    "rotated": "Rota de equipo",
+    "left": "Salió de la cuenta",
+    "rotation": "Rotación",
+    "exit": "Salida",
+    "advancePhase": "Cerrar «{{phase}}» y pasar a la siguiente",
+    "closeWithRotation": "Cerrar con rotación",
+    "closeWithExit": "Cerrar con salida",
+    "closeDialogRotation": "Rotar a otro equipo",
+    "closeDialogExit": "Salida de la cuenta",
+    "closeDialogDescription": "Queda registrado en el ciclo de {{name}}. Recursos Humanos cierra la fase de salida con esta nota.",
+    "closeDialogPlaceholderRotation": "A qué equipo rota y desde cuándo",
+    "closeDialogPlaceholderExit": "Motivo de la salida y fecha del último día",
+    "closeCycle": "Cerrar el ciclo",
+    "noTeam": "Sin equipo",
+    "status": {
+      "completada": "Completada",
+      "en-curso": "En curso",
+      "pendiente": "Pendiente"
+    },
+    "notMet": "Sin cumplir",
+    "startedOn": "Empezó el {{date}}",
+    "closedOn": " · se cerró el {{date}}"
+  },
+  "stepper": {
+    "position": "Etapa {{current}} de {{total}}",
+    "finished": "el flujo de la solicitud ha terminado",
+    "inInbox": "en la bandeja de {{agent}}"
+  }
+}

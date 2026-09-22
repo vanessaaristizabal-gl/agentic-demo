@@ -1,9 +1,11 @@
 import { ArrowRight, CheckCircle2 } from 'lucide-react';
 import { useEffect, useState, type ReactElement } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   agentForStage,
-  stageDef,
+  agentKey,
   stageIndex,
+  stageKey,
   STAGES,
   type BlockingReport,
   type StageId,
@@ -54,6 +56,7 @@ const PANELS: Record<StageId, ((props: PanelProps) => ReactElement) | null> = {
 
 export function RequestDialog({ workspace }: { workspace: Workspace }) {
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
   const requestId = useAppSelector((state) => state.ui.selectedRequestId);
   const [report, setReport] = useState<BlockingReport | null>(null);
   const [tab, setTab] = useState<StageId>('registro');
@@ -87,7 +90,6 @@ export function RequestDialog({ workspace }: { workspace: Workspace }) {
   };
 
   const reachable = STAGES.filter((stage) => stage.index <= stageIndex(request.stage));
-  const current = stageDef(request.stage);
   const owner = agentForStage(request.stage);
 
   const onAdvance = () => {
@@ -105,11 +107,15 @@ export function RequestDialog({ workspace }: { workspace: Workspace }) {
               {request.code}
             </Badge>
             <Badge variant="secondary" className="font-normal">
-              {owner.name}
+              {t(agentKey(owner.id, 'name'))}
             </Badge>
           </div>
-          <DialogTitle className="text-left">{request.intake.clientName || 'Cliente sin nombre'}</DialogTitle>
-          <DialogDescription className="text-left">{current.purpose}</DialogDescription>
+          <DialogTitle className="text-left">
+            {request.intake.clientName || t('requests.board.noClient')}
+          </DialogTitle>
+          <DialogDescription className="text-left">
+            {t(stageKey(request.stage, 'purpose'))}
+          </DialogDescription>
           <div className="pt-3">
             <StageStepper current={request.stage} />
           </div>
@@ -124,7 +130,7 @@ export function RequestDialog({ workspace }: { workspace: Workspace }) {
                 <TabsList>
                   {reachable.map((stage) => (
                     <TabsTrigger key={stage.id} value={stage.id}>
-                      {stage.label}
+                      {t(stageKey(stage.id, 'label'))}
                     </TabsTrigger>
                   ))}
                 </TabsList>
@@ -152,11 +158,14 @@ export function RequestDialog({ workspace }: { workspace: Workspace }) {
 
           <aside className="space-y-4">
             <div>
-              <h3 className="text-sm font-medium">Requisitos acumulados</h3>
+              <h3 className="text-sm font-medium">{t('requests.dialog.requirements')}</h3>
               <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
                 {inspection.isFinal
-                  ? 'La solicitud está cerrada.'
-                  : `Para entregar a ${inspection.nextAgent?.name} se comprueban ${inspection.checks.length} requisitos, incluidos los de etapas anteriores.`}
+                  ? t('requests.dialog.finalHint')
+                  : t('requests.dialog.requirementsHint', {
+                      agent: inspection.nextAgent?.id,
+                      count: inspection.checks.length,
+                    })}
               </p>
               <div className="mt-2">
                 <RequirementList checks={inspection.checks} />
@@ -168,11 +177,11 @@ export function RequestDialog({ workspace }: { workspace: Workspace }) {
             {inspection.isFinal ? (
               <div className="flex items-center gap-2 rounded-md border bg-muted/40 p-3 text-sm">
                 <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
-                <span>El consultor ya está trabajando en el equipo.</span>
+                <span>{t('requests.dialog.finalNote')}</span>
               </div>
             ) : (
               <Button className="w-full" onClick={onAdvance} disabled={advance.isPending}>
-                {current.action}
+                {t(stageKey(request.stage, 'action'))}
                 <ArrowRight />
               </Button>
             )}

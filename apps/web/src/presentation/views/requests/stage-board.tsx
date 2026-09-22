@@ -1,8 +1,10 @@
 import { AlertCircle, Check, Sparkles } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import {
   agentForStage,
-  labelOf,
-  PRIORITIES,
+  agentKey,
+  catalogKey,
+  stageKey,
   STAGES,
   type Inspection,
   type StaffingRequest,
@@ -30,6 +32,7 @@ export function StageBoard({
   inspections: Record<string, Inspection>;
 }) {
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
   const filter = useAppSelector((state) => state.ui.boardFilter);
 
   return (
@@ -63,7 +66,7 @@ export function StageBoard({
                       stageTone(stage.id),
                     )}
                   >
-                    {index + 1}. {stage.label}
+                    {index + 1}. {t(stageKey(stage.id, 'label'))}
                   </span>
                   <span className="text-sm font-semibold tabular-nums">{column.length}</span>
                 </div>
@@ -82,11 +85,11 @@ export function StageBoard({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <span className="min-w-0 flex-1 cursor-help text-xs font-medium leading-tight">
-                        {agent.name}
+                        {t(agentKey(agent.id, 'name'))}
                       </span>
                     </TooltipTrigger>
                     <TooltipContent>
-                      {agent.title}. {stage.purpose}
+                      {t(agentKey(agent.id, 'title'))}. {t(stageKey(stage.id, 'purpose'))}
                     </TooltipContent>
                   </Tooltip>
                   {agent.autonomy === 'asistido-por-modelo' ? (
@@ -94,33 +97,32 @@ export function StageBoard({
                       <TooltipTrigger asChild>
                         <span className="inline-flex cursor-help items-center gap-0.5 rounded bg-secondary px-1 py-0.5 text-[10px] text-secondary-foreground">
                           <Sparkles className="h-2.5 w-2.5" />
-                          IA
+                          {t('requests.board.aiBadge')}
                         </span>
                       </TooltipTrigger>
-                      <TooltipContent>
-                        Es el único agente que puede apoyarse en un modelo de lenguaje, y solo para
-                        redactar la descripción del puesto.
-                      </TooltipContent>
+                      <TooltipContent>{t('requests.board.aiTooltip')}</TooltipContent>
                     </Tooltip>
                   ) : null}
                 </div>
 
                 <p className="mt-1.5 text-[10px] leading-tight text-muted-foreground">
                   {column.length === 0
-                    ? 'Bandeja vacía'
+                    ? t('requests.board.emptyInbox')
                     : [
-                        blocked > 0 ? `${blocked} sin poder avanzar` : null,
-                        ready > 0 ? `${ready} lista${ready === 1 ? '' : 's'}` : null,
+                        blocked > 0 ? t('requests.board.blocked', { count: blocked }) : null,
+                        ready > 0 ? t('requests.board.ready', { count: ready }) : null,
                       ]
                         .filter(Boolean)
-                        .join(' · ') || `${column.length} cerrada${column.length === 1 ? '' : 's'}`}
+                        .join(' · ') || t('requests.board.closed', { count: column.length })}
                 </p>
               </header>
 
               <div className="flex flex-col gap-2">
                 {visible.length === 0 ? (
                   <p className="rounded-md border border-dashed px-2 py-6 text-center text-[11px] text-muted-foreground">
-                    {column.length === 0 ? 'Sin solicitudes' : 'Nada con este filtro'}
+                    {column.length === 0
+                      ? t('requests.board.noRequests')
+                      : t('requests.board.noneWithFilter')}
                   </p>
                 ) : null}
 
@@ -141,13 +143,13 @@ export function StageBoard({
                         </span>
                         {request.intake.priority ? (
                           <span className="text-[10px] text-muted-foreground">
-                            {labelOf(PRIORITIES, request.intake.priority)}
+                            {t(catalogKey('priorities', request.intake.priority))}
                           </span>
                         ) : null}
                       </div>
 
                       <p className="mt-1 line-clamp-2 text-sm font-medium leading-snug">
-                        {request.intake.clientName || 'Cliente sin nombre'}
+                        {request.intake.clientName || t('requests.board.noClient')}
                       </p>
 
                       {request.intake.stack ? (
@@ -164,19 +166,19 @@ export function StageBoard({
                         {inspection?.isFinal ? (
                           <Badge variant="success" className="gap-1 font-normal">
                             <Check className="h-3 w-3" />
-                            Activo
+                            {t('requests.board.activeBadge')}
                           </Badge>
                         ) : isBlocked ? (
                           <Badge variant="outline" className="gap-1 font-normal text-destructive">
                             <AlertCircle className="h-3 w-3" />
-                            Faltan {inspection.missing.length}
+                            {t('requests.board.missing', { count: inspection.missing.length })}
                           </Badge>
                         ) : (
                           <Badge
                             variant="outline"
                             className="font-normal text-emerald-700 dark:text-emerald-400"
                           >
-                            Lista para entregar
+                            {t('requests.board.readyBadge')}
                           </Badge>
                         )}
                       </div>

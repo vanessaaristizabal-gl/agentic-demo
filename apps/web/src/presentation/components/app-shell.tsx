@@ -1,36 +1,39 @@
 import { Building2, Menu, RotateCcw, Users, Workflow } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
+import { LanguageSwitcher } from './language-switcher';
 import { useApiStatus } from '../hooks/use-api-status';
 import { useResetWorkspace } from '../hooks/use-workspace';
 
 const NAV = [
-  { to: '/solicitudes', label: 'Solicitudes', icon: Workflow },
-  { to: '/ciclo', label: 'Ciclo del consultor', icon: Users },
-  { to: '/equipos', label: 'Equipos', icon: Building2 },
+  { to: '/solicitudes', key: 'nav.requests', icon: Workflow },
+  { to: '/ciclo', key: 'nav.consultant', icon: Users },
+  { to: '/equipos', key: 'nav.teams', icon: Building2 },
 ];
 
 function ModelBadge() {
   const { data } = useApiStatus();
+  const { t } = useTranslation();
   if (!data) return null;
 
   const label = !data.serverUp
-    ? 'Servidor apagado'
+    ? t('model.serverDown')
     : data.modelConfigured
-      ? 'Modelo configurado'
-      : 'Sin clave: texto de reserva';
+      ? t('model.configured')
+      : t('model.noKey');
 
   const detail = !data.serverUp
     ? data.promptApiPresent
-      ? 'La API no responde. «Redactar con IA» probará el modelo local del navegador y, si no está, usará el texto de reserva.'
-      : 'La API no responde. «Redactar con IA» usará el texto de reserva y la aplicación seguirá funcionando igual.'
+      ? t('model.serverDownWithLocal')
+      : t('model.serverDownDetail')
     : data.modelConfigured
-      ? `El servidor tiene ANTHROPIC_API_KEY y usará ${data.model} para redactar la vacante.`
-      : 'El servidor no tiene ANTHROPIC_API_KEY. «Redactar con IA» devolverá una descripción compuesta con los datos del perfil.';
+      ? t('model.configuredDetail', { model: data.model })
+      : t('model.noKeyDetail');
 
   return (
     <Tooltip>
@@ -49,6 +52,7 @@ function ModelBadge() {
 
 export function AppShell({ children }: { children: ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { t } = useTranslation();
   const reset = useResetWorkspace();
 
   return (
@@ -60,9 +64,9 @@ export function AppShell({ children }: { children: ReactNode }) {
               CS
             </div>
             <div className="min-w-0 leading-tight">
-              <p className="truncate text-sm font-semibold">Consultora</p>
+              <p className="truncate text-sm font-semibold">{t('app.name')}</p>
               <p className="hidden truncate text-[11px] text-muted-foreground sm:block">
-                Simulador de operaciones
+                {t('app.tagline')}
               </p>
             </div>
           </div>
@@ -82,7 +86,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 }
               >
                 <item.icon className="h-4 w-4" />
-                {item.label}
+                {t(item.key)}
               </NavLink>
             ))}
           </nav>
@@ -91,6 +95,9 @@ export function AppShell({ children }: { children: ReactNode }) {
             <div className="hidden sm:block">
               <ModelBadge />
             </div>
+            <div className="hidden md:block">
+              <LanguageSwitcher />
+            </div>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
@@ -98,21 +105,19 @@ export function AppShell({ children }: { children: ReactNode }) {
                   size="icon"
                   onClick={() => reset.mutate()}
                   disabled={reset.isPending}
-                  aria-label="Reiniciar datos"
+                  aria-label={t('common.reset')}
                 >
                   <RotateCcw className={cn('h-4 w-4', reset.isPending && 'animate-spin')} />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>
-                Reiniciar datos: vuelve a dejar una solicitud parada en cada etapa.
-              </TooltipContent>
+              <TooltipContent>{t('common.resetHint')}</TooltipContent>
             </Tooltip>
             <Button
               variant="ghost"
               size="icon"
               className="md:hidden"
               onClick={() => setMenuOpen((open) => !open)}
-              aria-label="Abrir menú"
+              aria-label={t('nav.open')}
               aria-expanded={menuOpen}
             >
               <Menu className="h-4 w-4" />
@@ -137,9 +142,12 @@ export function AppShell({ children }: { children: ReactNode }) {
                 }
               >
                 <item.icon className="h-4 w-4" />
-                {item.label}
+                {t(item.key)}
               </NavLink>
             ))}
+            <div className="flex flex-col gap-2 px-3 py-2">
+              <LanguageSwitcher />
+            </div>
             <div className="px-3 py-2 sm:hidden">
               <ModelBadge />
             </div>

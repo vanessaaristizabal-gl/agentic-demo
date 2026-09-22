@@ -220,11 +220,26 @@ verificado a 3:1 de contraste sobre la superficie donde se dibuja.
 Las siete etapas son una secuencia ordenada, no siete identidades, así que el stepper no usa siete
 colores: distingue tres estados —recorrida, actual y pendiente— con tinta.
 
+### Idiomas
+
+La aplicación está en **español e inglés**, y se cambia desde el selector de la cabecera. El idioma
+inicial sale del navegador y la elección se recuerda.
+
+Lo que hace que esto funcione está en el dominio: **no guarda ni una frase visible**. Las reglas
+devuelven una clave de traducción y sus parámetros —`{ key: 'requirements.intake.cost-center.explain' }`—
+y la presentación las resuelve con [i18next](https://www.i18next.com/). Por eso cambian de idioma
+también los mensajes de error que componen las reglas, no solo los rótulos de la interfaz.
+
+Lo mismo vale para los catálogos: en la base de datos se guardan identificadores estables
+(`automated-testing`, `corporate-email`), nunca el texto, de modo que cambiar de idioma no
+reescribe los datos. Añadir un tercer idioma es añadir un archivo en `src/i18n/locales/` sin tocar
+una sola línea de lógica.
+
 ### Tecnologías
 
 React 19, TypeScript, Vite, Tailwind CSS y [shadcn/ui](https://ui.shadcn.com/) en la interfaz.
-TanStack Query sirve los datos desde IndexedDB (vía Dexie) y Redux Toolkit sostiene el estado de
-interfaz. NestJS en el servidor. Se usa IndexedDB y no `localStorage` ni `sessionStorage` porque
+TanStack Query sirve los datos desde IndexedDB (vía Dexie), Redux Toolkit sostiene el estado de
+interfaz e i18next resuelve los textos. NestJS en el servidor. Se usa IndexedDB y no `localStorage` ni `sessionStorage` porque
 los datos son estructurados, se consultan por índice y deben sobrevivir al cierre de la pestaña.
 
 ---

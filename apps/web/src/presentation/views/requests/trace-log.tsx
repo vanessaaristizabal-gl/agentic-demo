@@ -1,16 +1,8 @@
 import { ArrowRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { agentById, type OrchestrationEvent } from '@/domain';
 import { Badge } from '@/components/ui/badge';
 import { cn, formatDateTime } from '@/lib/utils';
-
-const KIND_LABEL: Record<OrchestrationEvent['kind'], string> = {
-  'solicitud-creada': 'Alta',
-  entrega: 'Entrega',
-  bloqueo: 'Bloqueo',
-  'borrador-ia': 'Borrador',
-  dedicacion: 'Dedicación',
-  'consultor-activo': 'Activación',
-};
 
 /**
  * Traza de orquestación: qué agente entregó qué a quién y cuándo. Es el
@@ -18,12 +10,10 @@ const KIND_LABEL: Record<OrchestrationEvent['kind'], string> = {
  * de actuar, no antes, así que vive plegada al pie de la página.
  */
 export function TraceLog({ events }: { events: OrchestrationEvent[] }) {
+  const { t } = useTranslation();
+
   if (events.length === 0) {
-    return (
-      <p className="text-center text-sm text-muted-foreground">
-        Todavía no hay movimientos registrados.
-      </p>
-    );
+    return <p className="text-center text-sm text-muted-foreground">{t('requests.trace.empty')}</p>;
   }
 
   return (
@@ -38,10 +28,12 @@ export function TraceLog({ events }: { events: OrchestrationEvent[] }) {
             variant={event.kind === 'bloqueo' ? 'outline' : 'secondary'}
             className={cn('font-normal', event.kind === 'bloqueo' && 'text-destructive')}
           >
-            {KIND_LABEL[event.kind]}
+            {t(`events.kind.${event.kind}`)}
           </Badge>
 
-          <span className="min-w-0 flex-1 text-sm leading-relaxed">{event.summary}</span>
+          <span className="min-w-0 flex-1 text-sm leading-relaxed">
+            {t(event.summary.key, event.summary.params)}
+          </span>
 
           {event.fromAgent && event.toAgent ? (
             <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">

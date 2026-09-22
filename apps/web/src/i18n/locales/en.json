@@ -1,0 +1,714 @@
+{
+  "app": {
+    "name": "Consultancy",
+    "tagline": "Operations simulator",
+    "title": "Consultancy · Operations simulator"
+  },
+  "nav": {
+    "requests": "Requests",
+    "consultant": "Consultant lifecycle",
+    "teams": "Teams",
+    "open": "Open menu",
+    "language": "Language"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "close": "Close",
+    "loading": "Loading…",
+    "none": "—",
+    "reset": "Reset data",
+    "resetHint": "Reset data: puts one request back in every stage.",
+    "saving": "Saving…",
+    "of": "of"
+  },
+  "model": {
+    "serverDown": "Server not running",
+    "configured": "Model configured",
+    "noKey": "No API key: fallback text",
+    "serverDownWithLocal": "The API is not responding. “Draft with AI” will try the browser's local model and, failing that, use the fallback text.",
+    "serverDownDetail": "The API is not responding. “Draft with AI” will use the fallback text and the app will keep working exactly the same.",
+    "configuredDetail": "The server has ANTHROPIC_API_KEY and will use {{model}} to draft the vacancy.",
+    "noKeyDetail": "The server has no ANTHROPIC_API_KEY. “Draft with AI” will return a description composed from the technical profile."
+  },
+  "stages": {
+    "registro": {
+      "label": "Intake",
+      "purpose": "Sales records what the client needs and places it in a practice.",
+      "action": "Send to Solution Architect"
+    },
+    "perfil": {
+      "label": "Profile",
+      "purpose": "The Solution Architect turns the need into a concrete technical profile.",
+      "action": "Send to Delivery Manager"
+    },
+    "equipo": {
+      "label": "Team",
+      "purpose": "The Delivery Manager assigns the request to a team and opens the position.",
+      "action": "Send to Recruiter"
+    },
+    "vacante": {
+      "label": "Vacancy",
+      "purpose": "Recruiter publishes the vacancy with a usable job description.",
+      "action": "Send to Engineering Manager"
+    },
+    "entrevista": {
+      "label": "Interview",
+      "purpose": "The Engineering Manager evaluates the candidate and decides.",
+      "action": "Send to People Operations"
+    },
+    "onboarding": {
+      "label": "Onboarding",
+      "purpose": "People Operations handles contract, equipment and access.",
+      "action": "Activate in the team"
+    },
+    "activo": {
+      "label": "Active",
+      "purpose": "The consultant is working in the team.",
+      "action": ""
+    }
+  },
+  "agents": {
+    "sales": {
+      "name": "Sales",
+      "title": "Account executive",
+      "capabilities": [
+        "Record what the client needs",
+        "Place the request in a practice",
+        "Set the cost centre and billing model"
+      ]
+    },
+    "solution-architect": {
+      "name": "Solution Architect",
+      "title": "Solutions architect",
+      "capabilities": [
+        "Define the technical profile",
+        "Choose a stack within the practice",
+        "Set seniority, skills and English level"
+      ]
+    },
+    "delivery-manager": {
+      "name": "Delivery Manager",
+      "title": "Delivery lead",
+      "capabilities": [
+        "Assign the request to a team",
+        "Open the position in the team",
+        "Set the allocation from the Teams view"
+      ]
+    },
+    "recruiter": {
+      "name": "Recruiter",
+      "title": "Technical recruiter",
+      "capabilities": [
+        "Publish the vacancy",
+        "Draft the job description with help from a model",
+        "Choose channels and salary band"
+      ]
+    },
+    "engineering-manager": {
+      "name": "Engineering Manager",
+      "title": "Engineering lead",
+      "capabilities": [
+        "Evaluate the candidate technically",
+        "Score them and leave written feedback",
+        "Decide on the hire"
+      ]
+    },
+    "hr": {
+      "name": "People Operations",
+      "title": "People management",
+      "capabilities": [
+        "Formalise the contract",
+        "Hand over the equipment",
+        "Grant access and assign a buddy"
+      ]
+    },
+    "consultant": {
+      "name": "Consultant",
+      "title": "Developer, QA or Tech Manager",
+      "capabilities": [
+        "Join the team",
+        "Ramp up until productive",
+        "Be reviewed and, where it applies, rotate"
+      ]
+    }
+  },
+  "catalog": {
+    "practices": {
+      "cloud-data": "Cloud & Data",
+      "digital-products": "Digital Products",
+      "quality-engineering": "Quality Engineering",
+      "ai-automation": "AI & Automation"
+    },
+    "seniorities": {
+      "junior": "Junior",
+      "semi-senior": "Semi Senior",
+      "senior": "Senior",
+      "staff": "Staff"
+    },
+    "roles": {
+      "desarrollador": "Developer",
+      "qa": "QA",
+      "tech-manager": "Tech Manager"
+    },
+    "english": {
+      "A2": "A2 — basic",
+      "B1": "B1 — intermediate",
+      "B2": "B2 — upper intermediate",
+      "C1": "C1 — advanced"
+    },
+    "billing": {
+      "time-and-materials": "Time & Materials",
+      "precio-fijo": "Fixed price",
+      "capacity": "Capacity / dedicated squad"
+    },
+    "priorities": {
+      "baja": "Low",
+      "media": "Medium",
+      "alta": "High",
+      "critica": "Critical"
+    },
+    "contracts": {
+      "indefinido": "Permanent",
+      "obra-labor": "Fixed-term (obra o labor)",
+      "contractor": "Contractor"
+    },
+    "channels": {
+      "linkedin": "LinkedIn",
+      "referrals": "Internal referrals",
+      "own-job-board": "Our own job board",
+      "tech-communities": "Tech communities",
+      "internal-database": "Internal database"
+    },
+    "accesses": {
+      "corporate-email": "Corporate email",
+      "client-repository": "Client repository",
+      "client-vpn": "Client VPN",
+      "jira-confluence": "Jira and Confluence",
+      "ci-cd": "CI/CD tooling"
+    },
+    "skills": {
+      "hexagonal-architecture": "Hexagonal architecture",
+      "automated-testing": "Automated testing",
+      "ci-cd": "CI/CD",
+      "observability": "Observability",
+      "data-modelling": "Data modelling",
+      "application-security": "Application security",
+      "client-communication": "Client communication",
+      "mentoring": "Mentoring",
+      "performance": "Performance",
+      "accessibility": "Accessibility"
+    },
+    "salaryBands": {
+      "banda-1": "Band 1 — up to USD 4,500/month",
+      "banda-2": "Band 2 — USD 4,500 to 6,500/month",
+      "banda-3": "Band 3 — USD 6,500 to 8,500/month",
+      "banda-4": "Band 4 — over USD 8,500/month"
+    },
+    "decisions": {
+      "pendiente": "Pending",
+      "segunda-ronda": "Second round",
+      "contratar": "Hire",
+      "descartar": "Reject"
+    }
+  },
+  "requirements": {
+    "intake": {
+      "client": {
+        "label": "Client",
+        "explain": "The request has no client yet. Type the client's name in the “Client” field of the request form."
+      },
+      "practice": {
+        "label": "Practice",
+        "explain": "The practice has not been chosen in the request form. Until it is, the “Technology stack” field stays empty and locked, because its options depend on it."
+      },
+      "cost-center": {
+        "label": "Cost centre",
+        "explain": "The cost centre is empty. It is required to register the request even though the form does not mark it as such: without it, Finance cannot charge the consultant's hours."
+      },
+      "stack": {
+        "label": "Technology stack",
+        "explain": {
+          "with-practice": "The technology stack is missing. You choose it in the request form, and only the stacks belonging to the selected practice are offered.",
+          "without-practice": "The technology stack is missing, but it cannot be chosen while the request has no practice: the stack options depend on it."
+        }
+      }
+    },
+    "profile": {
+      "seniority": {
+        "label": "Seniority",
+        "explain": "The technical profile has no seniority. Set it in the Solution Architect panel; the salary band and the position opened in the team both depend on it."
+      },
+      "role": {
+        "label": "Consultant role",
+        "explain": "Nobody has said whether the request needs a developer, a QA or a tech manager. Choose the role in the Solution Architect panel."
+      },
+      "skills": {
+        "label": "Skills (at least 3)",
+        "explain_one": "The profile has one skill selected and the minimum to publish a vacancy is 3. Add the missing ones in the Solution Architect panel.",
+        "explain_other": "The profile has {{count}} skills selected and the minimum to publish a vacancy is 3. Add the missing ones in the Solution Architect panel."
+      },
+      "english": {
+        "label": "English level",
+        "explain": "The English level required of the consultant is missing. It is mandatory in the technical profile because it decides which candidates Recruiter can put forward."
+      }
+    },
+    "assignment": {
+      "team": {
+        "label": "Team assigned",
+        "explain": {
+          "none": "The request is not assigned to a team. Choose the team in the Delivery Manager panel: doing so opens the corresponding position.",
+          "missing-team": "The team this request was assigned to no longer exists. Assign it again from the Delivery Manager panel.",
+          "released": "The request says it is in {{team}}, but there is no longer an open position for it there: it was released from the Teams view. Assign it again from the Delivery Manager panel."
+        }
+      },
+      "join-date": {
+        "label": "Team start date",
+        "explain": "The team start date is missing. The Delivery Manager sets it in their panel, and People Operations uses it later for the contract."
+      },
+      "referent": {
+        "label": "Technical referent",
+        "explain": "The technical referent inside the team is missing. They are the person who supports the consultant through ramp-up, and they are named in the Delivery Manager panel."
+      }
+    },
+    "vacancy": {
+      "title": {
+        "label": "Vacancy title",
+        "explain": "The vacancy has no title. Write it in the Recruiter panel: it is what the candidate sees in the advert."
+      },
+      "description": {
+        "label": "Job description (at least 120 characters)",
+        "explain": {
+          "empty": "The vacancy has no job description. You can write it by hand or press “Draft with AI” to generate it from the technical profile already defined.",
+          "short": "The job description is {{count}} characters long and nothing under 120 gets published. Expand it by hand or press “Draft with AI” again."
+        }
+      },
+      "channels": {
+        "label": "Publication channels",
+        "explain": "The vacancy is not published on any channel. Select at least one in the Recruiter panel."
+      },
+      "salary-band": {
+        "label": "Salary band",
+        "explain": "The vacancy has no salary band. Without it, the Engineering Manager cannot close an offer after the interview."
+      }
+    },
+    "interview": {
+      "candidate": {
+        "label": "Candidate evaluated",
+        "explain": "No candidate is recorded for the interview. Type their name in the Engineering Manager panel: they are the person who will appear in the team afterwards."
+      },
+      "score": {
+        "label": "Technical score of 7 or more",
+        "explain": {
+          "none": "The interview has no technical score. Score the candidate from 0 to 10 in the Engineering Manager panel.",
+          "low": "The candidate scored {{score}} out of 10 and the minimum to hire is 7. Revisit the evaluation, or reject the candidate and look for another."
+        }
+      },
+      "decision": {
+        "label": "Hiring decision",
+        "explain": {
+          "pending": "The interview decision is still “pending”. Change it to “hire” in the Engineering Manager panel to carry on.",
+          "second-round": "The interview is marked as “second round”. Until the decision is “hire”, People Operations cannot open the onboarding.",
+          "rejected": "The candidate is rejected. Record another candidate and evaluate them, or change the decision to “hire”."
+        }
+      },
+      "feedback": {
+        "label": "Written feedback (at least 40 characters)",
+        "explain": {
+          "empty": "The interview has no written feedback. Recording the basis for the evaluation is required before the case goes to People Operations.",
+          "short": "The interview feedback is {{count}} characters long and at least 40 are required. Explain what the decision was based on."
+        }
+      }
+    },
+    "onboarding": {
+      "contract": {
+        "label": "Contract type",
+        "explain": "The contract type is missing. People Operations chooses it in their panel before registering the consultant."
+      },
+      "equipment": {
+        "label": "Equipment handed over",
+        "explain": "The equipment is not yet recorded as handed over. Mark it in the People Operations panel once the laptop is in the consultant's hands."
+      },
+      "accesses": {
+        "label": "Access granted (at least 3)",
+        "explain_one": "The consultant has one access granted and cannot start with fewer than 3. Complete them in the People Operations panel.",
+        "explain_other": "The consultant has {{count}} accesses granted and cannot start with fewer than 3. Complete them in the People Operations panel."
+      },
+      "buddy": {
+        "label": "Buddy assigned",
+        "explain": "Nobody is listed as the consultant's buddy. Assign one in the People Operations panel: they are the person who supports them through the first two weeks."
+      }
+    },
+    "team": {
+      "allocation": {
+        "label": "Allocation set in the team",
+        "explain": {
+          "no-position": "There is no open position for this request, so there is no allocation to set. Assign the request to a team again and then set the allocation in the Teams view.",
+          "no-allocation": "The position for this request in {{team}} has no allocation. The allocation is not set here: go to the Teams view, find the open position and give it a percentage above zero."
+        }
+      },
+      "capacity": {
+        "label": "Team capacity respected",
+        "explain": {
+          "no-team": "Capacity cannot be checked because the request has no valid team assigned.",
+          "over": "{{team}} would be committed to {{used}} allocation points against a capacity of {{capacity}}, which is {{excess}} over. Lower the allocation of one of the team's positions in the Teams view before activating the consultant."
+        }
+      }
+    }
+  },
+  "blocking": {
+    "headline_one": "Request {{code}} cannot move to the $t(stages.{{stage}}.label) stage: one requirement is still unmet.",
+    "headline_other": "Request {{code}} cannot move to the $t(stages.{{stage}}.label) stage: {{count}} requirements are still unmet.",
+    "intakeHeadline_one": "The request cannot be registered: one required field is missing.",
+    "intakeHeadline_other": "The request cannot be registered: {{count}} required fields are missing.",
+    "alreadyFinal": "Request {{code}} is already in the $t(stages.{{stage}}.label) stage, which is the last one in the flow.",
+    "aside": {
+      "elsewhere_one": "That one is not fixed on this screen: the position's allocation is set in the Teams view.",
+      "elsewhere_other": "{{count}} of them are not fixed on this screen but in the Teams view.",
+      "inherited_one": "It comes from an earlier stage: requirements are not closed when you move on, they keep being checked to the end.",
+      "inherited_other": "{{count}} come from earlier stages: requirements are not closed when you move on, they keep being checked to the end."
+    },
+    "requestedBy": "Required by the $t(stages.{{stage}}.label) stage",
+    "inheritedTag": "Inherited requirement",
+    "goToTeams": "Go to Teams",
+    "fixedInTeams": "Set in Teams"
+  },
+  "handoff": {
+    "delivered": "{{code}} moves from $t(stages.{{from}}.label) to $t(stages.{{to}}.label) and lands in $t(agents.{{toAgent}}.name)'s inbox. {{checks}} accumulated requirements were verified.",
+    "activated": "{{code}} is now active. The consultant is working in the team and {{checks}} accumulated requirements were verified from the start of the flow."
+  },
+  "events": {
+    "created": "Sales registers {{code}} for {{client}}.",
+    "handoff": "$t(agents.{{from}}.name) hands {{code}} to $t(agents.{{to}}.name).",
+    "consultantActive": "{{name}} joins the team and starts ramping up.",
+    "alreadyFinal": "{{code}} was already in the last stage.",
+    "allocationSet": "Delivery Manager sets the allocation for {{code}} to {{pct}} points.",
+    "allocationCleared": "Delivery Manager clears the allocation on the position for {{code}}.",
+    "positionReleased": "The position for {{code}} was released: the request needs a team again.",
+    "draft": {
+      "anthropic": "Recruiter generates the description for {{code}} with {{model}}.",
+      "gemini-nano": "Recruiter generates the description for {{code}} with the browser's local model.",
+      "reserva": "Recruiter composes the description for {{code}} from the fallback text."
+    },
+    "kind": {
+      "solicitud-creada": "Created",
+      "entrega": "Handoff",
+      "bloqueo": "Blocked",
+      "borrador-ia": "Draft",
+      "dedicacion": "Allocation",
+      "consultor-activo": "Activation"
+    }
+  },
+  "lifecycle": {
+    "onboarding": {
+      "label": "Onboarding",
+      "summary": "Administrative setup: contract, equipment and access.",
+      "requirements": {
+        "contract": {
+          "label": "Contract signed",
+          "detail": "People Operations formalises the contract type agreed in the request."
+        },
+        "equipment": {
+          "label": "Equipment handed over",
+          "detail": "The laptop and peripherals are in the consultant's hands."
+        },
+        "accesses": {
+          "label": "Access granted",
+          "detail": "At least three active accesses, including email and the client repository."
+        },
+        "buddy": {
+          "label": "Buddy assigned",
+          "detail": "Someone from the team supports the consultant through the first two weeks."
+        }
+      }
+    },
+    "ramp-up": {
+      "label": "Ramp-up",
+      "summary": "Getting into context until the consultant delivers without constant support.",
+      "requirements": {
+        "context-session": {
+          "label": "Context session with the client",
+          "detail": "The consultant knows the business, the product and who to ask."
+        },
+        "first-change": {
+          "label": "First change in production",
+          "detail": "A real delivery, however small, reviewed by the technical referent."
+        },
+        "ramp-up-plan": {
+          "label": "Ramp-up plan agreed",
+          "detail": "The technical referent and the Delivery Manager set goals for the first six weeks."
+        }
+      }
+    },
+    "productivo": {
+      "label": "Productive",
+      "summary": "The consultant sustains the team's commitment on their own.",
+      "requirements": {
+        "unsupported-sprint": {
+          "label": "A full sprint without the referent's support",
+          "detail": "The consultant picks up, solves and delivers their work unaided."
+        },
+        "stable-allocation": {
+          "label": "Stable allocation in the team",
+          "detail": "The allocation set in the Teams view holds unchanged for a month."
+        },
+        "client-feedback": {
+          "label": "Client feedback recorded",
+          "detail": "The Delivery Manager collects the client's assessment in writing."
+        }
+      }
+    },
+    "evaluacion": {
+      "label": "Review",
+      "summary": "Formal performance review and a decision about what comes next.",
+      "requirements": {
+        "performance-review": {
+          "label": "Performance review",
+          "detail": "The Engineering Manager reviews the consultant three months after they became productive."
+        },
+        "team-feedback": {
+          "label": "Team feedback",
+          "detail": "The assessment of the people who work with the consultant daily is collected."
+        },
+        "career-plan": {
+          "label": "Career plan agreed",
+          "detail": "Consultant and Engineering Manager agree the next step."
+        }
+      }
+    },
+    "salida": {
+      "label": "Exit or rotation",
+      "summary": "Closing the cycle: the consultant rotates to another team or leaves the account.",
+      "requirements": {
+        "decision-recorded": {
+          "label": "Decision recorded",
+          "detail": "It is written down whether the consultant rotates to another team or leaves the account."
+        },
+        "handover": {
+          "label": "Handover documented",
+          "detail": "The consultant's knowledge is in the team's hands before their last day."
+        },
+        "access-revoked": {
+          "label": "Access revoked",
+          "detail": "People Operations removes client access within 24 hours."
+        }
+      }
+    }
+  },
+  "requests": {
+    "title": "Requests",
+    "subtitle": "Every request waits in one role's inbox. Open it to see what it is missing and hand it to the next role; it never moves on its own.",
+    "new": "New request",
+    "filters": {
+      "inFlight": "In flight",
+      "ready": "Ready to hand over",
+      "blocked": "Cannot move on",
+      "closed_one": "{{count}} already closed",
+      "closed_other": "{{count}} already closed"
+    },
+    "board": {
+      "emptyInbox": "Empty inbox",
+      "noRequests": "No requests",
+      "noneWithFilter": "Nothing matches this filter",
+      "blocked_one": "{{count}} cannot move on",
+      "blocked_other": "{{count}} cannot move on",
+      "ready_one": "{{count}} ready",
+      "ready_other": "{{count}} ready",
+      "closed_one": "{{count}} closed",
+      "closed_other": "{{count}} closed",
+      "missing": "{{count}} missing",
+      "readyBadge": "Ready to hand over",
+      "activeBadge": "Active",
+      "aiTooltip": "The only agent that can lean on a language model, and only to draft the job description.",
+      "noClient": "Client not named",
+      "aiBadge": "AI"
+    },
+    "dialog": {
+      "requirements": "Accumulated requirements",
+      "requirementsHint": "Handing over to $t(agents.{{agent}}.name) checks {{count}} requirements, including those from earlier stages.",
+      "finalHint": "The request is closed.",
+      "finalNote": "The consultant is already working in the team.",
+      "noneRequired": "This stage requires nothing: the request is at the end of the flow."
+    },
+    "create": {
+      "title": "Register a request",
+      "description": "Sales records what the client needs. The request enters the Intake stage and does not move until someone moves it by hand.",
+      "submit": "Register request"
+    },
+    "blockers": {
+      "title": "What is holding the flow up",
+      "none": "Nothing is missing.",
+      "summary": "{{count}} unmet requirements, grouped by the stage that asks for them.",
+      "explanation": "Because requirements accumulate, an early stage can keep holding up requests that are already near the end.",
+      "empty": "Nothing is unmet: every request could move on.",
+      "tooltip_one": "One requirement asked for by the $t(stages.{{stage}}.label) stage is still unmet.",
+      "tooltip_other": "{{count}} requirements asked for by the $t(stages.{{stage}}.label) stage are still unmet.",
+      "affects_one": "It holds up one request.",
+      "affects_other": "They hold up {{count}} requests.",
+      "tableToggle": "See the data as a table",
+      "tableStage": "Stage that asks for it",
+      "tableRequirements": "Requirements",
+      "tableRequests": "Requests"
+    },
+    "trace": {
+      "title": "Orchestration trace",
+      "summary": "{{count}} handoffs between agents, with what was verified in each one.",
+      "empty": "Nothing has been recorded yet."
+    },
+    "toast": {
+      "created": "{{code}} registered",
+      "createdDetail": "The request lands in Sales' inbox, in the Intake stage.",
+      "delivered": "Request handed over",
+      "blocked": "Cannot move on yet",
+      "reset": "Data reset",
+      "resetDetail": "There is one request in every stage of the flow again.",
+      "released": "Position released",
+      "releasedDetail": "The request needs a team again: the Team stage requirement stops being met.",
+      "draftAnthropic": "Description generated with {{model}}",
+      "draftLocal": "Description generated in the browser",
+      "draftFallback": "Description composed from the fallback text",
+      "draftDone": "The description is now on the vacancy.",
+      "draftFailed": "The description could not be drafted",
+      "draftFailedDetail": "Write it by hand in the Recruiter panel to carry on.",
+      "raw": "{{text}}"
+    }
+  },
+  "form": {
+    "client": "Client",
+    "clientPlaceholder": "Name of the company making the request",
+    "practice": "Practice",
+    "practiceHint": "Decides which stacks can be chosen in the next field.",
+    "practicePlaceholder": "Choose a practice",
+    "stack": "Technology stack",
+    "stackHintReady": "Only the stacks of the chosen practice are offered.",
+    "stackHintBlocked": "Choose a practice first: its options depend on it.",
+    "stackPlaceholder": "Choose a stack",
+    "stackBlocked": "Locked until a practice is chosen",
+    "costCenter": "Cost centre",
+    "expectedStart": "Estimated start date",
+    "billingModel": "Billing model",
+    "priority": "Priority",
+    "undefined": "Not set",
+    "description": "What the client needs",
+    "descriptionHint": "What the client said, in their words. It is used later to draft the vacancy.",
+    "descriptionPlaceholder": "What problem the client has and what they expect from us",
+    "seniority": "Seniority",
+    "seniorityPlaceholder": "Choose the seniority",
+    "consultantRole": "Consultant role",
+    "consultantRolePlaceholder": "Developer, QA or Tech Manager",
+    "englishLevel": "English level",
+    "englishPlaceholder": "Choose the level required",
+    "skills": "Skills ({{count}} of 3 minimum)",
+    "profileNotes": "Architect's notes",
+    "profileNotesPlaceholder": "Client constraints, restrictions, technical context",
+    "team": "Team",
+    "teamHint": "Choosing a team opens the position. The allocation is set afterwards, in the Teams view.",
+    "teamPlaceholder": "Choose the team that receives the request",
+    "joinDate": "Team start date",
+    "technicalReferent": "Technical referent",
+    "technicalReferentHint": "Who supports the consultant through ramp-up.",
+    "technicalReferentPlaceholder": "Name of the person in the team",
+    "allocationNotice": "This position's allocation is not decided here. It is set in the <0>Teams</0> view, and without it the request cannot be closed in the last stage.",
+    "vacancyTitle": "Vacancy title",
+    "vacancyTitlePlaceholder": "Senior React Developer — Client",
+    "salaryBand": "Salary band",
+    "salaryBandPlaceholder": "Choose the band",
+    "jobDescription": "Job description",
+    "jobDescriptionHint": "{{count}} of 120 characters minimum.",
+    "jobDescriptionSource": {
+      "anthropic": "Last draft generated with the server's model.",
+      "gemini-nano": "Last draft generated with the browser's local model.",
+      "reserva": "Last draft composed from the fallback text."
+    },
+    "jobDescriptionPlaceholder": "Write it by hand or press “Draft with AI”",
+    "draftWithAi": "Draft with AI",
+    "drafting": "Drafting…",
+    "draftFrom": "Generated from the technical profile already defined.",
+    "channels": "Publication channels",
+    "candidate": "Candidate",
+    "candidatePlaceholder": "Full name",
+    "technicalScore": "Technical score",
+    "technicalScoreHint": "From 0 to 10. Hiring starts at 7.",
+    "decision": "Decision",
+    "feedback": "Interview feedback",
+    "feedbackHint": "{{count}} of 40 characters minimum.",
+    "feedbackPlaceholder": "What the decision was based on",
+    "contractType": "Contract type",
+    "contractTypePlaceholder": "Choose the contract",
+    "startDate": "Start date",
+    "buddy": "Buddy",
+    "buddyPlaceholder": "Who supports them through the first two weeks",
+    "equipmentDelivered": "Equipment handed over",
+    "accesses": "Access ({{count}} of 3 minimum)",
+    "activeSummary": "<0>{{name}}</0> is working in <1>{{team}}</1>. The request's flow ended here; from now on it is the person's lifecycle that moves.",
+    "activeSummaryNoConsultant": "The request is closed and the consultant is active in {{team}}.",
+    "closedBadge": "Request closed",
+    "seeCycle": "See their lifecycle"
+  },
+  "teams": {
+    "title": "Teams",
+    "subtitle": "The Delivery Manager's view: which positions are covered, which are still open, and how much allocation each team has committed. A position's allocation is set here, not on the request, and without it the request cannot reach <0>active</0>.",
+    "loading": "Loading the teams…",
+    "count": "{{count}} teams",
+    "openPositions_one": "1 open position",
+    "openPositions_other": "{{count}} open positions",
+    "awaitingAllocation": "{{count}} awaiting allocation",
+    "covered_one": "{{count}} covered",
+    "covered_other": "{{count}} covered",
+    "open_one": "{{count}} open",
+    "open_other": "{{count}} open",
+    "withoutAllocation": "{{count}} with no allocation",
+    "deliveryManager": "Delivery Manager",
+    "committed": "Allocation committed",
+    "overCapacity": "{{count}} points over the team's capacity.",
+    "full": "The team is full: there is no room left.",
+    "free": "{{points}} points free, which is room for {{people}} full time.",
+    "people_one": "{{count}} person",
+    "people_other": "{{count}} people",
+    "noPositions": "This team has no positions yet.",
+    "openPosition": "Open position",
+    "noAllocation": "No allocation",
+    "noAllocationTooltip": "While this position has no allocation, the request cannot be closed in the Onboarding stage.",
+    "allocationLabel": "Allocation in points",
+    "points": "pts",
+    "release": "Release position",
+    "releaseTooltip": "Release the position. The request stops meeting the Team stage requirement and will have to be reassigned."
+  },
+  "consultant": {
+    "title": "Consultant lifecycle",
+    "subtitle": "A person's whole journey after the request: onboarding, ramp-up, productive, review, and exit or rotation. Each step says what it required and when that was met.",
+    "loading": "Loading the people…",
+    "empty": "No consultant is active yet. Take a request all the way to the active stage from Requests and they will appear here.",
+    "people": "People",
+    "headcount": "{{count}} on the roster",
+    "since": "With the company since {{date}}",
+    "currentPhase": "Current phase: {{phase}}",
+    "closedCycle": "Cycle closed",
+    "rotated": "Rotated to another team",
+    "left": "Left the account",
+    "rotation": "Rotation",
+    "exit": "Exit",
+    "advancePhase": "Close “{{phase}}” and move to the next",
+    "closeWithRotation": "Close with a rotation",
+    "closeWithExit": "Close with an exit",
+    "closeDialogRotation": "Rotate to another team",
+    "closeDialogExit": "Leave the account",
+    "closeDialogDescription": "It is recorded in {{name}}'s lifecycle. People Operations closes the exit phase with this note.",
+    "closeDialogPlaceholderRotation": "Which team they rotate to and from when",
+    "closeDialogPlaceholderExit": "Reason for leaving and their last day",
+    "closeCycle": "Close the cycle",
+    "noTeam": "No team",
+    "status": {
+      "completada": "Completed",
+      "en-curso": "In progress",
+      "pendiente": "Pending"
+    },
+    "notMet": "Not met",
+    "startedOn": "Started on {{date}}",
+    "closedOn": " · closed on {{date}}"
+  },
+  "stepper": {
+    "position": "Step {{current}} of {{total}}",
+    "finished": "the request's flow has ended",
+    "inInbox": "in {{agent}}'s inbox"
+  }
+}

@@ -1,5 +1,6 @@
 import { Plus } from 'lucide-react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   composeIntakeReport,
   createRequest,
@@ -26,6 +27,7 @@ export function NewRequestDialog() {
   const [open, setOpen] = useState(false);
   const [intake, setIntake] = useState<RequestIntake>(emptyIntake);
   const [report, setReport] = useState<BlockingReport | null>(null);
+  const { t } = useTranslation();
   const create = useCreateRequest();
 
   const reset = () => {
@@ -70,16 +72,13 @@ export function NewRequestDialog() {
       <DialogTrigger asChild>
         <Button size="sm">
           <Plus className="h-4 w-4" />
-          Nueva solicitud
+          {t('requests.new')}
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Registrar una solicitud</DialogTitle>
-          <DialogDescription>
-            Sales recoge la necesidad del cliente. La solicitud entra en la etapa Registro y no avanza
-            hasta que alguien la mueve a mano.
-          </DialogDescription>
+          <DialogTitle>{t('requests.create.title')}</DialogTitle>
+          <DialogDescription>{t('requests.create.description')}</DialogDescription>
         </DialogHeader>
 
         {report ? <BlockingAlert report={report} /> : null}
@@ -91,10 +90,10 @@ export function NewRequestDialog() {
 
         <DialogFooter>
           <Button variant="outline" onClick={() => setOpen(false)}>
-            Cancelar
+            {t('common.cancel')}
           </Button>
           <Button onClick={submit} disabled={create.isPending}>
-            {create.isPending ? 'Guardando…' : 'Registrar solicitud'}
+            {create.isPending ? t('common.saving') : t('requests.create.submit')}
           </Button>
         </DialogFooter>
       </DialogContent>

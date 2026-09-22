@@ -1,14 +1,8 @@
 import { AlertCircle, Trash2, UserRound } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { buildOccupancy, type TeamOccupancy } from '@/application/use-cases';
-import {
-  CONSULTANT_ROLES,
-  labelOf,
-  SENIORITIES,
-  type Consultant,
-  type StaffingRequest,
-  type Position,
-} from '@/domain';
+import { catalogKey, type Consultant, type Position, type StaffingRequest } from '@/domain';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -37,6 +31,7 @@ function AllocationEditor({
   position: Position;
   overCapacity: boolean;
 }) {
+  const { t } = useTranslation();
   const setAllocation = useSetAllocation();
   const [draft, setDraft] = useState(
     position.allocationPct === null ? '' : String(position.allocationPct),
@@ -61,7 +56,7 @@ function AllocationEditor({
         min={0}
         max={200}
         step={5}
-        aria-label="Dedicación en puntos"
+        aria-label={t('teams.allocationLabel')}
         className={cn(
           'h-8 w-20 text-sm',
           position.allocationPct === null && 'border-amber-400 dark:border-amber-700',
@@ -75,7 +70,7 @@ function AllocationEditor({
           if (event.key === 'Enter') (event.target as HTMLInputElement).blur();
         }}
       />
-      <span className="text-xs text-muted-foreground">pts</span>
+      <span className="text-xs text-muted-foreground">{t('teams.points')}</span>
     </div>
   );
 }
@@ -91,6 +86,7 @@ function PositionRow({
   request: StaffingRequest | undefined;
   overCapacity: boolean;
 }) {
+  const { t } = useTranslation();
   const release = useReleasePosition();
   const open = position.status === 'abierta';
 
@@ -110,10 +106,11 @@ function PositionRow({
 
         <div className="min-w-0">
           <p className="truncate text-sm font-medium">
-            {consultant ? consultant.name : 'Posición abierta'}
+            {consultant ? consultant.name : t('teams.openPosition')}
           </p>
           <p className="truncate text-[11px] text-muted-foreground">
-            {labelOf(CONSULTANT_ROLES, position.role)} · {labelOf(SENIORITIES, position.seniority)}
+            {t(catalogKey('roles', position.role))} ·{' '}
+            {t(catalogKey('seniorities', position.seniority))}
             {request ? ` · ${request.code}` : null}
           </p>
         </div>
@@ -125,13 +122,10 @@ function PositionRow({
           <Tooltip>
             <TooltipTrigger asChild>
               <Badge variant="warning" className="cursor-help font-normal">
-                Sin dedicación
+                {t('teams.noAllocation')}
               </Badge>
             </TooltipTrigger>
-            <TooltipContent>
-              Mientras esta posición no tenga dedicación, la solicitud no puede cerrarse en la etapa
-              Onboarding.
-            </TooltipContent>
+            <TooltipContent>{t('teams.noAllocationTooltip')}</TooltipContent>
           </Tooltip>
         ) : null}
       </div>
@@ -146,15 +140,12 @@ function PositionRow({
               size="icon"
               className="h-8 w-8 text-muted-foreground hover:text-destructive"
               onClick={() => release.mutate(position.id)}
-              aria-label="Liberar posición"
+              aria-label={t('teams.release')}
             >
               <Trash2 className="h-3.5 w-3.5" />
             </Button>
           </TooltipTrigger>
-          <TooltipContent>
-            Liberar la posición. La solicitud deja de cumplir el requisito de la etapa Equipo y habrá
-            que reasignarla.
-          </TooltipContent>
+          <TooltipContent>{t('teams.releaseTooltip')}</TooltipContent>
         </Tooltip>
       ) : (
         <span className="w-8" aria-hidden />
@@ -172,6 +163,7 @@ function TeamCard({
   consultants: Consultant[];
   requests: StaffingRequest[];
 }) {
+  const { t } = useTranslation();
   const { team, used, free, overCapacity } = occupancy;
   const percent = Math.min(100, Math.round((used / team.capacityPct) * 100));
 
@@ -182,21 +174,21 @@ function TeamCard({
           <div className="min-w-0">
             <h2 className="truncate font-medium">{team.name}</h2>
             <p className="truncate text-xs text-muted-foreground">
-              {team.clientName} · Delivery Manager: {team.deliveryManager}
+              {team.clientName} · {t('teams.deliveryManager')}: {team.deliveryManager}
             </p>
           </div>
           <div className="flex flex-wrap gap-1.5">
             <Badge variant="secondary" className="font-normal">
-              {occupancy.covered.length} cubierta{occupancy.covered.length === 1 ? '' : 's'}
+              {t('teams.covered', { count: occupancy.covered.length })}
             </Badge>
             {occupancy.open.length > 0 ? (
               <Badge variant="outline" className="font-normal">
-                {occupancy.open.length} abierta{occupancy.open.length === 1 ? '' : 's'}
+                {t('teams.open', { count: occupancy.open.length })}
               </Badge>
             ) : null}
             {occupancy.withoutAllocation > 0 ? (
               <Badge variant="warning" className="font-normal">
-                {occupancy.withoutAllocation} sin dedicación
+                {t('teams.withoutAllocation', { count: occupancy.withoutAllocation })}
               </Badge>
             ) : null}
           </div>
@@ -204,7 +196,7 @@ function TeamCard({
 
         <div className="space-y-1.5">
           <div className="flex items-baseline justify-between text-xs">
-            <span className="text-muted-foreground">Dedicación comprometida</span>
+            <span className="text-muted-foreground">{t('teams.committed')}</span>
             <span className="tabular-nums">
               {used} / {team.capacityPct} pts
             </span>
@@ -222,12 +214,15 @@ function TeamCard({
             {overCapacity ? (
               <span className="inline-flex items-center gap-1">
                 <AlertCircle className="h-3 w-3" />
-                {Math.abs(free)} puntos por encima de la capacidad del equipo.
+                {t('teams.overCapacity', { count: Math.abs(free) })}
               </span>
             ) : free === 0 ? (
-              'El equipo está al completo: no queda hueco.'
+              t('teams.full')
             ) : (
-              `Quedan ${free} puntos libres, es decir hueco para ${(free / 100).toFixed(free % 100 === 0 ? 0 : 2)} persona${free === 100 ? '' : 's'} a tiempo completo.`
+              t('teams.free', {
+                points: free,
+                people: t('teams.people', { count: Number((free / 100).toFixed(2)) }),
+              })
             )}
           </p>
         </div>
@@ -236,7 +231,7 @@ function TeamCard({
       <ul className="divide-y">
         {occupancy.positions.length === 0 ? (
           <li className="px-4 py-6 text-center text-sm text-muted-foreground">
-            Este equipo no tiene posiciones todavía.
+            {t('teams.noPositions')}
           </li>
         ) : null}
         {occupancy.positions.map((position) => (
@@ -255,9 +250,10 @@ function TeamCard({
 
 export function TeamsView() {
   const { data, isLoading } = useWorkspace();
+  const { t } = useTranslation();
 
   if (isLoading || !data) {
-    return <p className="py-16 text-center text-sm text-muted-foreground">Cargando los equipos…</p>;
+    return <p className="py-16 text-center text-sm text-muted-foreground">{t('teams.loading')}</p>;
   }
 
   const occupancies = buildOccupancy(data.teams, data.positions);
@@ -267,24 +263,22 @@ export function TeamsView() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-semibold tracking-tight">Equipos</h1>
+        <h1 className="text-xl font-semibold tracking-tight">{t('teams.title')}</h1>
         <p className="mt-1 max-w-3xl text-sm leading-relaxed text-muted-foreground">
-          La vista del Delivery Manager: qué posiciones están cubiertas, cuáles siguen abiertas y
-          cuánta dedicación tiene comprometida cada equipo. La dedicación de una posición se fija
-          aquí, no en la solicitud, y sin ella la solicitud no puede llegar a <em>activo</em>.
+          <Trans i18nKey="teams.subtitle" components={[<em key="active" />]} />
         </p>
       </div>
 
       <div className="flex flex-wrap gap-2">
         <Badge variant="secondary" className="font-normal">
-          {data.teams.length} equipos
+          {t('teams.count', { count: data.teams.length })}
         </Badge>
         <Badge variant="outline" className="font-normal">
-          {openTotal === 1 ? '1 posición abierta' : `${openTotal} posiciones abiertas`}
+          {t('teams.openPositions', { count: openTotal })}
         </Badge>
         {pendingAllocation > 0 ? (
           <Badge variant="warning" className="font-normal">
-            {pendingAllocation} esperando dedicación
+            {t('teams.awaitingAllocation', { count: pendingAllocation })}
           </Badge>
         ) : null}
       </div>

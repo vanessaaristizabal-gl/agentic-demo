@@ -1,4 +1,5 @@
-import { stageDef, type StageId } from '@/domain';
+import { useTranslation } from 'react-i18next';
+import { stageKey, type StageId } from '@/domain';
 import { cn } from '@/lib/utils';
 
 /** Color estable por etapa. Sobrio: un tinte, nada de degradados. */
@@ -17,6 +18,7 @@ export function stageTone(stage: StageId): string {
 }
 
 export function StageBadge({ stage, className }: { stage: StageId; className?: string }) {
+  const { t } = useTranslation();
   return (
     <span
       className={cn(
@@ -25,7 +27,7 @@ export function StageBadge({ stage, className }: { stage: StageId; className?: s
         className,
       )}
     >
-      {stageDef(stage).label}
+      {t(stageKey(stage, 'label'))}
     </span>
   );
 }

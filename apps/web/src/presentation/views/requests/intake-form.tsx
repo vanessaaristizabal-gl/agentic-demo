@@ -1,10 +1,12 @@
+import { useTranslation } from 'react-i18next';
 import {
   BILLING_MODELS,
+  catalogKey,
   PRACTICES,
   PRIORITIES,
   stacksFor,
-  type RequestIntake,
   type PracticeId,
+  type RequestIntake,
 } from '@/domain';
 import { Input } from '@/components/ui/input';
 import {
@@ -36,38 +38,34 @@ export function IntakeForm({
   onChange: (patch: Partial<RequestIntake>) => void;
   disabled?: boolean;
 }) {
+  const { t } = useTranslation();
   const stacks = stacksFor(value.practice);
 
   return (
     <div className="grid gap-4 sm:grid-cols-2">
-      <Field id="clientName" label="Cliente" required className="sm:col-span-2">
+      <Field id="clientName" label={t('form.client')} required className="sm:col-span-2">
         <Input
           id="clientName"
           value={value.clientName}
           disabled={disabled}
-          placeholder="Nombre de la empresa que hace la petición"
+          placeholder={t('form.clientPlaceholder')}
           onChange={(event) => onChange({ clientName: event.target.value })}
         />
       </Field>
 
-      <Field
-        id="practice"
-        label="Práctica"
-        required
-        hint="Determina qué stacks se pueden elegir en el campo siguiente."
-      >
+      <Field id="practice" label={t('form.practice')} required hint={t('form.practiceHint')}>
         <Select
           value={value.practice || undefined}
           disabled={disabled}
           onValueChange={(next) => onChange({ practice: next as PracticeId, stack: '' })}
         >
           <SelectTrigger id="practice">
-            <SelectValue placeholder="Elige una práctica" />
+            <SelectValue placeholder={t('form.practicePlaceholder')} />
           </SelectTrigger>
           <SelectContent>
-            {PRACTICES.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
+            {PRACTICES.map((practice) => (
+              <SelectItem key={practice} value={practice}>
+                {t(catalogKey('practices', practice))}
               </SelectItem>
             ))}
           </SelectContent>
@@ -76,12 +74,8 @@ export function IntakeForm({
 
       <Field
         id="stack"
-        label="Stack tecnológico"
-        hint={
-          value.practice
-            ? 'Solo se ofrecen los stacks de la práctica elegida.'
-            : 'Elige antes una práctica: sus opciones dependen de ella.'
-        }
+        label={t('form.stack')}
+        hint={value.practice ? t('form.stackHintReady') : t('form.stackHintBlocked')}
       >
         <Select
           value={value.stack || undefined}
@@ -90,7 +84,7 @@ export function IntakeForm({
         >
           <SelectTrigger id="stack">
             <SelectValue
-              placeholder={value.practice ? 'Elige un stack' : 'Bloqueado hasta elegir práctica'}
+              placeholder={value.practice ? t('form.stackPlaceholder') : t('form.stackBlocked')}
             />
           </SelectTrigger>
           <SelectContent>
@@ -104,7 +98,7 @@ export function IntakeForm({
       </Field>
 
       {/* Obligatorio, pero sin asterisco. El fallo aparece al guardar. */}
-      <Field id="costCenter" label="Centro de costo">
+      <Field id="costCenter" label={t('form.costCenter')}>
         <Input
           id="costCenter"
           value={value.costCenter}
@@ -114,7 +108,7 @@ export function IntakeForm({
         />
       </Field>
 
-      <Field id="expectedStart" label="Fecha estimada de inicio">
+      <Field id="expectedStart" label={t('form.expectedStart')}>
         <Input
           id="expectedStart"
           type="date"
@@ -124,38 +118,38 @@ export function IntakeForm({
         />
       </Field>
 
-      <Field id="billingModel" label="Modelo de facturación">
+      <Field id="billingModel" label={t('form.billingModel')}>
         <Select
           value={value.billingModel || undefined}
           disabled={disabled}
           onValueChange={(next) => onChange({ billingModel: next as RequestIntake['billingModel'] })}
         >
           <SelectTrigger id="billingModel">
-            <SelectValue placeholder="Sin definir" />
+            <SelectValue placeholder={t('form.undefined')} />
           </SelectTrigger>
           <SelectContent>
-            {BILLING_MODELS.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
+            {BILLING_MODELS.map((model) => (
+              <SelectItem key={model} value={model}>
+                {t(catalogKey('billing', model))}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
       </Field>
 
-      <Field id="priority" label="Prioridad">
+      <Field id="priority" label={t('form.priority')}>
         <Select
           value={value.priority || undefined}
           disabled={disabled}
           onValueChange={(next) => onChange({ priority: next as RequestIntake['priority'] })}
         >
           <SelectTrigger id="priority">
-            <SelectValue placeholder="Sin definir" />
+            <SelectValue placeholder={t('form.undefined')} />
           </SelectTrigger>
           <SelectContent>
-            {PRIORITIES.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
+            {PRIORITIES.map((priority) => (
+              <SelectItem key={priority} value={priority}>
+                {t(catalogKey('priorities', priority))}
               </SelectItem>
             ))}
           </SelectContent>
@@ -164,16 +158,16 @@ export function IntakeForm({
 
       <Field
         id="description"
-        label="Descripción de la necesidad"
+        label={t('form.description')}
         className="sm:col-span-2"
-        hint="Lo que contó el cliente, en sus palabras. Se usa después para redactar la vacante."
+        hint={t('form.descriptionHint')}
       >
         <Textarea
           id="description"
           rows={3}
           value={value.description}
           disabled={disabled}
-          placeholder="Qué problema tiene el cliente y qué espera de nosotros"
+          placeholder={t('form.descriptionPlaceholder')}
           onChange={(event) => onChange({ description: event.target.value })}
         />
       </Field>
