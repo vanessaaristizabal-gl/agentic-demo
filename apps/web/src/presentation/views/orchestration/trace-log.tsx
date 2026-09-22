@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '@/store';
 import { toggleTrace } from '@/store/slices/ui-slice';
 
 const KIND_LABEL: Record<OrchestrationEvent['kind'], string> = {
-  'demanda-creada': 'Alta',
+  'solicitud-creada': 'Alta',
   entrega: 'Entrega',
   bloqueo: 'Bloqueo',
   'borrador-ia': 'Borrador',

@@ -24,13 +24,13 @@ import { BlockingAlert } from '@/presentation/components/blocking-alert';
 import { RequirementList } from '@/presentation/components/requirement-list';
 import { StageStepper } from '@/presentation/components/stage-stepper';
 import {
-  useAdvanceDemand,
+  useAdvanceRequest,
   useAssignTeam,
   useDraftVacancy,
-  useUpdateDemand,
+  useUpdateRequest,
 } from '@/presentation/hooks/use-workspace';
 import { useAppDispatch, useAppSelector } from '@/store';
-import { selectDemand } from '@/store/slices/ui-slice';
+import { selectRequest } from '@/store/slices/ui-slice';
 import { IntakeForm } from './intake-form';
 import {
   ActivePanel,
@@ -43,7 +43,7 @@ import {
 } from './stage-panels';
 
 const PANELS: Record<StageId, ((props: PanelProps) => ReactElement) | null> = {
-  demanda: null,
+  registro: null,
   perfil: ProfilePanel,
   equipo: TeamPanel,
   vacante: VacancyPanel,
@@ -52,66 +52,66 @@ const PANELS: Record<StageId, ((props: PanelProps) => ReactElement) | null> = {
   activo: ActivePanel,
 };
 
-export function DemandDialog({ workspace }: { workspace: Workspace }) {
+export function RequestDialog({ workspace }: { workspace: Workspace }) {
   const dispatch = useAppDispatch();
-  const demandId = useAppSelector((state) => state.ui.selectedDemandId);
+  const requestId = useAppSelector((state) => state.ui.selectedRequestId);
   const [report, setReport] = useState<BlockingReport | null>(null);
-  const [tab, setTab] = useState<StageId>('demanda');
+  const [tab, setTab] = useState<StageId>('registro');
 
-  const update = useUpdateDemand();
+  const update = useUpdateRequest();
   const assignTeam = useAssignTeam();
   const draft = useDraftVacancy();
-  const advance = useAdvanceDemand();
+  const advance = useAdvanceRequest();
 
-  const demand = workspace.demands.find((candidate) => candidate.id === demandId) ?? null;
-  const inspection = demand ? workspace.inspections[demand.id] : null;
+  const request = workspace.requests.find((candidate) => candidate.id === requestId) ?? null;
+  const inspection = request ? workspace.inspections[request.id] : null;
 
-  // Al abrir una demanda se muestra la etapa en la que está parada.
+  // Al abrir una solicitud se muestra la etapa en la que está parada.
   useEffect(() => {
-    if (demand) {
-      setTab(demand.stage);
+    if (request) {
+      setTab(request.stage);
       setReport(null);
     }
-  }, [demand?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [request?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (!demand || !inspection) return null;
+  if (!request || !inspection) return null;
 
   const panelProps: PanelProps = {
-    demand,
+    request,
     teams: workspace.teams,
     consultants: workspace.consultants,
-    onPatch: (patch) => update.mutate({ demandId: demand.id, patch }),
-    onAssignTeam: (teamId) => assignTeam.mutate({ demandId: demand.id, teamId }),
-    onDraft: () => draft.mutate(demand.id),
+    onPatch: (patch) => update.mutate({ requestId: request.id, patch }),
+    onAssignTeam: (teamId) => assignTeam.mutate({ requestId: request.id, teamId }),
+    onDraft: () => draft.mutate(request.id),
     drafting: draft.isPending,
   };
 
-  const reachable = STAGES.filter((stage) => stage.index <= stageIndex(demand.stage));
-  const current = stageDef(demand.stage);
-  const owner = agentForStage(demand.stage);
+  const reachable = STAGES.filter((stage) => stage.index <= stageIndex(request.stage));
+  const current = stageDef(request.stage);
+  const owner = agentForStage(request.stage);
 
   const onAdvance = () => {
-    advance.mutate(demand.id, {
+    advance.mutate(request.id, {
       onSuccess: (outcome) => setReport(outcome.ok ? null : outcome.report),
     });
   };
 
   return (
-    <Dialog open onOpenChange={(open) => !open && dispatch(selectDemand(null))}>
+    <Dialog open onOpenChange={(open) => !open && dispatch(selectRequest(null))}>
       <DialogContent className="max-w-5xl">
         <DialogHeader>
           <div className="flex flex-wrap items-center gap-2">
             <Badge variant="outline" className="font-mono text-[11px]">
-              {demand.code}
+              {request.code}
             </Badge>
             <Badge variant="secondary" className="font-normal">
               {owner.name}
             </Badge>
           </div>
-          <DialogTitle className="text-left">{demand.intake.clientName || 'Cliente sin nombre'}</DialogTitle>
+          <DialogTitle className="text-left">{request.intake.clientName || 'Cliente sin nombre'}</DialogTitle>
           <DialogDescription className="text-left">{current.purpose}</DialogDescription>
           <div className="pt-3">
-            <StageStepper current={demand.stage} />
+            <StageStepper current={request.stage} />
           </div>
         </DialogHeader>
 
@@ -130,15 +130,15 @@ export function DemandDialog({ workspace }: { workspace: Workspace }) {
                 </TabsList>
               </div>
 
-              <TabsContent value="demanda">
+              <TabsContent value="registro">
                 <IntakeForm
-                  value={demand.intake}
-                  onChange={(patch) => update.mutate({ demandId: demand.id, patch: { intake: patch } })}
+                  value={request.intake}
+                  onChange={(patch) => update.mutate({ requestId: request.id, patch: { intake: patch } })}
                 />
               </TabsContent>
 
               {reachable
-                .filter((stage) => stage.id !== 'demanda')
+                .filter((stage) => stage.id !== 'registro')
                 .map((stage) => {
                   const Panel = PANELS[stage.id];
                   return (
@@ -155,7 +155,7 @@ export function DemandDialog({ workspace }: { workspace: Workspace }) {
               <h3 className="text-sm font-medium">Requisitos acumulados</h3>
               <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
                 {inspection.isFinal
-                  ? 'La demanda está cerrada.'
+                  ? 'La solicitud está cerrada.'
                   : `Para entregar a ${inspection.nextAgent?.name} se comprueban ${inspection.checks.length} requisitos, incluidos los de etapas anteriores.`}
               </p>
               <div className="mt-2">

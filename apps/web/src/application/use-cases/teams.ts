@@ -2,7 +2,7 @@ import { allocatedPct, type Position, type Team } from '@/domain';
 import type { Container } from '../ports';
 
 /**
- * La dedicación se fija aquí, desde la vista Equipos, y no en la demanda.
+ * La dedicación se fija aquí, desde la vista Equipos, y no en la solicitud.
  * Es lo que bloquea la última etapa del flujo.
  */
 export async function setPositionAllocation(
@@ -15,24 +15,24 @@ export async function setPositionAllocation(
 
   await container.positions.save({ ...position, allocationPct });
 
-  if (position.demandId) {
-    const demand = await container.demands.get(position.demandId);
-    if (demand) {
+  if (position.requestId) {
+    const request = await container.requests.get(position.requestId);
+    if (request) {
       await container.events.append([
         {
           id: container.system.id('evt'),
           at: container.system.now(),
-          demandId: demand.id,
-          demandCode: demand.code,
+          requestId: request.id,
+          requestCode: request.code,
           kind: 'dedicacion',
           fromAgent: 'delivery-manager',
           toAgent: 'delivery-manager',
-          fromStage: demand.stage,
-          toStage: demand.stage,
+          fromStage: request.stage,
+          toStage: request.stage,
           summary:
             allocationPct === null
-              ? `Delivery Manager retira la dedicación de la posición de ${demand.code}.`
-              : `Delivery Manager fija la dedicación de ${demand.code} en ${allocationPct} puntos.`,
+              ? `Delivery Manager retira la dedicación de la posición de ${request.code}.`
+              : `Delivery Manager fija la dedicación de ${request.code} en ${allocationPct} puntos.`,
           checks: [],
         },
       ]);
@@ -46,21 +46,21 @@ export async function releasePosition(container: Container, positionId: string):
   if (!position) return;
   await container.positions.remove(positionId);
 
-  if (position.demandId) {
-    const demand = await container.demands.get(position.demandId);
-    if (demand) {
+  if (position.requestId) {
+    const request = await container.requests.get(position.requestId);
+    if (request) {
       await container.events.append([
         {
           id: container.system.id('evt'),
           at: container.system.now(),
-          demandId: demand.id,
-          demandCode: demand.code,
+          requestId: request.id,
+          requestCode: request.code,
           kind: 'bloqueo',
           fromAgent: 'delivery-manager',
           toAgent: null,
-          fromStage: demand.stage,
+          fromStage: request.stage,
           toStage: null,
-          summary: `Se liberó la posición de ${demand.code}: la demanda vuelve a necesitar equipo.`,
+          summary: `Se liberó la posición de ${request.code}: la solicitud vuelve a necesitar equipo.`,
           checks: [],
         },
       ]);

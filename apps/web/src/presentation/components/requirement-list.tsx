@@ -12,7 +12,7 @@ export function RequirementList({ checks }: { checks: RequirementCheck[] }) {
   if (checks.length === 0) {
     return (
       <p className="text-sm text-muted-foreground">
-        Esta etapa no exige nada: la demanda ya está en el final del flujo.
+        Esta etapa no exige nada: la solicitud ya está en el final del flujo.
       </p>
     );
   }

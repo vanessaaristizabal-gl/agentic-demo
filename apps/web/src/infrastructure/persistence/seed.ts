@@ -1,9 +1,9 @@
 import {
-  createDemand,
+  createRequest,
   initialPhases,
   initialsOf,
   type Consultant,
-  type Demand,
+  type StaffingRequest,
   type LifecyclePhase,
   type OrchestrationEvent,
   type Position,
@@ -14,7 +14,7 @@ import { db } from './database';
 /**
  * Datos de arranque.
  *
- * Están pensados para una demo: hay una demanda parada en cada etapa y cada
+ * Están pensados para una demo: hay una solicitud parada en cada etapa y cada
  * una tropieza con una regla distinta, para poder enseñarlas sin preparar
  * nada antes.
  */
@@ -31,33 +31,33 @@ const TEAMS: Team[] = [
   {
     id: 'team-aurora',
     name: 'Equipo Aurora',
-    clientName: 'Banco Andino',
+    clientName: 'Lakeside Bank',
     practice: 'digital-products',
-    deliveryManager: 'Lucía Ferrer',
+    deliveryManager: 'Catalina Restrepo',
     capacityPct: 300,
   },
   {
     id: 'team-bitacora',
     name: 'Equipo Bitácora',
-    clientName: 'Seguros del Sur',
+    clientName: 'Ridgefield Insurance',
     practice: 'quality-engineering',
-    deliveryManager: 'Iván Cortés',
+    deliveryManager: 'Julián Betancur',
     capacityPct: 200,
   },
   {
     id: 'team-cardume',
     name: 'Equipo Cardume',
-    clientName: 'Retail Norte',
+    clientName: 'Summit Retail Group',
     practice: 'cloud-data',
-    deliveryManager: 'Paula Nieto',
+    deliveryManager: 'Paula Ossa',
     capacityPct: 400,
   },
   {
     id: 'team-delta',
     name: 'Equipo Delta',
-    clientName: 'Aerolínea Pacífico',
+    clientName: 'Blue Ridge Airlines',
     practice: 'ai-automation',
-    deliveryManager: 'Rubén Salas',
+    deliveryManager: 'Mauricio Cadavid',
     capacityPct: 200,
   },
 ];
@@ -78,8 +78,8 @@ interface SeedConsultant {
 
 const SEED_CONSULTANTS: SeedConsultant[] = [
   {
-    id: 'con-ana-pardo',
-    name: 'Ana Pardo',
+    id: 'con-daniela-quintero',
+    name: 'Daniela Quintero',
     role: 'desarrollador',
     seniority: 'senior',
     teamId: 'team-aurora',
@@ -90,8 +90,8 @@ const SEED_CONSULTANTS: SeedConsultant[] = [
     outcomeNote: '',
   },
   {
-    id: 'con-hugo-marin',
-    name: 'Hugo Marín',
+    id: 'con-camilo-marin',
+    name: 'Camilo Marín',
     role: 'qa',
     seniority: 'semi-senior',
     teamId: 'team-bitacora',
@@ -102,8 +102,8 @@ const SEED_CONSULTANTS: SeedConsultant[] = [
     outcomeNote: '',
   },
   {
-    id: 'con-sofia-leiva',
-    name: 'Sofía Leiva',
+    id: 'con-sofia-loaiza',
+    name: 'Sofía Loaiza',
     role: 'tech-manager',
     seniority: 'staff',
     teamId: 'team-cardume',
@@ -115,8 +115,8 @@ const SEED_CONSULTANTS: SeedConsultant[] = [
       'Rota al Equipo Delta en octubre para arrancar la práctica de automatización con el mismo cliente.',
   },
   {
-    id: 'con-diego-navas',
-    name: 'Diego Navas',
+    id: 'con-diego-naranjo',
+    name: 'Diego Naranjo',
     role: 'desarrollador',
     seniority: 'junior',
     teamId: 'team-aurora',
@@ -127,8 +127,8 @@ const SEED_CONSULTANTS: SeedConsultant[] = [
     outcomeNote: '',
   },
   {
-    id: 'con-marta-ruiz',
-    name: 'Marta Ruiz',
+    id: 'con-marcela-rueda',
+    name: 'Marcela Rueda',
     role: 'desarrollador',
     seniority: 'staff',
     teamId: 'team-cardume',
@@ -181,7 +181,7 @@ function buildConsultants(): Consultant[] {
     role: seed.role,
     seniority: seed.seniority,
     teamId: seed.teamId,
-    demandId: null,
+    requestId: null,
     initials: initialsOf(seed.name),
     joinedAt: day(seed.joinedOffset),
     outcome: seed.outcome,
@@ -194,7 +194,7 @@ function coveredPositions(): Position[] {
   return SEED_CONSULTANTS.map((seed, index) => ({
     id: `pos-cubierta-${index + 1}`,
     teamId: seed.teamId,
-    demandId: null,
+    requestId: null,
     consultantId: seed.id,
     role: seed.role,
     seniority: seed.seniority,
@@ -206,20 +206,20 @@ function coveredPositions(): Position[] {
 }
 
 /* ------------------------------------------------------------------ */
-/* Demandas: una parada en cada etapa, cada una con su tropiezo         */
+/* Solicitudes: una parada en cada etapa, cada una con su tropiezo         */
 /* ------------------------------------------------------------------ */
 
-function buildDemands(): { demands: Demand[]; positions: Position[] } {
+function buildRequests(): { requests: StaffingRequest[]; positions: Position[] } {
   const positions: Position[] = [];
 
-  const base = (id: string, code: string, offset: number): Demand =>
-    createDemand({ id, code, now: day(offset) });
+  const base = (id: string, code: string, offset: number): StaffingRequest =>
+    createRequest({ id, code, now: day(offset) });
 
-  // 1 · Etapa Demanda — le falta el centro de costo, que no está marcado.
-  const uno: Demand = {
-    ...base('dem-001', 'DEM-2026-041', -3),
+  // 1 · Etapa Solicitud — le falta el centro de costo, que no está marcado.
+  const uno: StaffingRequest = {
+    ...base('sol-001', 'SOL-2026-041', -3),
     intake: {
-      clientName: 'Municipalidad de Valle Alto',
+      clientName: 'City of Riverton',
       practice: 'digital-products',
       stack: '',
       costCenter: '',
@@ -232,12 +232,12 @@ function buildDemands(): { demands: Demand[]; positions: Position[] } {
   };
 
   // 2 · Etapa Perfil — la práctica está puesta pero falta el stack que depende de ella.
-  const dos: Demand = {
-    ...base('dem-002', 'DEM-2026-042', -6),
+  const dos: StaffingRequest = {
+    ...base('sol-002', 'SOL-2026-042', -6),
     stage: 'perfil',
-    stageEnteredAt: { demanda: day(-6), perfil: day(-4) },
+    stageEnteredAt: { registro: day(-6), perfil: day(-4) },
     intake: {
-      clientName: 'Seguros del Sur',
+      clientName: 'Ridgefield Insurance',
       practice: 'quality-engineering',
       stack: '',
       costCenter: 'CC-2207',
@@ -257,12 +257,12 @@ function buildDemands(): { demands: Demand[]; positions: Position[] } {
   };
 
   // 3 · Etapa Equipo — perfil completo, sin equipo asignado todavía.
-  const tres: Demand = {
-    ...base('dem-003', 'DEM-2026-043', -9),
+  const tres: StaffingRequest = {
+    ...base('sol-003', 'SOL-2026-043', -9),
     stage: 'equipo',
-    stageEnteredAt: { demanda: day(-9), perfil: day(-8), equipo: day(-5) },
+    stageEnteredAt: { registro: day(-9), perfil: day(-8), equipo: day(-5) },
     intake: {
-      clientName: 'Retail Norte',
+      clientName: 'Summit Retail Group',
       practice: 'cloud-data',
       stack: 'Databricks + Spark',
       costCenter: 'CC-3390',
@@ -282,17 +282,17 @@ function buildDemands(): { demands: Demand[]; positions: Position[] } {
   };
 
   // 4 · Etapa Vacante — sin descripción del puesto: es el caso de «Redactar con IA».
-  const cuatro: Demand = {
-    ...base('dem-004', 'DEM-2026-044', -14),
+  const cuatro: StaffingRequest = {
+    ...base('sol-004', 'SOL-2026-044', -14),
     stage: 'vacante',
     stageEnteredAt: {
-      demanda: day(-14),
+      registro: day(-14),
       perfil: day(-12),
       equipo: day(-9),
       vacante: day(-6),
     },
     intake: {
-      clientName: 'Banco Andino',
+      clientName: 'Lakeside Bank',
       practice: 'digital-products',
       stack: 'React + TypeScript',
       costCenter: 'CC-4410',
@@ -312,10 +312,10 @@ function buildDemands(): { demands: Demand[]; positions: Position[] } {
     assignment: {
       teamId: 'team-aurora',
       joinDate: dateOnly(14),
-      technicalReferent: 'Marta Ruiz',
+      technicalReferent: 'Marcela Rueda',
     },
     vacancy: {
-      title: 'Desarrollador Senior React — Banco Andino',
+      title: 'Desarrollador Senior React — Lakeside Bank',
       jobDescription: '',
       channels: ['LinkedIn'],
       salaryBand: 'banda-3',
@@ -324,9 +324,9 @@ function buildDemands(): { demands: Demand[]; positions: Position[] } {
     },
   };
   positions.push({
-    id: 'pos-dem-004',
+    id: 'pos-sol-004',
     teamId: 'team-aurora',
-    demandId: 'dem-004',
+    requestId: 'sol-004',
     consultantId: null,
     role: 'desarrollador',
     seniority: 'senior',
@@ -338,23 +338,23 @@ function buildDemands(): { demands: Demand[]; positions: Position[] } {
 
   // 5 · Etapa Entrevista — el referente técnico de la etapa 3 se borró:
   //     la etapa 5 sigue exigiéndolo.
-  const cinco: Demand = {
-    ...base('dem-005', 'DEM-2026-045', -22),
+  const cinco: StaffingRequest = {
+    ...base('sol-005', 'SOL-2026-045', -22),
     stage: 'entrevista',
     stageEnteredAt: {
-      demanda: day(-22),
+      registro: day(-22),
       perfil: day(-20),
       equipo: day(-17),
       vacante: day(-12),
       entrevista: day(-4),
     },
     intake: {
-      clientName: 'Aerolínea Pacífico',
+      clientName: 'Blue Ridge Airlines',
       practice: 'ai-automation',
       stack: 'Python + LangChain',
       costCenter: 'CC-5108',
       description:
-        'Asistente interno para el centro de atención: necesitan alguien que lo lleve a producción.',
+        'Asistente interno para el centro de atención al pasajero: necesitan alguien que lo lleve a producción.',
       expectedStart: dateOnly(10),
       billingModel: 'precio-fijo',
       priority: 'critica',
@@ -373,25 +373,25 @@ function buildDemands(): { demands: Demand[]; positions: Position[] } {
       technicalReferent: '',
     },
     vacancy: {
-      title: 'Desarrollador Senior de IA — Aerolínea Pacífico',
+      title: 'Desarrollador Senior de IA — Blue Ridge Airlines',
       jobDescription:
-        'Buscamos un desarrollador senior para llevar a producción el asistente interno del centro de atención de Aerolínea Pacífico. El trabajo combina integración con sistemas existentes, evaluación de calidad de respuestas y puesta en marcha con observabilidad desde el primer día.',
+        'Buscamos un desarrollador senior para llevar a producción el asistente interno del centro de atención de Blue Ridge Airlines. El trabajo combina integración con sistemas existentes, evaluación de calidad de respuestas y puesta en marcha con observabilidad desde el primer día.',
       channels: ['LinkedIn', 'Referidos internos'],
       salaryBand: 'banda-4',
       draftSource: 'manual',
       draftedAt: day(-12),
     },
     interview: {
-      candidateName: 'Bruno Cifuentes',
+      candidateName: 'Sebastián Cifuentes',
       technicalScore: 8,
       decision: 'pendiente',
       feedback: '',
     },
   };
   positions.push({
-    id: 'pos-dem-005',
+    id: 'pos-sol-005',
     teamId: 'team-delta',
-    demandId: 'dem-005',
+    requestId: 'sol-005',
     consultantId: null,
     role: 'desarrollador',
     seniority: 'senior',
@@ -402,11 +402,11 @@ function buildDemands(): { demands: Demand[]; positions: Position[] } {
   });
 
   // 6 · Etapa Onboarding — todo hecho salvo la dedicación, que se fija en Equipos.
-  const seis: Demand = {
-    ...base('dem-006', 'DEM-2026-046', -35),
+  const seis: StaffingRequest = {
+    ...base('sol-006', 'SOL-2026-046', -35),
     stage: 'onboarding',
     stageEnteredAt: {
-      demanda: day(-35),
+      registro: day(-35),
       perfil: day(-33),
       equipo: day(-30),
       vacante: day(-24),
@@ -414,7 +414,7 @@ function buildDemands(): { demands: Demand[]; positions: Position[] } {
       onboarding: day(-5),
     },
     intake: {
-      clientName: 'Seguros del Sur',
+      clientName: 'Ridgefield Insurance',
       practice: 'quality-engineering',
       stack: 'Playwright + TypeScript',
       costCenter: 'CC-2207',
@@ -434,19 +434,19 @@ function buildDemands(): { demands: Demand[]; positions: Position[] } {
     assignment: {
       teamId: 'team-bitacora',
       joinDate: dateOnly(7),
-      technicalReferent: 'Hugo Marín',
+      technicalReferent: 'Camilo Marín',
     },
     vacancy: {
-      title: 'QA Automation Senior — Seguros del Sur',
+      title: 'QA Automation Senior — Ridgefield Insurance',
       jobDescription:
-        'Buscamos un QA senior para automatizar la regresión de pólizas de Seguros del Sur dentro del Equipo Bitácora. El objetivo es bajar la suite de seis horas a menos de una y sostenerla en cada liberación, trabajando codo a codo con el equipo de desarrollo del cliente.',
+        'Buscamos un QA senior para automatizar la regresión de pólizas de Ridgefield Insurance dentro del Equipo Bitácora. El objetivo es bajar la suite de seis horas a menos de una y sostenerla en cada liberación, trabajando codo a codo con el equipo de desarrollo del cliente.',
       channels: ['LinkedIn', 'Portal de empleo propio'],
       salaryBand: 'banda-3',
       draftSource: 'manual',
       draftedAt: day(-24),
     },
     interview: {
-      candidateName: 'Elena Vidal',
+      candidateName: 'Valentina Escobar',
       technicalScore: 9,
       decision: 'contratar',
       feedback:
@@ -456,14 +456,14 @@ function buildDemands(): { demands: Demand[]; positions: Position[] } {
       contractType: 'indefinido',
       equipmentDelivered: true,
       accesses: ['Correo corporativo', 'Repositorio del cliente', 'VPN del cliente'],
-      buddyName: 'Hugo Marín',
+      buddyName: 'Camilo Marín',
       startDate: dateOnly(7),
     },
   };
   positions.push({
-    id: 'pos-dem-006',
+    id: 'pos-sol-006',
     teamId: 'team-bitacora',
-    demandId: 'dem-006',
+    requestId: 'sol-006',
     consultantId: null,
     role: 'qa',
     seniority: 'senior',
@@ -474,21 +474,21 @@ function buildDemands(): { demands: Demand[]; positions: Position[] } {
     coveredAt: null,
   });
 
-  return { demands: [uno, dos, tres, cuatro, cinco, seis], positions };
+  return { requests: [uno, dos, tres, cuatro, cinco, seis], positions };
 }
 
-function seedEvents(demands: Demand[]): OrchestrationEvent[] {
-  return demands.map((demand, index) => ({
+function seedEvents(requests: StaffingRequest[]): OrchestrationEvent[] {
+  return requests.map((request, index) => ({
     id: `evt-seed-${index + 1}`,
-    at: demand.createdAt,
-    demandId: demand.id,
-    demandCode: demand.code,
-    kind: 'demanda-creada' as const,
+    at: request.createdAt,
+    requestId: request.id,
+    requestCode: request.code,
+    kind: 'solicitud-creada' as const,
     fromAgent: null,
     toAgent: 'sales' as const,
     fromStage: null,
-    toStage: 'demanda' as const,
-    summary: `Sales registra ${demand.code} para ${demand.intake.clientName}.`,
+    toStage: 'registro' as const,
+    summary: `Sales registra ${request.code} para ${request.intake.clientName}.`,
     checks: [],
   }));
 }
@@ -502,19 +502,19 @@ export async function seedIfEmpty(): Promise<void> {
 
 /** Siembra sin preguntar. La usa el botón «Reiniciar datos». */
 export async function seedNow(): Promise<void> {
-  const { demands, positions } = buildDemands();
+  const { requests, positions } = buildRequests();
   const consultants = buildConsultants();
   const allPositions = [...coveredPositions(), ...positions];
 
   await db.transaction(
     'rw',
-    [db.demands, db.teams, db.positions, db.consultants, db.events],
+    [db.requests, db.teams, db.positions, db.consultants, db.events],
     async () => {
       await db.teams.bulkPut(TEAMS);
       await db.consultants.bulkPut(consultants);
       await db.positions.bulkPut(allPositions);
-      await db.demands.bulkPut(demands);
-      await db.events.bulkPut(seedEvents(demands));
+      await db.requests.bulkPut(requests);
+      await db.events.bulkPut(seedEvents(requests));
     },
   );
 }

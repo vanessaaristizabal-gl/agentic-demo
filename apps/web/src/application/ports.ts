@@ -1,6 +1,6 @@
 import type {
   Consultant,
-  Demand,
+  StaffingRequest,
   OrchestrationEvent,
   Position,
   Team,
@@ -13,11 +13,11 @@ import type {
  * La infraestructura las implementa y el contenedor las inyecta.
  */
 
-export interface DemandRepository {
-  list(): Promise<Demand[]>;
-  get(id: string): Promise<Demand | undefined>;
-  save(demand: Demand): Promise<void>;
-  /** Siguiente código legible de demanda, del tipo DEM-2026-047. */
+export interface RequestRepository {
+  list(): Promise<StaffingRequest[]>;
+  get(id: string): Promise<StaffingRequest | undefined>;
+  save(request: StaffingRequest): Promise<void>;
+  /** Siguiente código legible de solicitud, del tipo SOL-2026-047. */
   nextCode(): Promise<string>;
 }
 
@@ -78,7 +78,7 @@ export interface SystemPort {
 }
 
 export interface Container {
-  demands: DemandRepository;
+  requests: RequestRepository;
   teams: TeamRepository;
   positions: PositionRepository;
   consultants: ConsultantRepository;

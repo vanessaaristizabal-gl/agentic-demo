@@ -32,20 +32,38 @@ Otros comandos:
 
 ## Los siete roles y las siete etapas
 
-Una **demanda** avanza por siete etapas. Cada una tiene un rol responsable, y **el usuario la
-avanza explícitamente**: nada se mueve solo.
+Una **solicitud** es la petición de una persona: nace cuando un cliente dice que necesita a
+alguien y termina cuando esa persona está trabajando en el equipo. No es un proyecto ni un
+contrato —un mismo cliente puede tener varias abiertas a la vez— ni es la vacante, que es solo
+una de sus etapas. Cada solicitud se identifica con un código del tipo `SOL-2026-044`.
+
+Avanza por siete etapas. Cada una tiene un rol responsable, y **el usuario la avanza
+explícitamente**: nada se mueve solo.
 
 | # | Etapa | Responsable | Qué hace |
 | --- | --- | --- | --- |
-| 1 | `demanda` | Sales | Registra la necesidad del cliente |
+| 1 | `registro` | Sales | Registra la necesidad del cliente |
 | 2 | `perfil` | Solution Architect | Define el perfil técnico |
-| 3 | `equipo` | Delivery Manager | Asigna la demanda a un equipo y abre la posición |
+| 3 | `equipo` | Delivery Manager | Asigna la solicitud a un equipo y abre la posición |
 | 4 | `vacante` | Recruiter | Publica la vacante |
 | 5 | `entrevista` | Engineering Manager | Evalúa al candidato y decide |
 | 6 | `onboarding` | Recursos Humanos | Gestiona contrato, equipo y accesos |
 | 7 | `activo` | Consultor | Queda trabajando en el equipo |
 
 El consultor puede ser desarrollador, QA o tech manager.
+
+---
+
+### El escenario de los datos de ejemplo
+
+La consultora es colombiana y trabaja *nearshore*: los equipos y las personas son de Colombia
+—de ahí los tipos de contrato **término indefinido**, **obra o labor** y **contractor**—, y los
+clientes son empresas de Estados Unidos. Por eso las bandas salariales van en dólares y por eso
+el nivel de inglés es un requisito del perfil y no un adorno.
+
+Todas las empresas y personas de los datos de arranque son **inventadas**. No se usan nombres de
+compañías reales a propósito: un expediente con un cliente real y un candidato con nombre y
+puntuación se leería como un registro auténtico aunque no lo sea.
 
 ---
 
@@ -56,14 +74,14 @@ El consultor puede ser desarrollador, QA o tech manager.
 La vista principal. Arriba, cuatro cifras de cabecera —en curso, listas para entregar, sin poder
 avanzar y consultores activos— junto a la gráfica **«Qué frena el flujo»**: los requisitos sin
 cumplir agrupados por la etapa que los pide. Como los requisitos se acumulan, deja ver que una
-etapa temprana sigue frenando demandas que ya van por el final.
+etapa temprana sigue frenando solicitudes que ya van por el final.
 
-Debajo, los siete roles como agentes del sistema: cada uno con su bandeja, cuántas demandas
-esperan por él y cuántas de ellas no podrían avanzar hoy. Después, un tablero con las demandas
+Debajo, los siete roles como agentes del sistema: cada uno con su bandeja, cuántas solicitudes
+esperan por él y cuántas de ellas no podrían avanzar hoy. Después, un tablero con las solicitudes
 repartidas por etapa; cada tarjeta lleva una barra de siete tramos que muestra de un vistazo por
 dónde va.
 
-Al abrir una demanda, un **stepper** marca las siete etapas: recorridas con una marca, la actual
+Al abrir una solicitud, un **stepper** marca las siete etapas: recorridas con una marca, la actual
 con un anillo y las pendientes en hueco, con el pie «Etapa N de 7». Debajo, el formulario de su
 responsable y la lista completa de **requisitos acumulados**, con la etapa que introdujo cada uno.
 Al final de la vista, la **traza de orquestación**: qué agente entregó qué a quién, cuándo y con
@@ -71,7 +89,7 @@ qué comprobaciones.
 
 ### Ciclo del consultor
 
-Se elige una persona y se ve su recorrido completo después de la demanda: onboarding, ramp-up,
+Se elige una persona y se ve su recorrido completo después de la solicitud: onboarding, ramp-up,
 productivo, evaluación y salida o rotación. Cada fase dice qué exigió y en qué fecha se cumplió
 cada exigencia. El ciclo también se avanza a mano, fase a fase.
 
@@ -80,7 +98,7 @@ cada exigencia. El ciclo también se avanza a mano, fase a fase.
 La vista del Delivery Manager: los equipos con sus posiciones cubiertas y abiertas, la dedicación
 de cada persona, la capacidad comprometida y dónde queda hueco.
 
-**Aquí se fija la dedicación de cada posición**, y no en la demanda. Es una de las condiciones que
+**Aquí se fija la dedicación de cada posición**, y no en la solicitud. Es una de las condiciones que
 bloquean el cierre de la última etapa.
 
 ---
@@ -89,7 +107,7 @@ bloquean el cierre de la última etapa.
 
 Estas reglas existen a propósito. No son descuidos:
 
-- **El formulario de la demanda tiene ocho campos y tres obligatorios.**
+- **El formulario de la solicitud tiene ocho campos y tres obligatorios.**
 - **Un campo obligatorio no lleva marca visual.** «Centro de costo» es obligatorio, no tiene
   asterisco y solo falla al guardar.
 - **Las opciones de un campo dependen de otro.** «Stack tecnológico» solo ofrece los stacks de la
@@ -104,7 +122,7 @@ Estas reglas existen a propósito. No son descuidos:
 - **Los mensajes de error nombran todo lo que falta de una vez**, en un solo mensaje, con frases
   completas que dicen qué falta, por qué se pide y dónde se arregla.
 
-Los datos de arranque dejan una demanda parada en cada etapa, cada una tropezando con una regla
+Los datos de arranque dejan una solicitud parada en cada etapa, cada una tropezando con una regla
 distinta. El botón de reinicio de la cabecera vuelve a ese punto de partida.
 
 ---
@@ -177,7 +195,7 @@ aplicación de los puertos y del dominio, y el dominio no depende de nadie.
 
 Cada rol se modela como un agente con bandeja, capacidades declaradas, una etapa de la que es
 responsable y un único destinatario al que entrega el trabajo. El orquestador
-(`domain/orchestrator.ts`) es una función pura que, dada una demanda:
+(`domain/orchestrator.ts`) es una función pura que, dada una solicitud:
 
 - decide qué agente la tiene,
 - evalúa los requisitos acumulados,

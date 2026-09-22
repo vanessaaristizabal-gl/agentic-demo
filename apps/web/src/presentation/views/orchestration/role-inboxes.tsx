@@ -11,7 +11,7 @@ import { setRoleFilter } from '@/store/slices/ui-slice';
  * Los siete roles, cada uno con su bandeja.
  *
  * Es la representación del sistema multiagente: cada tarjeta es un agente
- * con su etapa, sus capacidades, cuántas demandas esperan por él y cuántas
+ * con su etapa, sus capacidades, cuántas solicitudes esperan por él y cuántas
  * de ellas no podrían avanzar hoy.
  */
 export function RoleInboxes({ inboxes }: { inboxes: AgentInbox[] }) {
@@ -23,7 +23,7 @@ export function RoleInboxes({ inboxes }: { inboxes: AgentInbox[] }) {
       {inboxes.map((inbox, index) => {
         const stage = stageDef(inbox.agent.owns);
         const active = roleFilter === inbox.agent.id;
-        const waiting = inbox.demands.length;
+        const waiting = inbox.requests.length;
 
         return (
           <button
@@ -50,7 +50,7 @@ export function RoleInboxes({ inboxes }: { inboxes: AgentInbox[] }) {
                   {waiting}
                 </span>
                 <span className="text-[10px] text-muted-foreground">
-                  {waiting === 1 ? 'demanda' : 'demandas'}
+                  {waiting === 1 ? 'solicitud' : 'solicitudes'}
                 </span>
               </span>
             </div>

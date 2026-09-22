@@ -2,7 +2,7 @@ import type { Container, SystemPort } from '@/application/ports';
 import { draftClient } from './http/draft-client';
 import {
   consultantRepository,
-  demandRepository,
+  requestRepository,
   eventRepository,
   positionRepository,
   teamRepository,
@@ -15,7 +15,7 @@ const system: SystemPort = {
 
 /** Único punto donde se conectan dominio, aplicación e infraestructura. */
 export const container: Container = {
-  demands: demandRepository,
+  requests: requestRepository,
   teams: teamRepository,
   positions: positionRepository,
   consultants: consultantRepository,

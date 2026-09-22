@@ -16,8 +16,8 @@ export function FlowMetrics({ workspace }: { workspace: Workspace }) {
           value={metrics.inFlight}
           hint={
             metrics.closed === 0
-              ? 'Demandas recorriendo el flujo.'
-              : `Demandas recorriendo el flujo. ${metrics.closed} ya cerradas.`
+              ? 'Solicitudes recorriendo el flujo.'
+              : `Solicitudes recorriendo el flujo. ${metrics.closed} ya cerradas.`
           }
         />
         <StatTile
@@ -54,7 +54,7 @@ export function FlowMetrics({ workspace }: { workspace: Workspace }) {
         <h2 className="text-sm font-medium">Qué frena el flujo</h2>
         <p className="mb-4 mt-0.5 text-xs leading-relaxed text-muted-foreground">
           Requisitos sin cumplir, agrupados por la etapa que los pide. Como los requisitos se
-          acumulan, una etapa temprana puede seguir frenando demandas que ya van por el final.
+          acumulan, una etapa temprana puede seguir frenando solicitudes que ya van por el final.
         </p>
         <BlockersChart data={metrics.blockersByStage} />
       </section>

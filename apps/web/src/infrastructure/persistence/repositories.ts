@@ -1,34 +1,34 @@
 import type {
   ConsultantRepository,
-  DemandRepository,
+  RequestRepository,
   EventRepository,
   PositionRepository,
   TeamRepository,
 } from '@/application/ports';
-import type { Consultant, Demand, OrchestrationEvent, Position, Team } from '@/domain';
+import type { Consultant, StaffingRequest, OrchestrationEvent, Position, Team } from '@/domain';
 import { db } from './database';
 
 /** Implementaciones de los puertos de persistencia sobre IndexedDB. */
 
-export const demandRepository: DemandRepository = {
-  async list(): Promise<Demand[]> {
-    const demands = await db.demands.toArray();
-    return demands.sort((a, b) => a.code.localeCompare(b.code));
+export const requestRepository: RequestRepository = {
+  async list(): Promise<StaffingRequest[]> {
+    const requests = await db.requests.toArray();
+    return requests.sort((a, b) => a.code.localeCompare(b.code));
   },
-  get(id: string): Promise<Demand | undefined> {
-    return db.demands.get(id);
+  get(id: string): Promise<StaffingRequest | undefined> {
+    return db.requests.get(id);
   },
-  async save(demand: Demand): Promise<void> {
-    await db.demands.put(demand);
+  async save(request: StaffingRequest): Promise<void> {
+    await db.requests.put(request);
   },
   async nextCode(): Promise<string> {
-    const demands = await db.demands.toArray();
+    const requests = await db.requests.toArray();
     const year = new Date().getFullYear();
-    const highest = demands.reduce((max, demand) => {
-      const match = /^DEM-\d{4}-(\d+)$/.exec(demand.code);
+    const highest = requests.reduce((max, request) => {
+      const match = /^SOL-\d{4}-(\d+)$/.exec(request.code);
       return match ? Math.max(max, Number(match[1])) : max;
     }, 0);
-    return `DEM-${year}-${String(highest + 1).padStart(3, '0')}`;
+    return `SOL-${year}-${String(highest + 1).padStart(3, '0')}`;
   },
 };
 

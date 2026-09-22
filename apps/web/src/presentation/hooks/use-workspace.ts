@@ -1,19 +1,19 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
-  advanceDemand,
+  advanceRequest,
   advanceLifecycle,
-  assignDemandToTeam,
+  assignRequestToTeam,
   closeConsultantCycle,
-  createNewDemand,
+  createNewRequest,
   draftVacancyDescription,
   loadWorkspace,
   releasePosition,
   setPositionAllocation,
-  updateDemand,
-  type DemandPatch,
+  updateRequest,
+  type RequestPatch,
   type Workspace,
 } from '@/application/use-cases';
-import type { DemandIntake } from '@/domain';
+import type { RequestIntake } from '@/domain';
 import { container } from '@/infrastructure/container';
 import { clearDatabase } from '@/infrastructure/persistence/database';
 import { seedNow } from '@/infrastructure/persistence/seed';
@@ -35,42 +35,42 @@ function useInvalidate() {
   return () => client.invalidateQueries({ queryKey: WORKSPACE_KEY });
 }
 
-export function useCreateDemand() {
+export function useCreateRequest() {
   const invalidate = useInvalidate();
   const dispatch = useAppDispatch();
   return useMutation({
-    mutationFn: (intake: Partial<DemandIntake>) => createNewDemand(container, intake),
-    onSuccess: async (demand) => {
+    mutationFn: (intake: Partial<RequestIntake>) => createNewRequest(container, intake),
+    onSuccess: async (request) => {
       await invalidate();
       dispatch(
         pushToast({
           variant: 'success',
-          title: `${demand.code} registrada`,
-          description: `La demanda entra en la bandeja de Sales, en la etapa Demanda.`,
+          title: `${request.code} registrada`,
+          description: `La solicitud entra en la bandeja de Sales, en la etapa Registro.`,
         }),
       );
     },
   });
 }
 
-export function useUpdateDemand() {
+export function useUpdateRequest() {
   const invalidate = useInvalidate();
   return useMutation({
-    mutationFn: ({ demandId, patch }: { demandId: string; patch: DemandPatch }) =>
-      updateDemand(container, demandId, patch),
+    mutationFn: ({ requestId, patch }: { requestId: string; patch: RequestPatch }) =>
+      updateRequest(container, requestId, patch),
     onSuccess: invalidate,
   });
 }
 
-export function useAdvanceDemand() {
+export function useAdvanceRequest() {
   const invalidate = useInvalidate();
   const dispatch = useAppDispatch();
   return useMutation({
-    mutationFn: (demandId: string) => advanceDemand(container, demandId),
+    mutationFn: (requestId: string) => advanceRequest(container, requestId),
     onSuccess: async (outcome) => {
       await invalidate();
       if (outcome.ok) {
-        dispatch(pushToast({ variant: 'success', title: 'Demanda entregada', description: outcome.message }));
+        dispatch(pushToast({ variant: 'success', title: 'Solicitud entregada', description: outcome.message }));
       } else {
         dispatch(
           pushToast({
@@ -87,8 +87,8 @@ export function useAdvanceDemand() {
 export function useAssignTeam() {
   const invalidate = useInvalidate();
   return useMutation({
-    mutationFn: ({ demandId, teamId }: { demandId: string; teamId: string }) =>
-      assignDemandToTeam(container, demandId, teamId),
+    mutationFn: ({ requestId, teamId }: { requestId: string; teamId: string }) =>
+      assignRequestToTeam(container, requestId, teamId),
     onSuccess: invalidate,
   });
 }
@@ -97,7 +97,7 @@ export function useDraftVacancy() {
   const invalidate = useInvalidate();
   const dispatch = useAppDispatch();
   return useMutation({
-    mutationFn: (demandId: string) => draftVacancyDescription(container, demandId),
+    mutationFn: (requestId: string) => draftVacancyDescription(container, requestId),
     onSuccess: async (outcome) => {
       await invalidate();
       dispatch(
@@ -146,7 +146,7 @@ export function useReleasePosition() {
           variant: 'default',
           title: 'Posición liberada',
           description:
-            'La demanda vuelve a necesitar equipo: el requisito de la etapa Equipo deja de cumplirse.',
+            'La solicitud vuelve a necesitar equipo: el requisito de la etapa Equipo deja de cumplirse.',
         }),
       );
     },
@@ -191,7 +191,7 @@ export function useResetWorkspace() {
         pushToast({
           variant: 'success',
           title: 'Datos reiniciados',
-          description: 'Vuelve a haber una demanda parada en cada etapa del flujo.',
+          description: 'Vuelve a haber una solicitud parada en cada etapa del flujo.',
         }),
       );
     },

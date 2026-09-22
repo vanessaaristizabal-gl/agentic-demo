@@ -1,4 +1,4 @@
-import type { Demand } from './entities';
+import type { StaffingRequest } from './entities';
 import type { RequirementCheck } from './requirements';
 import { stageLabel } from './stages';
 import type { StageId } from './types';
@@ -36,7 +36,7 @@ function countWord(value: number): string {
 }
 
 export function composeBlockingReport(
-  demand: Demand,
+  request: StaffingRequest,
   targetStage: StageId,
   missing: RequirementCheck[],
 ): BlockingReport {
@@ -45,8 +45,8 @@ export function composeBlockingReport(
 
   const headline =
     total === 1
-      ? `La demanda ${demand.code} no puede pasar a la etapa ${target}: falta un requisito por cumplir.`
-      : `La demanda ${demand.code} no puede pasar a la etapa ${target}: quedan ${countWord(total)} requisitos sin cumplir.`;
+      ? `La solicitud ${request.code} no puede pasar a la etapa ${target}: falta un requisito por cumplir.`
+      : `La solicitud ${request.code} no puede pasar a la etapa ${target}: quedan ${countWord(total)} requisitos sin cumplir.`;
 
   const inheritedCount = missing.filter((check) => check.inherited).length;
   const elsewhere = missing.filter((check) => check.requirement.resolveIn === 'equipos');
@@ -93,20 +93,20 @@ export function composeBlockingReport(
 
 /** Mensaje de confirmación cuando un agente entrega el trabajo al siguiente. */
 export function composeHandoffMessage(
-  demand: Demand,
+  request: StaffingRequest,
   fromStage: StageId,
   toStage: StageId,
   toAgentName: string,
   checksPassed: number,
 ): string {
   if (toStage === 'activo') {
-    return `${demand.code} queda activa. El consultor ya figura trabajando en el equipo y se han verificado ${checksPassed} requisitos acumulados desde la etapa ${stageLabel('demanda')}.`;
+    return `${request.code} queda activa. El consultor ya figura trabajando en el equipo y se han verificado ${checksPassed} requisitos acumulados desde la etapa ${stageLabel('registro')}.`;
   }
-  return `${demand.code} pasa de ${stageLabel(fromStage)} a ${stageLabel(toStage)} y entra en la bandeja de ${toAgentName}. Se verificaron ${checksPassed} requisitos acumulados.`;
+  return `${request.code} pasa de ${stageLabel(fromStage)} a ${stageLabel(toStage)} y entra en la bandeja de ${toAgentName}. Se verificaron ${checksPassed} requisitos acumulados.`;
 }
 
 /**
- * Mensaje del formulario de la demanda al intentar guardar.
+ * Mensaje del formulario de la solicitud al intentar guardar.
  *
  * Mismo criterio que el resto: una sola alerta con todo lo que falta.
  * Aquí se nota especialmente, porque uno de los campos obligatorios no lleva
@@ -116,8 +116,8 @@ export function composeIntakeReport(missing: RequirementCheck[]): BlockingReport
   const total = missing.length;
   const headline =
     total === 1
-      ? 'No se puede registrar la demanda: falta un dato obligatorio.'
-      : `No se puede registrar la demanda: faltan ${countWord(total)} datos obligatorios.`;
+      ? 'No se puede registrar la solicitud: falta un dato obligatorio.'
+      : `No se puede registrar la solicitud: faltan ${countWord(total)} datos obligatorios.`;
 
   const items: BlockingItem[] = missing.map((check) => ({
     requirementId: check.requirement.id,

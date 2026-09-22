@@ -5,24 +5,24 @@ export interface StageDefinition {
   /** Posicion en el flujo, 0-indexada. */
   index: number;
   label: string;
-  /** Rol responsable de la etapa: el agente que tiene la demanda en su bandeja. */
+  /** Rol responsable de la etapa: el agente que tiene la solicitud en su bandeja. */
   owner: RoleId;
-  /** Que hace el responsable mientras la demanda esta aqui. */
+  /** Que hace el responsable mientras la solicitud esta aqui. */
   purpose: string;
-  /** Verbo del boton que avanza la demanda desde esta etapa. */
+  /** Verbo del boton que avanza la solicitud desde esta etapa. */
   action: string;
 }
 
 /**
  * El flujo es determinista y lineal. No hay ramas ni saltos:
- * una demanda solo pasa a la etapa siguiente, y solo cuando el usuario
+ * una solicitud solo pasa a la etapa siguiente, y solo cuando el usuario
  * lo pide explicitamente y se cumplen todos los requisitos acumulados.
  */
 export const STAGES: StageDefinition[] = [
   {
-    id: 'demanda',
+    id: 'registro',
     index: 0,
-    label: 'Demanda',
+    label: 'Registro',
     owner: 'sales',
     purpose: 'Sales registra la necesidad del cliente y la encuadra en una práctica.',
     action: 'Enviar a Solution Architect',
@@ -40,7 +40,7 @@ export const STAGES: StageDefinition[] = [
     index: 2,
     label: 'Equipo',
     owner: 'delivery-manager',
-    purpose: 'El Delivery Manager asigna la demanda a un equipo y abre la posicion.',
+    purpose: 'El Delivery Manager asigna la solicitud a un equipo y abre la posicion.',
     action: 'Enviar a Recruiter',
   },
   {
@@ -95,7 +95,7 @@ export function stageLabel(id: StageId): string {
   return stageDef(id).label;
 }
 
-/** La etapa siguiente, o null si la demanda ya esta en `activo`. */
+/** La etapa siguiente, o null si la solicitud ya esta en `activo`. */
 export function nextStage(id: StageId): StageId | null {
   const index = stageIndex(id);
   return index >= STAGE_ORDER.length - 1 ? null : STAGE_ORDER[index + 1];

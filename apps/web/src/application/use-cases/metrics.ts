@@ -5,26 +5,26 @@ import type { Workspace } from './workspace';
  * Métricas del tablero.
  *
  * Se calculan aquí, en la capa de aplicación, a partir del diagnóstico que ya
- * produjo el orquestador para cada demanda. La presentación solo las pinta.
+ * produjo el orquestador para cada solicitud. La presentación solo las pinta.
  */
 
 export interface StageBlockers {
   stage: StageId;
   label: string;
-  /** Requisitos sin cumplir que introdujo esta etapa, sumando todas las demandas. */
+  /** Requisitos sin cumplir que introdujo esta etapa, sumando todas las solicitudes. */
   count: number;
-  /** Cuántas demandas distintas están frenadas por algo que pidió esta etapa. */
-  demands: number;
+  /** Cuántas solicitudes distintas están frenadas por algo que pidió esta etapa. */
+  requests: number;
 }
 
 export interface FlowMetrics {
-  /** Demandas que todavía recorren el flujo, sin contar las cerradas. */
+  /** Solicitudes que todavía recorren el flujo, sin contar las cerradas. */
   inFlight: number;
-  /** Demandas que hoy podrían entregarse al siguiente rol. */
+  /** Solicitudes que hoy podrían entregarse al siguiente rol. */
   ready: number;
-  /** Demandas que hoy no pueden avanzar. */
+  /** Solicitudes que hoy no pueden avanzar. */
   blocked: number;
-  /** Demandas ya cerradas con el consultor trabajando. */
+  /** Solicitudes ya cerradas con el consultor trabajando. */
   closed: number;
   activeConsultants: number;
   openPositions: number;
@@ -36,8 +36,8 @@ export interface FlowMetrics {
 }
 
 export function buildFlowMetrics(workspace: Workspace): FlowMetrics {
-  const counts = new Map<StageId, { count: number; demands: Set<string> }>(
-    STAGES.map((stage) => [stage.id, { count: 0, demands: new Set<string>() }]),
+  const counts = new Map<StageId, { count: number; requests: Set<string> }>(
+    STAGES.map((stage) => [stage.id, { count: 0, requests: new Set<string>() }]),
   );
 
   let inFlight = 0;
@@ -46,8 +46,8 @@ export function buildFlowMetrics(workspace: Workspace): FlowMetrics {
   let closed = 0;
   let totalBlockers = 0;
 
-  for (const demand of workspace.demands) {
-    const inspection = workspace.inspections[demand.id];
+  for (const request of workspace.requests) {
+    const inspection = workspace.inspections[request.id];
     if (!inspection) continue;
 
     if (inspection.isFinal) {
@@ -64,7 +64,7 @@ export function buildFlowMetrics(workspace: Workspace): FlowMetrics {
       const bucket = counts.get(check.requirement.stage);
       if (!bucket) continue;
       bucket.count += 1;
-      bucket.demands.add(demand.id);
+      bucket.requests.add(request.id);
     }
   }
 
@@ -74,7 +74,7 @@ export function buildFlowMetrics(workspace: Workspace): FlowMetrics {
       stage: stage.id,
       label: stageLabel(stage.id),
       count: bucket.count,
-      demands: bucket.demands.size,
+      requests: bucket.requests.size,
     };
   }).filter((entry) => entry.count > 0);
 

@@ -5,7 +5,7 @@ import type { DraftRequestDto } from '../dto/draft-request.dto';
  * Texto de reserva.
  *
  * No es un mensaje de error disfrazado: es una descripción de puesto
- * utilizable, compuesta con los datos del perfil que ya están en la demanda.
+ * utilizable, compuesta con los datos del perfil que ya están en la solicitud.
  * Se usa cuando no hay clave de API o cuando la llamada al modelo falla, y
  * siempre supera el mínimo de 120 caracteres que exige publicar la vacante.
  */

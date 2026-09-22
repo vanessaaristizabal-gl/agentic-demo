@@ -104,7 +104,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                Reiniciar datos: vuelve a dejar una demanda parada en cada etapa.
+                Reiniciar datos: vuelve a dejar una solicitud parada en cada etapa.
               </TooltipContent>
             </Tooltip>
             <Button

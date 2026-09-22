@@ -2,11 +2,11 @@ import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import {
   composeIntakeReport,
-  createDemand,
+  createRequest,
   emptyIntake,
   evaluate,
   type BlockingReport,
-  type DemandIntake,
+  type RequestIntake,
 } from '@/domain';
 import { Button } from '@/components/ui/button';
 import {
@@ -19,14 +19,14 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { BlockingAlert } from '@/presentation/components/blocking-alert';
-import { useCreateDemand } from '@/presentation/hooks/use-workspace';
+import { useCreateRequest } from '@/presentation/hooks/use-workspace';
 import { IntakeForm } from './intake-form';
 
-export function NewDemandDialog() {
+export function NewRequestDialog() {
   const [open, setOpen] = useState(false);
-  const [intake, setIntake] = useState<DemandIntake>(emptyIntake);
+  const [intake, setIntake] = useState<RequestIntake>(emptyIntake);
   const [report, setReport] = useState<BlockingReport | null>(null);
-  const create = useCreateDemand();
+  const create = useCreateRequest();
 
   const reset = () => {
     setIntake(emptyIntake());
@@ -35,14 +35,14 @@ export function NewDemandDialog() {
 
   const submit = () => {
     // Se valida con el mismo motor que usa el flujo: los requisitos de la
-    // etapa Demanda. Si falta algo, se dice todo de una vez.
-    const provisional = createDemand({
+    // etapa Registro. Si falta algo, se dice todo de una vez.
+    const provisional = createRequest({
       id: 'provisional',
       code: 'provisional',
       now: new Date().toISOString(),
       intake,
     });
-    const missing = evaluate({ demand: provisional, teams: [], positions: [] }, 'demanda').filter(
+    const missing = evaluate({ request: provisional, teams: [], positions: [] }, 'registro').filter(
       (check) => !check.satisfied,
     );
 
@@ -70,14 +70,14 @@ export function NewDemandDialog() {
       <DialogTrigger asChild>
         <Button size="sm">
           <Plus className="h-4 w-4" />
-          Nueva demanda
+          Nueva solicitud
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Registrar una demanda</DialogTitle>
+          <DialogTitle>Registrar una solicitud</DialogTitle>
           <DialogDescription>
-            Sales recoge la necesidad del cliente. La demanda entra en la etapa Demanda y no avanza
+            Sales recoge la necesidad del cliente. La solicitud entra en la etapa Registro y no avanza
             hasta que alguien la mueve a mano.
           </DialogDescription>
         </DialogHeader>
@@ -94,7 +94,7 @@ export function NewDemandDialog() {
             Cancelar
           </Button>
           <Button onClick={submit} disabled={create.isPending}>
-            {create.isPending ? 'Guardando…' : 'Registrar demanda'}
+            {create.isPending ? 'Guardando…' : 'Registrar solicitud'}
           </Button>
         </DialogFooter>
       </DialogContent>

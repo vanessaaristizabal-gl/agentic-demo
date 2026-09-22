@@ -1,10 +1,10 @@
 import { AGENTS, agentForStage, type AgentDefinition } from './agents';
-import type { Consultant, Demand, OrchestrationEvent, Position } from './entities';
-import { buildConsultantFromDemand } from './lifecycle';
+import type { Consultant, StaffingRequest, OrchestrationEvent, Position } from './entities';
+import { buildConsultantFromRequest } from './lifecycle';
 import { composeBlockingReport, composeHandoffMessage, type BlockingReport } from './messages';
 import {
   evaluate,
-  positionForDemand,
+  positionForRequest,
   type EvaluationContext,
   type RequirementCheck,
 } from './requirements';
@@ -14,7 +14,7 @@ import type { StageId } from './types';
 /**
  * Kernel de orquestación.
  *
- * Decide qué agente tiene la demanda, si puede entregarla al siguiente y
+ * Decide qué agente tiene la solicitud, si puede entregarla al siguiente y
  * qué queda por hacer. Es una función pura: no toca la base de datos ni la
  * red. La capa de aplicación aplica el resultado y lo persiste.
  */
@@ -25,7 +25,7 @@ export interface RuntimePorts {
 }
 
 export interface Inspection {
-  demand: Demand;
+  request: StaffingRequest;
   stage: StageId;
   agent: AgentDefinition;
   nextStage: StageId | null;
@@ -39,10 +39,10 @@ export interface Inspection {
   report: BlockingReport | null;
 }
 
-/** Fotografía del estado de una demanda según el orquestador. */
+/** Fotografía del estado de una solicitud según el orquestador. */
 export function inspect(context: EvaluationContext): Inspection {
-  const { demand } = context;
-  const stage = demand.stage;
+  const { request } = context;
+  const stage = request.stage;
   const agent = agentForStage(stage);
   const target = nextStage(stage);
   const checks = evaluate(context, stage);
@@ -50,7 +50,7 @@ export function inspect(context: EvaluationContext): Inspection {
   const final = isFinalStage(stage);
 
   return {
-    demand,
+    request,
     stage,
     agent,
     nextStage: target,
@@ -59,16 +59,16 @@ export function inspect(context: EvaluationContext): Inspection {
     missing,
     canAdvance: !final && missing.length === 0,
     isFinal: final,
-    report: missing.length > 0 && target ? composeBlockingReport(demand, target, missing) : null,
+    report: missing.length > 0 && target ? composeBlockingReport(request, target, missing) : null,
   };
 }
 
 /** Transacción que hay que aplicar para materializar una entrega. */
 export interface HandoffTransaction {
-  demand: Demand;
+  request: StaffingRequest;
   /** Posiciones modificadas por la entrega (se cubren al activar). */
   positions: Position[];
-  /** Consultor creado al llegar la demanda a `activo`. */
+  /** Consultor creado al llegar la solicitud a `activo`. */
   consultant: Consultant | null;
   events: OrchestrationEvent[];
   message: string;
@@ -79,26 +79,26 @@ export type AdvanceResult =
   | { ok: false; report: BlockingReport; event: OrchestrationEvent };
 
 /**
- * Avanza la demanda a la etapa siguiente si se cumplen TODOS los requisitos
+ * Avanza la solicitud a la etapa siguiente si se cumplen TODOS los requisitos
  * acumulados. Nunca avanza sola: la llama el usuario desde la interfaz.
  */
 export function advance(context: EvaluationContext, ports: RuntimePorts): AdvanceResult {
   const inspection = inspect(context);
-  const { demand } = context;
+  const { request } = context;
   const now = ports.now();
 
   if (inspection.isFinal || !inspection.nextStage) {
-    const report = composeBlockingReport(demand, demand.stage, []);
+    const report = composeBlockingReport(request, request.stage, []);
     return {
       ok: false,
       report: {
         ...report,
-        headline: `La demanda ${demand.code} ya está en la etapa ${stageLabel(demand.stage)}, que es la última del flujo.`,
+        headline: `La solicitud ${request.code} ya está en la etapa ${stageLabel(request.stage)}, que es la última del flujo.`,
         items: [],
         aside: null,
-        text: `La demanda ${demand.code} ya está en la etapa ${stageLabel(demand.stage)}, que es la última del flujo.`,
+        text: `La solicitud ${request.code} ya está en la etapa ${stageLabel(request.stage)}, que es la última del flujo.`,
       },
-      event: blockedEvent(demand, null, [], ports, 'La demanda ya estaba en la última etapa.'),
+      event: blockedEvent(request, null, [], ports, 'La solicitud ya estaba en la última etapa.'),
     };
   }
 
@@ -108,7 +108,7 @@ export function advance(context: EvaluationContext, ports: RuntimePorts): Advanc
       ok: false,
       report,
       event: blockedEvent(
-        demand,
+        request,
         inspection.nextStage,
         inspection.missing.map((check) => check.sentence),
         ports,
@@ -120,25 +120,25 @@ export function advance(context: EvaluationContext, ports: RuntimePorts): Advanc
   const target = inspection.nextStage;
   const nextAgent = inspection.nextAgent!;
 
-  let updated: Demand = {
-    ...demand,
+  let updated: StaffingRequest = {
+    ...request,
     stage: target,
     updatedAt: now,
-    stageEnteredAt: { ...demand.stageEnteredAt, [target]: now },
+    stageEnteredAt: { ...request.stageEnteredAt, [target]: now },
   };
 
   const events: OrchestrationEvent[] = [
     {
       id: ports.id('evt'),
       at: now,
-      demandId: demand.id,
-      demandCode: demand.code,
+      requestId: request.id,
+      requestCode: request.code,
       kind: 'entrega',
       fromAgent: inspection.agent.id,
       toAgent: nextAgent.id,
-      fromStage: demand.stage,
+      fromStage: request.stage,
       toStage: target,
-      summary: `${inspection.agent.name} entrega ${demand.code} a ${nextAgent.name}.`,
+      summary: `${inspection.agent.name} entrega ${request.code} a ${nextAgent.name}.`,
       checks: inspection.checks.map((check) => check.requirement.label),
     },
   ];
@@ -147,10 +147,10 @@ export function advance(context: EvaluationContext, ports: RuntimePorts): Advanc
   let consultant: Consultant | null = null;
 
   if (target === 'activo') {
-    const position = positionForDemand(context);
-    consultant = buildConsultantFromDemand({
+    const position = positionForRequest(context);
+    consultant = buildConsultantFromRequest({
       id: ports.id('con'),
-      demand: updated,
+      request: updated,
       position,
       now,
     });
@@ -168,8 +168,8 @@ export function advance(context: EvaluationContext, ports: RuntimePorts): Advanc
     events.push({
       id: ports.id('evt'),
       at: now,
-      demandId: demand.id,
-      demandCode: demand.code,
+      requestId: request.id,
+      requestCode: request.code,
       kind: 'consultor-activo',
       fromAgent: 'hr',
       toAgent: 'consultant',
@@ -183,13 +183,13 @@ export function advance(context: EvaluationContext, ports: RuntimePorts): Advanc
   return {
     ok: true,
     transaction: {
-      demand: updated,
+      request: updated,
       positions,
       consultant,
       events,
       message: composeHandoffMessage(
-        demand,
-        demand.stage,
+        request,
+        request.stage,
         target,
         nextAgent.name,
         inspection.checks.length,
@@ -199,7 +199,7 @@ export function advance(context: EvaluationContext, ports: RuntimePorts): Advanc
 }
 
 function blockedEvent(
-  demand: Demand,
+  request: StaffingRequest,
   target: StageId | null,
   checks: string[],
   ports: RuntimePorts,
@@ -208,46 +208,46 @@ function blockedEvent(
   return {
     id: ports.id('evt'),
     at: ports.now(),
-    demandId: demand.id,
-    demandCode: demand.code,
+    requestId: request.id,
+    requestCode: request.code,
     kind: 'bloqueo',
-    fromAgent: agentForStage(demand.stage).id,
+    fromAgent: agentForStage(request.stage).id,
     toAgent: null,
-    fromStage: demand.stage,
+    fromStage: request.stage,
     toStage: target,
     summary,
     checks,
   };
 }
 
-/** Bandeja de cada agente: demandas cuya etapa actual le pertenece. */
+/** Bandeja de cada agente: solicitudes cuya etapa actual le pertenece. */
 export interface AgentInbox {
   agent: AgentDefinition;
-  demands: Demand[];
-  /** Demandas de su bandeja que hoy no podrían avanzar. */
+  requests: StaffingRequest[];
+  /** Solicitudes de su bandeja que hoy no podrían avanzar. */
   blocked: number;
   ready: number;
 }
 
 export function buildInboxes(
-  demands: Demand[],
+  requests: StaffingRequest[],
   teams: EvaluationContext['teams'],
   positions: Position[],
 ): AgentInbox[] {
   // Los siete agentes aparecen siempre, tengan o no trabajo pendiente.
   const inboxes: AgentInbox[] = AGENTS.map((agent) => ({
     agent,
-    demands: [],
+    requests: [],
     blocked: 0,
     ready: 0,
   }));
   const byAgent = new Map(inboxes.map((inbox) => [inbox.agent.id, inbox]));
 
-  for (const demand of demands) {
-    const inbox = byAgent.get(agentForStage(demand.stage).id);
+  for (const request of requests) {
+    const inbox = byAgent.get(agentForStage(request.stage).id);
     if (!inbox) continue;
-    inbox.demands.push(demand);
-    const inspection = inspect({ demand, teams, positions });
+    inbox.requests.push(request);
+    const inspection = inspect({ request, teams, positions });
     if (inspection.isFinal) continue;
     if (inspection.canAdvance) inbox.ready += 1;
     else inbox.blocked += 1;

@@ -12,11 +12,11 @@ import type {
 } from './types';
 
 /* ------------------------------------------------------------------ */
-/* Demanda                                                             */
+/* Solicitud                                                             */
 /* ------------------------------------------------------------------ */
 
-/** Etapa 1 — Sales. El formulario de la demanda: 8 campos, 3 obligatorios. */
-export interface DemandIntake {
+/** Etapa 1 — Sales. El formulario de la solicitud: 8 campos, 3 obligatorios. */
+export interface RequestIntake {
   clientName: string;
   practice: PracticeId | '';
   /** Depende de `practice`. Cambiar de practica lo invalida. */
@@ -74,26 +74,26 @@ export interface OnboardingFile {
   startDate: string;
 }
 
-export interface Demand {
+export interface StaffingRequest {
   id: string;
-  /** Codigo legible: DEM-2026-001. */
+  /** Codigo legible: SOL-2026-001. */
   code: string;
   stage: StageId;
   createdAt: string;
   updatedAt: string;
-  intake: DemandIntake;
+  intake: RequestIntake;
   profile: TechProfile;
   assignment: TeamAssignment;
   vacancy: Vacancy;
   interview: Interview;
   onboarding: OnboardingFile;
-  /** Momento en el que la demanda entro en cada etapa. */
+  /** Momento en el que la solicitud entro en cada etapa. */
   stageEnteredAt: Partial<Record<StageId, string>>;
   /** Id del consultor creado al llegar a `activo`. */
   consultantId: string | null;
 }
 
-export function emptyIntake(): DemandIntake {
+export function emptyIntake(): RequestIntake {
   return {
     clientName: '',
     practice: '',
@@ -139,16 +139,16 @@ export function emptyOnboarding(): OnboardingFile {
   };
 }
 
-export function createDemand(params: {
+export function createRequest(params: {
   id: string;
   code: string;
   now: string;
-  intake?: Partial<DemandIntake>;
-}): Demand {
+  intake?: Partial<RequestIntake>;
+}): StaffingRequest {
   return {
     id: params.id,
     code: params.code,
-    stage: 'demanda',
+    stage: 'registro',
     createdAt: params.now,
     updatedAt: params.now,
     intake: { ...emptyIntake(), ...params.intake },
@@ -157,7 +157,7 @@ export function createDemand(params: {
     vacancy: emptyVacancy(),
     interview: emptyInterview(),
     onboarding: emptyOnboarding(),
-    stageEnteredAt: { demanda: params.now },
+    stageEnteredAt: { registro: params.now },
     consultantId: null,
   };
 }
@@ -181,14 +181,14 @@ export interface Team {
 
 /**
  * Una posicion es un asiento en un equipo. El Delivery Manager la abre
- * al asignar la demanda (etapa 3) y la dedicacion se fija despues,
+ * al asignar la solicitud (etapa 3) y la dedicacion se fija despues,
  * desde la vista Equipos. Esa dedicacion es lo que bloquea el cierre.
  */
 export interface Position {
   id: string;
   teamId: string;
-  /** Posicion abierta por una demanda, o plaza historica ya cubierta. */
-  demandId: string | null;
+  /** Posicion abierta por una solicitud, o plaza historica ya cubierta. */
+  requestId: string | null;
   consultantId: string | null;
   role: ConsultantRole;
   seniority: Seniority;
@@ -238,7 +238,7 @@ export interface Consultant {
   role: ConsultantRole;
   seniority: Seniority;
   teamId: string;
-  demandId: string | null;
+  requestId: string | null;
   initials: string;
   joinedAt: string;
   outcome: ConsultantOutcome;
@@ -251,7 +251,7 @@ export interface Consultant {
 /* ------------------------------------------------------------------ */
 
 export type OrchestrationEventKind =
-  | 'demanda-creada'
+  | 'solicitud-creada'
   | 'entrega'
   | 'bloqueo'
   | 'borrador-ia'
@@ -261,8 +261,8 @@ export type OrchestrationEventKind =
 export interface OrchestrationEvent {
   id: string;
   at: string;
-  demandId: string;
-  demandCode: string;
+  requestId: string;
+  requestCode: string;
   kind: OrchestrationEventKind;
   fromAgent: RoleId | null;
   toAgent: RoleId | null;

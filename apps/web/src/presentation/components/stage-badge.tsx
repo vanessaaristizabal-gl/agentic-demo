@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils';
 
 /** Color estable por etapa. Sobrio: un tinte, nada de degradados. */
 const TONES: Record<StageId, string> = {
-  demanda: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200',
+  registro: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200',
   perfil: 'bg-sky-50 text-sky-800 dark:bg-sky-950 dark:text-sky-200',
   equipo: 'bg-violet-50 text-violet-800 dark:bg-violet-950 dark:text-violet-200',
   vacante: 'bg-amber-50 text-amber-900 dark:bg-amber-950 dark:text-amber-200',

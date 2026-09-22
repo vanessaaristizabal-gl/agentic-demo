@@ -136,7 +136,7 @@ export const SALARY_BANDS: Option[] = [
   { value: 'banda-1', label: 'Banda 1 — hasta 4.500 USD/mes' },
   { value: 'banda-2', label: 'Banda 2 — 4.500 a 6.500 USD/mes' },
   { value: 'banda-3', label: 'Banda 3 — 6.500 a 8.500 USD/mes' },
-  { value: 'banda-4', label: 'Banda 4 — mas de 8.500 USD/mes' },
+  { value: 'banda-4', label: 'Banda 4 — más de 8.500 USD/mes' },
 ];
 
 export function labelOf(options: Option<string>[], value: string | undefined | null): string {

@@ -1,18 +1,18 @@
 import { AlertCircle, Check } from 'lucide-react';
-import { STAGES, labelOf, PRIORITIES, type Demand, type Inspection } from '@/domain';
+import { STAGES, labelOf, PRIORITIES, type StaffingRequest, type Inspection } from '@/domain';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { stageTone } from '@/presentation/components/stage-badge';
 import { StageProgress } from '@/presentation/components/stage-stepper';
 import { useAppDispatch, useAppSelector } from '@/store';
-import { selectDemand } from '@/store/slices/ui-slice';
+import { selectRequest } from '@/store/slices/ui-slice';
 
-/** Tablero de demandas por etapa. Una columna por etapa, en orden. */
+/** Tablero de solicitudes por etapa. Una columna por etapa, en orden. */
 export function StageBoard({
-  demands,
+  requests,
   inspections,
 }: {
-  demands: Demand[];
+  requests: StaffingRequest[];
   inspections: Record<string, Inspection>;
 }) {
   const dispatch = useAppDispatch();
@@ -22,7 +22,7 @@ export function StageBoard({
     <div className="overflow-x-auto scrollbar-thin pb-2">
       <div className="grid min-w-[980px] grid-cols-7 gap-3">
         {STAGES.map((stage) => {
-          const column = demands.filter((demand) => demand.stage === stage.id);
+          const column = requests.filter((request) => request.stage === stage.id);
           const dimmed = roleFilter !== null && roleFilter !== stage.owner;
 
           return (
@@ -42,44 +42,44 @@ export function StageBoard({
               <div className="flex flex-col gap-2">
                 {column.length === 0 ? (
                   <p className="rounded-md border border-dashed px-2 py-6 text-center text-[11px] text-muted-foreground">
-                    Sin demandas
+                    Sin solicitudes
                   </p>
                 ) : null}
 
-                {column.map((demand) => {
-                  const inspection = inspections[demand.id];
+                {column.map((request) => {
+                  const inspection = inspections[request.id];
                   const blocked = inspection && !inspection.isFinal && !inspection.canAdvance;
 
                   return (
                     <button
-                      key={demand.id}
+                      key={request.id}
                       type="button"
-                      onClick={() => dispatch(selectDemand(demand.id))}
+                      onClick={() => dispatch(selectRequest(request.id))}
                       className="rounded-md border bg-card p-2.5 text-left transition-colors hover:border-foreground/25"
                     >
                       <div className="flex items-center justify-between gap-2">
                         <span className="font-mono text-[10px] text-muted-foreground">
-                          {demand.code}
+                          {request.code}
                         </span>
-                        {demand.intake.priority ? (
+                        {request.intake.priority ? (
                           <span className="text-[10px] text-muted-foreground">
-                            {labelOf(PRIORITIES, demand.intake.priority)}
+                            {labelOf(PRIORITIES, request.intake.priority)}
                           </span>
                         ) : null}
                       </div>
 
                       <p className="mt-1 line-clamp-2 text-sm font-medium leading-snug">
-                        {demand.intake.clientName || 'Cliente sin nombre'}
+                        {request.intake.clientName || 'Cliente sin nombre'}
                       </p>
 
-                      {demand.intake.stack ? (
+                      {request.intake.stack ? (
                         <p className="mt-0.5 truncate text-[11px] text-muted-foreground">
-                          {demand.intake.stack}
+                          {request.intake.stack}
                         </p>
                       ) : null}
 
                       <div className="mt-2">
-                        <StageProgress current={demand.stage} />
+                        <StageProgress current={request.stage} />
                       </div>
 
                       <div className="mt-2">

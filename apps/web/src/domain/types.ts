@@ -5,9 +5,9 @@
  * Describe el negocio de la consultora y nada mas.
  */
 
-/** Las siete etapas por las que pasa una demanda, en orden. */
+/** Las siete etapas por las que pasa una solicitud, en orden. */
 export type StageId =
-  | 'demanda'
+  | 'registro'
   | 'perfil'
   | 'equipo'
   | 'vacante'

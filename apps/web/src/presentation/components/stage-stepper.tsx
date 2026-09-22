@@ -3,7 +3,7 @@ import { STAGES, agentForStage, stageDef, type StageId } from '@/domain';
 import { cn } from '@/lib/utils';
 
 /**
- * Stepper del flujo de la demanda.
+ * Stepper del flujo de la solicitud.
  *
  * Las siete etapas son una secuencia ordinal, así que no se colorean con siete
  * tonos distintos: lo que el lector necesita distinguir son tres estados
@@ -100,7 +100,7 @@ export function StageStepper({
         Etapa {currentIndex + 1} de {STAGES.length} ·{' '}
         <span className="font-medium text-foreground">{stageDef(current).label}</span> ·{' '}
         {currentIndex === STAGES.length - 1
-          ? 'el flujo de la demanda ha terminado'
+          ? 'el flujo de la solicitud ha terminado'
           : `en la bandeja de ${owner.name}`}
       </p>
     </div>

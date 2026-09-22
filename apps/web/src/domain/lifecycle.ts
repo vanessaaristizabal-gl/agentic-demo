@@ -1,7 +1,7 @@
 import type {
   Consultant,
   ConsultantOutcome,
-  Demand,
+  StaffingRequest,
   LifecyclePhase,
   LifecyclePhaseId,
   Position,
@@ -9,9 +9,9 @@ import type {
 import type { ConsultantRole, RoleId, Seniority } from './types';
 
 /**
- * Ciclo de vida del consultor, posterior a la demanda.
+ * Ciclo de vida del consultor, posterior a la solicitud.
  *
- * Es determinista igual que el flujo de la demanda: cada fase tiene un
+ * Es determinista igual que el flujo de la solicitud: cada fase tiene un
  * responsable, una lista de exigencias y una fecha de cumplimiento, y solo
  * avanza cuando el usuario lo pide.
  */
@@ -31,7 +31,7 @@ export const PHASE_BLUEPRINTS: PhaseBlueprint[] = [
     owner: 'hr',
     summary: 'Alta administrativa: contrato, equipo de trabajo y accesos.',
     requirements: [
-      { label: 'Contrato firmado', detail: 'Recursos Humanos formaliza el tipo de contrato acordado en la demanda.' },
+      { label: 'Contrato firmado', detail: 'Recursos Humanos formaliza el tipo de contrato acordado en la solicitud.' },
       { label: 'Equipo de trabajo entregado', detail: 'El portátil y los periféricos están en manos del consultor.' },
       { label: 'Accesos concedidos', detail: 'Al menos tres accesos activos, incluidos correo y repositorio del cliente.' },
       { label: 'Buddy asignado', detail: 'Una persona del equipo acompaña al consultor las dos primeras semanas.' },
@@ -122,25 +122,25 @@ export function initialsOf(name: string): string {
 }
 
 /**
- * Crea el consultor cuando la demanda llega a `activo`.
+ * Crea el consultor cuando la solicitud llega a `activo`.
  * El nombre sale del candidato evaluado por el Engineering Manager.
  */
-export function buildConsultantFromDemand(params: {
+export function buildConsultantFromRequest(params: {
   id: string;
-  demand: Demand;
+  request: StaffingRequest;
   position: Position | undefined;
   now: string;
 }): Consultant {
-  const { demand, now } = params;
+  const { request, now } = params;
   return {
     id: params.id,
-    name: demand.interview.candidateName.trim(),
-    role: (demand.profile.consultantRole || 'desarrollador') as ConsultantRole,
-    seniority: (demand.profile.seniority || 'semi-senior') as Seniority,
-    teamId: demand.assignment.teamId,
-    demandId: demand.id,
-    initials: initialsOf(demand.interview.candidateName),
-    joinedAt: demand.onboarding.startDate || demand.assignment.joinDate || now,
+    name: request.interview.candidateName.trim(),
+    role: (request.profile.consultantRole || 'desarrollador') as ConsultantRole,
+    seniority: (request.profile.seniority || 'semi-senior') as Seniority,
+    teamId: request.assignment.teamId,
+    requestId: request.id,
+    initials: initialsOf(request.interview.candidateName),
+    joinedAt: request.onboarding.startDate || request.assignment.joinDate || now,
     outcome: 'en-curso',
     outcomeNote: '',
     phases: initialPhases(now),

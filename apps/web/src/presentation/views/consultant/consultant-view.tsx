@@ -36,7 +36,7 @@ import { selectConsultant } from '@/store/slices/ui-slice';
  * Ciclo del consultor.
  *
  * Se elige una persona y se ve su recorrido completo: qué exigió cada paso y
- * cuándo se cumplió. El ciclo avanza igual que la demanda: a mano, paso a paso.
+ * cuándo se cumplió. El ciclo avanza igual que la solicitud: a mano, paso a paso.
  */
 
 const STATUS_LABEL = {
@@ -258,7 +258,7 @@ export function ConsultantView() {
     return (
       <div className="rounded-lg border border-dashed p-10 text-center">
         <p className="text-sm text-muted-foreground">
-          Todavía no hay ningún consultor activo. Lleva una demanda hasta la etapa <em>activo</em>{' '}
+          Todavía no hay ningún consultor activo. Lleva una solicitud hasta la etapa <em>activo</em>{' '}
           desde Orquestación y aparecerá aquí.
         </p>
       </div>
@@ -278,7 +278,7 @@ export function ConsultantView() {
       <div>
         <h1 className="text-xl font-semibold tracking-tight">Ciclo del consultor</h1>
         <p className="mt-1 max-w-3xl text-sm leading-relaxed text-muted-foreground">
-          El recorrido completo de una persona después de la demanda: onboarding, ramp-up,
+          El recorrido completo de una persona después de la solicitud: onboarding, ramp-up,
           productivo, evaluación y salida o rotación. Cada paso dice qué exigió y cuándo se cumplió.
         </p>
       </div>

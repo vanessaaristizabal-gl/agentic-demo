@@ -12,7 +12,7 @@ export function BlockersChart({ data }: { data: StageBlockers[] }) {
   if (data.length === 0) {
     return (
       <p className="py-8 text-center text-sm text-muted-foreground">
-        No hay ningún requisito sin cumplir: todas las demandas podrían avanzar.
+        No hay ningún requisito sin cumplir: todas las solicitudes podrían avanzar.
       </p>
     );
   }
@@ -43,9 +43,9 @@ export function BlockersChart({ data }: { data: StageBlockers[] }) {
                 {entry.count === 1
                   ? `Un requisito que pide la etapa ${entry.label} sigue sin cumplirse.`
                   : `${entry.count} requisitos que pide la etapa ${entry.label} siguen sin cumplirse.`}{' '}
-                {entry.demands === 1
-                  ? 'Frena una demanda.'
-                  : `Frenan ${entry.demands} demandas.`}
+                {entry.requests === 1
+                  ? 'Frena una solicitud.'
+                  : `Frenan ${entry.requests} solicitudes.`}
               </TooltipContent>
             </Tooltip>
           </li>
@@ -62,7 +62,7 @@ export function BlockersChart({ data }: { data: StageBlockers[] }) {
             <tr className="border-b text-left">
               <th scope="col" className="py-1 font-medium">Etapa que lo pide</th>
               <th scope="col" className="py-1 text-right font-medium">Requisitos</th>
-              <th scope="col" className="py-1 text-right font-medium">Demandas</th>
+              <th scope="col" className="py-1 text-right font-medium">Solicitudes</th>
             </tr>
           </thead>
           <tbody>
@@ -70,7 +70,7 @@ export function BlockersChart({ data }: { data: StageBlockers[] }) {
               <tr key={entry.stage} className="border-b last:border-b-0">
                 <td className="py-1">{entry.label}</td>
                 <td className="py-1 text-right tabular-nums">{entry.count}</td>
-                <td className="py-1 text-right tabular-nums">{entry.demands}</td>
+                <td className="py-1 text-right tabular-nums">{entry.requests}</td>
               </tr>
             ))}
           </tbody>

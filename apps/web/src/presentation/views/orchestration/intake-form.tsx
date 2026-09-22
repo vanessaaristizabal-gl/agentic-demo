@@ -3,7 +3,7 @@ import {
   PRACTICES,
   PRIORITIES,
   stacksFor,
-  type DemandIntake,
+  type RequestIntake,
   type PracticeId,
 } from '@/domain';
 import { Input } from '@/components/ui/input';
@@ -18,7 +18,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Field } from '@/presentation/components/field';
 
 /**
- * Formulario de la demanda: ocho campos, tres obligatorios.
+ * Formulario de la solicitud: ocho campos, tres obligatorios.
  *
  * Dos detalles deliberados:
  *
@@ -32,8 +32,8 @@ export function IntakeForm({
   onChange,
   disabled = false,
 }: {
-  value: DemandIntake;
-  onChange: (patch: Partial<DemandIntake>) => void;
+  value: RequestIntake;
+  onChange: (patch: Partial<RequestIntake>) => void;
   disabled?: boolean;
 }) {
   const stacks = stacksFor(value.practice);
@@ -128,7 +128,7 @@ export function IntakeForm({
         <Select
           value={value.billingModel || undefined}
           disabled={disabled}
-          onValueChange={(next) => onChange({ billingModel: next as DemandIntake['billingModel'] })}
+          onValueChange={(next) => onChange({ billingModel: next as RequestIntake['billingModel'] })}
         >
           <SelectTrigger id="billingModel">
             <SelectValue placeholder="Sin definir" />
@@ -147,7 +147,7 @@ export function IntakeForm({
         <Select
           value={value.priority || undefined}
           disabled={disabled}
-          onValueChange={(next) => onChange({ priority: next as DemandIntake['priority'] })}
+          onValueChange={(next) => onChange({ priority: next as RequestIntake['priority'] })}
         >
           <SelectTrigger id="priority">
             <SelectValue placeholder="Sin definir" />

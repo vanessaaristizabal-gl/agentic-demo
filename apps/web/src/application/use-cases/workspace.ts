@@ -3,7 +3,7 @@ import {
   inspect,
   type AgentInbox,
   type Consultant,
-  type Demand,
+  type StaffingRequest,
   type Inspection,
   type OrchestrationEvent,
   type Position,
@@ -13,19 +13,19 @@ import type { Container } from '../ports';
 
 /** Fotografía completa del estado, tal y como la consumen las tres vistas. */
 export interface Workspace {
-  demands: Demand[];
+  requests: StaffingRequest[];
   teams: Team[];
   positions: Position[];
   consultants: Consultant[];
   events: OrchestrationEvent[];
   inboxes: AgentInbox[];
-  /** Diagnóstico del orquestador para cada demanda, indexado por id. */
+  /** Diagnóstico del orquestador para cada solicitud, indexado por id. */
   inspections: Record<string, Inspection>;
 }
 
 export async function loadWorkspace(container: Container): Promise<Workspace> {
-  const [demands, teams, positions, consultants, events] = await Promise.all([
-    container.demands.list(),
+  const [requests, teams, positions, consultants, events] = await Promise.all([
+    container.requests.list(),
     container.teams.list(),
     container.positions.list(),
     container.consultants.list(),
@@ -33,17 +33,17 @@ export async function loadWorkspace(container: Container): Promise<Workspace> {
   ]);
 
   const inspections: Record<string, Inspection> = {};
-  for (const demand of demands) {
-    inspections[demand.id] = inspect({ demand, teams, positions });
+  for (const request of requests) {
+    inspections[request.id] = inspect({ request, teams, positions });
   }
 
   return {
-    demands,
+    requests,
     teams,
     positions,
     consultants,
     events,
-    inboxes: buildInboxes(demands, teams, positions),
+    inboxes: buildInboxes(requests, teams, positions),
     inspections,
   };
 }

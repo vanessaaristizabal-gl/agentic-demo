@@ -7,7 +7,7 @@ import type { RoleId, StageId } from './types';
  * de la que es responsable y un unico destinatario al que entrega el trabajo.
  *
  * El orquestador (orchestrator.ts) es quien decide que agente esta activo
- * para cada demanda y registra cada entrega en la traza.
+ * para cada solicitud y registra cada entrega en la traza.
  */
 export interface AgentDefinition {
   id: RoleId;
@@ -16,7 +16,7 @@ export interface AgentDefinition {
   title: string;
   /** Etapa de la que es responsable. */
   owns: StageId;
-  /** A quien entrega la demanda cuando termina. */
+  /** A quien entrega la solicitud cuando termina. */
   handoffTo: RoleId | null;
   /** Que sabe hacer este agente. Se muestra en la ficha del rol. */
   capabilities: string[];
@@ -34,11 +34,11 @@ export const AGENTS: AgentDefinition[] = [
     id: 'sales',
     name: 'Sales',
     title: 'Ejecutivo comercial',
-    owns: 'demanda',
+    owns: 'registro',
     handoffTo: 'solution-architect',
     capabilities: [
       'Registrar la necesidad del cliente',
-      'Encuadrar la demanda en una práctica',
+      'Encuadrar la solicitud en una práctica',
       'Asignar centro de costo y modelo de facturacion',
     ],
     autonomy: 'determinista',
@@ -65,7 +65,7 @@ export const AGENTS: AgentDefinition[] = [
     owns: 'equipo',
     handoffTo: 'recruiter',
     capabilities: [
-      'Asignar la demanda a un equipo',
+      'Asignar la solicitud a un equipo',
       'Abrir la posicion en el equipo',
       'Fijar la dedicación desde la vista Equipos',
     ],

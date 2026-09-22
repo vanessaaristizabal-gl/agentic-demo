@@ -6,7 +6,7 @@ import {
   labelOf,
   SENIORITIES,
   type Consultant,
-  type Demand,
+  type StaffingRequest,
   type Position,
 } from '@/domain';
 import { Badge } from '@/components/ui/badge';
@@ -27,7 +27,7 @@ import {
  *
  * Aquí se ve qué está cubierto, qué está abierto y dónde hay hueco. Y aquí
  * —y solo aquí— se fija la dedicación de cada posición, que es una de las
- * condiciones que bloquean el cierre de la demanda en la última etapa.
+ * condiciones que bloquean el cierre de la solicitud en la última etapa.
  */
 
 function AllocationEditor({
@@ -83,12 +83,12 @@ function AllocationEditor({
 function PositionRow({
   position,
   consultant,
-  demand,
+  request,
   overCapacity,
 }: {
   position: Position;
   consultant: Consultant | undefined;
-  demand: Demand | undefined;
+  request: StaffingRequest | undefined;
   overCapacity: boolean;
 }) {
   const release = useReleasePosition();
@@ -114,13 +114,13 @@ function PositionRow({
           </p>
           <p className="truncate text-[11px] text-muted-foreground">
             {labelOf(CONSULTANT_ROLES, position.role)} · {labelOf(SENIORITIES, position.seniority)}
-            {demand ? ` · ${demand.code}` : null}
+            {request ? ` · ${request.code}` : null}
           </p>
         </div>
       </div>
 
       <div className="flex items-center gap-2">
-        {demand ? <StageBadge stage={demand.stage} /> : null}
+        {request ? <StageBadge stage={request.stage} /> : null}
         {position.allocationPct === null ? (
           <Tooltip>
             <TooltipTrigger asChild>
@@ -129,7 +129,7 @@ function PositionRow({
               </Badge>
             </TooltipTrigger>
             <TooltipContent>
-              Mientras esta posición no tenga dedicación, la demanda no puede cerrarse en la etapa
+              Mientras esta posición no tenga dedicación, la solicitud no puede cerrarse en la etapa
               Onboarding.
             </TooltipContent>
           </Tooltip>
@@ -152,7 +152,7 @@ function PositionRow({
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            Liberar la posición. La demanda deja de cumplir el requisito de la etapa Equipo y habrá
+            Liberar la posición. La solicitud deja de cumplir el requisito de la etapa Equipo y habrá
             que reasignarla.
           </TooltipContent>
         </Tooltip>
@@ -166,11 +166,11 @@ function PositionRow({
 function TeamCard({
   occupancy,
   consultants,
-  demands,
+  requests,
 }: {
   occupancy: TeamOccupancy;
   consultants: Consultant[];
-  demands: Demand[];
+  requests: StaffingRequest[];
 }) {
   const { team, used, free, overCapacity } = occupancy;
   const percent = Math.min(100, Math.round((used / team.capacityPct) * 100));
@@ -245,7 +245,7 @@ function TeamCard({
             position={position}
             overCapacity={overCapacity}
             consultant={consultants.find((candidate) => candidate.id === position.consultantId)}
-            demand={demands.find((candidate) => candidate.id === position.demandId)}
+            request={requests.find((candidate) => candidate.id === position.requestId)}
           />
         ))}
       </ul>
@@ -271,7 +271,7 @@ export function TeamsView() {
         <p className="mt-1 max-w-3xl text-sm leading-relaxed text-muted-foreground">
           La vista del Delivery Manager: qué posiciones están cubiertas, cuáles siguen abiertas y
           cuánta dedicación tiene comprometida cada equipo. La dedicación de una posición se fija
-          aquí, no en la demanda, y sin ella la demanda no puede llegar a <em>activo</em>.
+          aquí, no en la solicitud, y sin ella la solicitud no puede llegar a <em>activo</em>.
         </p>
       </div>
 
@@ -295,7 +295,7 @@ export function TeamsView() {
             key={occupancy.team.id}
             occupancy={occupancy}
             consultants={data.consultants}
-            demands={data.demands}
+            requests={data.requests}
           />
         ))}
       </div>

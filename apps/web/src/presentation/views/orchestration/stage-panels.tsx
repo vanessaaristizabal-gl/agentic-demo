@@ -11,7 +11,7 @@ import {
   SKILL_LIBRARY,
   VACANCY_CHANNELS,
   type Consultant,
-  type Demand,
+  type StaffingRequest,
   type Team,
 } from '@/domain';
 import { Badge } from '@/components/ui/badge';
@@ -27,13 +27,13 @@ import {
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { ChipGroup, Field } from '@/presentation/components/field';
-import type { DemandPatch } from '@/application/use-cases';
+import type { RequestPatch } from '@/application/use-cases';
 
 export interface PanelProps {
-  demand: Demand;
+  request: StaffingRequest;
   teams: Team[];
   consultants: Consultant[];
-  onPatch: (patch: DemandPatch) => void;
+  onPatch: (patch: RequestPatch) => void;
   onAssignTeam: (teamId: string) => void;
   onDraft: () => void;
   drafting: boolean;
@@ -107,8 +107,8 @@ function toggle(list: string[], value: string): string[] {
 
 /* ---------------------------- Etapa 2 · Perfil --------------------------- */
 
-export function ProfilePanel({ demand, onPatch }: PanelProps) {
-  const { profile } = demand;
+export function ProfilePanel({ request, onPatch }: PanelProps) {
+  const { profile } = request;
   return (
     <div className="grid gap-4 sm:grid-cols-2">
       <Field id="seniority" label="Seniority" required>
@@ -193,8 +193,8 @@ export function ProfilePanel({ demand, onPatch }: PanelProps) {
 
 /* ---------------------------- Etapa 3 · Equipo --------------------------- */
 
-export function TeamPanel({ demand, teams, onPatch, onAssignTeam }: PanelProps) {
-  const { assignment } = demand;
+export function TeamPanel({ request, teams, onPatch, onAssignTeam }: PanelProps) {
+  const { assignment } = request;
   return (
     <div className="grid gap-4 sm:grid-cols-2">
       <Field
@@ -206,7 +206,7 @@ export function TeamPanel({ demand, teams, onPatch, onAssignTeam }: PanelProps) 
       >
         <Select value={assignment.teamId || undefined} onValueChange={onAssignTeam}>
           <SelectTrigger id="teamId">
-            <SelectValue placeholder="Elige el equipo que recibe la demanda" />
+            <SelectValue placeholder="Elige el equipo que recibe la solicitud" />
           </SelectTrigger>
           <SelectContent>
             {teams.map((team) => (
@@ -246,7 +246,7 @@ export function TeamPanel({ demand, teams, onPatch, onAssignTeam }: PanelProps) 
         <Link to="/equipos" className="font-medium text-foreground underline underline-offset-2">
           Equipos
         </Link>
-        , y sin ella la demanda no podrá cerrarse en la última etapa.
+        , y sin ella la solicitud no podrá cerrarse en la última etapa.
       </div>
     </div>
   );
@@ -254,8 +254,8 @@ export function TeamPanel({ demand, teams, onPatch, onAssignTeam }: PanelProps) 
 
 /* --------------------------- Etapa 4 · Vacante --------------------------- */
 
-export function VacancyPanel({ demand, onPatch, onDraft, drafting }: PanelProps) {
-  const { vacancy } = demand;
+export function VacancyPanel({ request, onPatch, onDraft, drafting }: PanelProps) {
+  const { vacancy } = request;
   const length = vacancy.jobDescription.trim().length;
 
   return (
@@ -342,8 +342,8 @@ const DECISIONS = [
   { value: 'descartar', label: 'Descartar' },
 ];
 
-export function InterviewPanel({ demand, onPatch }: PanelProps) {
-  const { interview } = demand;
+export function InterviewPanel({ request, onPatch }: PanelProps) {
+  const { interview } = request;
   return (
     <div className="grid gap-4 sm:grid-cols-2">
       <Field id="candidateName" label="Candidato" required>
@@ -407,8 +407,8 @@ export function InterviewPanel({ demand, onPatch }: PanelProps) {
 
 /* -------------------------- Etapa 6 · Onboarding ------------------------- */
 
-export function OnboardingPanel({ demand, onPatch }: PanelProps) {
-  const { onboarding } = demand;
+export function OnboardingPanel({ request, onPatch }: PanelProps) {
+  const { onboarding } = request;
   return (
     <div className="grid gap-4 sm:grid-cols-2">
       <Field id="contractType" label="Tipo de contrato" required>
@@ -477,9 +477,9 @@ export function OnboardingPanel({ demand, onPatch }: PanelProps) {
 
 /* ---------------------------- Etapa 7 · Activo --------------------------- */
 
-export function ActivePanel({ demand, teams, consultants }: PanelProps) {
-  const team = teams.find((candidate) => candidate.id === demand.assignment.teamId);
-  const consultant = consultants.find((candidate) => candidate.id === demand.consultantId);
+export function ActivePanel({ request, teams, consultants }: PanelProps) {
+  const team = teams.find((candidate) => candidate.id === request.assignment.teamId);
+  const consultant = consultants.find((candidate) => candidate.id === request.consultantId);
 
   return (
     <div className="space-y-3">
@@ -489,16 +489,16 @@ export function ActivePanel({ demand, teams, consultants }: PanelProps) {
             <>
               <span className="font-medium">{consultant.name}</span> está trabajando en{' '}
               <span className="font-medium">{team?.name ?? 'su equipo'}</span>. El flujo de la
-              demanda terminó aquí; a partir de ahora lo que avanza es el ciclo de vida de la
+              solicitud terminó aquí; a partir de ahora lo que avanza es el ciclo de vida de la
               persona.
             </>
           ) : (
-            <>La demanda está cerrada y el consultor figura activo en {team?.name ?? 'su equipo'}.</>
+            <>La solicitud está cerrada y el consultor figura activo en {team?.name ?? 'su equipo'}.</>
           )}
         </p>
         <div className="mt-3 flex flex-wrap gap-2">
           <Badge variant="success" className="font-normal">
-            Demanda cerrada
+            Solicitud cerrada
           </Badge>
           {consultant ? (
             <Link

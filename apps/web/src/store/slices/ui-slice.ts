@@ -9,8 +9,8 @@ export interface Toast {
 }
 
 export interface UiState {
-  /** Demanda abierta en el panel lateral de Orquestación. */
-  selectedDemandId: string | null;
+  /** Solicitud abierta en el panel lateral de Orquestación. */
+  selectedRequestId: string | null;
   /** Persona elegida en la vista Ciclo del consultor. */
   selectedConsultantId: string | null;
   /** Filtro por rol en el tablero de Orquestación. */
@@ -21,7 +21,7 @@ export interface UiState {
 }
 
 const initialState: UiState = {
-  selectedDemandId: null,
+  selectedRequestId: null,
   selectedConsultantId: null,
   roleFilter: null,
   traceOpen: false,
@@ -32,8 +32,8 @@ const uiSlice = createSlice({
   name: 'ui',
   initialState,
   reducers: {
-    selectDemand(state, action: PayloadAction<string | null>) {
-      state.selectedDemandId = action.payload;
+    selectRequest(state, action: PayloadAction<string | null>) {
+      state.selectedRequestId = action.payload;
     },
     selectConsultant(state, action: PayloadAction<string | null>) {
       state.selectedConsultantId = action.payload;
@@ -59,7 +59,7 @@ const uiSlice = createSlice({
 });
 
 export const {
-  selectDemand,
+  selectRequest,
   selectConsultant,
   setRoleFilter,
   toggleTrace,
