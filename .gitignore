@@ -1,0 +1,23 @@
+# dependencias
+node_modules/
+
+# build
+dist/
+build/
+*.tsbuildinfo
+
+# entorno — la clave NUNCA se commitea
+.env
+.env.local
+.env.*.local
+
+# logs
+*.log
+npm-debug.log*
+.claude/
+
+# sistema operativo / editores
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
