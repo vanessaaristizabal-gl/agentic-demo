@@ -115,6 +115,8 @@ export function DemandDialog({ workspace }: { workspace: Workspace }) {
           </div>
         </DialogHeader>
 
+        {report ? <BlockingAlert report={report} /> : null}
+
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
           <div className="min-w-0">
             <Tabs value={tab} onValueChange={(next) => setTab(next as StageId)}>
@@ -176,8 +178,6 @@ export function DemandDialog({ workspace }: { workspace: Workspace }) {
             )}
           </aside>
         </div>
-
-        {report ? <BlockingAlert report={report} /> : null}
       </DialogContent>
     </Dialog>
   );

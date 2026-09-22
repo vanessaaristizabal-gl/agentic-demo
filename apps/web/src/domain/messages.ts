@@ -54,7 +54,9 @@ export function composeBlockingReport(
   const asideParts: string[] = [];
   if (elsewhere.length === 1) {
     asideParts.push(
-      'Uno de ellos no se resuelve en esta pantalla: la dedicación de la posición se fija en la vista Equipos.',
+      total === 1
+        ? 'Lo que falta no se resuelve en esta pantalla: la dedicación de la posición se fija en la vista Equipos.'
+        : 'Uno de ellos no se resuelve en esta pantalla: la dedicación de la posición se fija en la vista Equipos.',
     );
   } else if (elsewhere.length > 1) {
     asideParts.push(
@@ -64,7 +66,9 @@ export function composeBlockingReport(
   if (inheritedCount > 0) {
     asideParts.push(
       inheritedCount === 1
-        ? 'Uno viene de una etapa anterior: los requisitos no se cierran al avanzar, se siguen exigiendo hasta el final.'
+        ? total === 1
+          ? 'Viene de una etapa anterior: los requisitos no se cierran al avanzar, se siguen exigiendo hasta el final.'
+          : 'Uno viene de una etapa anterior: los requisitos no se cierran al avanzar, se siguen exigiendo hasta el final.'
         : `${countWord(inheritedCount).charAt(0).toUpperCase()}${countWord(inheritedCount).slice(1)} vienen de etapas anteriores: los requisitos no se cierran al avanzar, se siguen exigiendo hasta el final.`,
     );
   }

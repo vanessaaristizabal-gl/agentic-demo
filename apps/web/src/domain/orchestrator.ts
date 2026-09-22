@@ -175,7 +175,7 @@ export function advance(context: EvaluationContext, ports: RuntimePorts): Advanc
       toAgent: 'consultant',
       fromStage: 'onboarding',
       toStage: 'activo',
-      summary: `${consultant.name} queda activo en el equipo y empieza su ramp-up.`,
+      summary: `${consultant.name} se incorpora al equipo y empieza su ramp-up.`,
       checks: [],
     });
   }

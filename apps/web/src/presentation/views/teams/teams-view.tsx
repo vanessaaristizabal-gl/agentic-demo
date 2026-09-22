@@ -96,7 +96,7 @@ function PositionRow({
 
   return (
     <li className="flex flex-wrap items-center gap-x-3 gap-y-2 px-4 py-2.5">
-      <div className="flex min-w-0 flex-1 items-center gap-2.5">
+      <div className="flex min-w-0 flex-1 basis-[11rem] items-center gap-2.5">
         <span
           className={cn(
             'flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold',
@@ -280,7 +280,7 @@ export function TeamsView() {
           {data.teams.length} equipos
         </Badge>
         <Badge variant="outline" className="font-normal">
-          {openTotal} posición{openTotal === 1 ? '' : 'es'} abierta{openTotal === 1 ? '' : 's'}
+          {openTotal === 1 ? '1 posición abierta' : `${openTotal} posiciones abiertas`}
         </Badge>
         {pendingAllocation > 0 ? (
           <Badge variant="warning" className="font-normal">
