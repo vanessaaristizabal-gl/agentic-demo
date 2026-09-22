@@ -2,6 +2,10 @@
 export default {
   darkMode: ['class'],
   content: ['./index.html', './src/**/*.{ts,tsx}'],
+  // La clase `dark` no aparece literalmente en el código —no hay interruptor
+  // de tema—, así que Tailwind purgaría el bloque de tokens oscuros y las
+  // variantes `dark:` quedarían a medias. Se conserva explícitamente.
+  safelist: ['dark'],
   theme: {
     container: {
       center: true,

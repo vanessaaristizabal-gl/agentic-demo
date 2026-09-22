@@ -1,4 +1,4 @@
-import { STAGES, stageDef, type StageId } from '@/domain';
+import { stageDef, type StageId } from '@/domain';
 import { cn } from '@/lib/utils';
 
 /** Color estable por etapa. Sobrio: un tinte, nada de degradados. */
@@ -27,37 +27,5 @@ export function StageBadge({ stage, className }: { stage: StageId; className?: s
     >
       {stageDef(stage).label}
     </span>
-  );
-}
-
-export function StageStepper({ current }: { current: StageId }) {
-  const currentIndex = stageDef(current).index;
-  return (
-    <ol className="flex flex-wrap items-center gap-1">
-      {STAGES.map((stage) => {
-        const done = stage.index < currentIndex;
-        const active = stage.index === currentIndex;
-        return (
-          <li key={stage.id} className="flex items-center gap-1">
-            <span
-              className={cn(
-                'rounded px-1.5 py-0.5 text-[11px] transition-colors',
-                active && TONES[stage.id],
-                active && 'font-medium',
-                done && 'text-muted-foreground',
-                !done && !active && 'text-muted-foreground/50',
-              )}
-            >
-              {stage.label}
-            </span>
-            {stage.index < STAGES.length - 1 ? (
-              <span aria-hidden className="text-muted-foreground/30">
-                ·
-              </span>
-            ) : null}
-          </li>
-        );
-      })}
-    </ol>
   );
 }

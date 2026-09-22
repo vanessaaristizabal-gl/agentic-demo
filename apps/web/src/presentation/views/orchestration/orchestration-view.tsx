@@ -5,6 +5,7 @@ import { useWorkspace } from '@/presentation/hooks/use-workspace';
 import { useAppDispatch, useAppSelector } from '@/store';
 import { setRoleFilter } from '@/store/slices/ui-slice';
 import { DemandDialog } from './demand-dialog';
+import { FlowMetrics } from './flow-metrics';
 import { NewDemandDialog } from './new-demand-dialog';
 import { RoleInboxes } from './role-inboxes';
 import { StageBoard } from './stage-board';
@@ -31,6 +32,8 @@ export function OrchestrationView() {
         </div>
         <NewDemandDialog />
       </div>
+
+      <FlowMetrics workspace={data} />
 
       <RoleInboxes inboxes={data.inboxes} />
 

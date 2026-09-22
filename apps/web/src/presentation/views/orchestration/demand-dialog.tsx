@@ -22,7 +22,7 @@ import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { BlockingAlert } from '@/presentation/components/blocking-alert';
 import { RequirementList } from '@/presentation/components/requirement-list';
-import { StageStepper } from '@/presentation/components/stage-badge';
+import { StageStepper } from '@/presentation/components/stage-stepper';
 import {
   useAdvanceDemand,
   useAssignTeam,
@@ -110,7 +110,7 @@ export function DemandDialog({ workspace }: { workspace: Workspace }) {
           </div>
           <DialogTitle className="text-left">{demand.intake.clientName || 'Cliente sin nombre'}</DialogTitle>
           <DialogDescription className="text-left">{current.purpose}</DialogDescription>
-          <div className="pt-1">
+          <div className="pt-3">
             <StageStepper current={demand.stage} />
           </div>
         </DialogHeader>

@@ -53,13 +53,21 @@ El consultor puede ser desarrollador, QA o tech manager.
 
 ### Orquestación
 
-La vista principal. Arriba, los siete roles como agentes del sistema: cada uno con su bandeja,
-cuántas demandas esperan por él y cuántas de ellas no podrían avanzar hoy. Debajo, un tablero con
-las demandas repartidas por etapa.
+La vista principal. Arriba, cuatro cifras de cabecera —en curso, listas para entregar, sin poder
+avanzar y consultores activos— junto a la gráfica **«Qué frena el flujo»**: los requisitos sin
+cumplir agrupados por la etapa que los pide. Como los requisitos se acumulan, deja ver que una
+etapa temprana sigue frenando demandas que ya van por el final.
 
-Al abrir una demanda se ve la etapa en la que está parada, el formulario de su responsable y la
-lista completa de **requisitos acumulados**, con la etapa que introdujo cada uno. Abajo del todo,
-la **traza de orquestación**: qué agente entregó qué a quién, cuándo y con qué comprobaciones.
+Debajo, los siete roles como agentes del sistema: cada uno con su bandeja, cuántas demandas
+esperan por él y cuántas de ellas no podrían avanzar hoy. Después, un tablero con las demandas
+repartidas por etapa; cada tarjeta lleva una barra de siete tramos que muestra de un vistazo por
+dónde va.
+
+Al abrir una demanda, un **stepper** marca las siete etapas: recorridas con una marca, la actual
+con un anillo y las pendientes en hueco, con el pie «Etapa N de 7». Debajo, el formulario de su
+responsable y la lista completa de **requisitos acumulados**, con la etapa que introdujo cada uno.
+Al final de la vista, la **traza de orquestación**: qué agente entregó qué a quién, cuándo y con
+qué comprobaciones.
 
 ### Ciclo del consultor
 
@@ -178,6 +186,20 @@ responsable y un único destinatario al que entrega el trabajo. El orquestador
 
 Seis agentes son deterministas. Solo el Recruiter puede apoyarse en un modelo de lenguaje, y
 únicamente para redactar la descripción del puesto.
+
+### Gráficas
+
+Hay una sola gráfica, y a propósito. Las cuatro cifras de cabecera son números, no barras de una
+unidad. La gráfica que sí existe compara magnitudes de una única serie, así que todas las barras
+llevan el mismo tono —el color no codifica identidad— y no necesita leyenda: el título dice qué se
+mide. El valor va en la punta de cada barra, hay tooltip al pasar por encima y una vista de tabla
+desplegable, de modo que ningún dato depende solo del color o del largo.
+
+El tono (`--chart-1`) tiene un paso propio para el modo claro y otro para el oscuro, cada uno
+verificado a 3:1 de contraste sobre la superficie donde se dibuja.
+
+Las siete etapas son una secuencia ordenada, no siete identidades, así que el stepper no usa siete
+colores: distingue tres estados —recorrida, actual y pendiente— con tinta.
 
 ### Tecnologías
 

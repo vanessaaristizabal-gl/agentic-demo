@@ -37,6 +37,11 @@
     --ring: 222 47% 34%;
 
     --radius: 0.5rem;
+
+    /* Color de las gráficas. Un único tono: las barras comparan magnitud,
+       no identidad. Validado a 3:1 sobre la superficie clara. */
+    --chart-1: #2a78d6;
+    --chart-grid: #e2e8f0;
   }
 
   .dark {
@@ -67,6 +72,11 @@
     --border: 217 18% 22%;
     --input: 217 18% 22%;
     --ring: 213 25% 70%;
+
+    /* Paso propio para el modo oscuro, no un reflejo del claro:
+       validado a 3:1 sobre la superficie de tarjeta oscura. */
+    --chart-1: #3987e5;
+    --chart-grid: #2c2c2a;
   }
 }
 

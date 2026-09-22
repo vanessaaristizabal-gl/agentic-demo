@@ -3,6 +3,7 @@ import { STAGES, labelOf, PRIORITIES, type Demand, type Inspection } from '@/dom
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { stageTone } from '@/presentation/components/stage-badge';
+import { StageProgress } from '@/presentation/components/stage-stepper';
 import { useAppDispatch, useAppSelector } from '@/store';
 import { selectDemand } from '@/store/slices/ui-slice';
 
@@ -76,6 +77,10 @@ export function StageBoard({
                           {demand.intake.stack}
                         </p>
                       ) : null}
+
+                      <div className="mt-2">
+                        <StageProgress current={demand.stage} />
+                      </div>
 
                       <div className="mt-2">
                         {inspection?.isFinal ? (
