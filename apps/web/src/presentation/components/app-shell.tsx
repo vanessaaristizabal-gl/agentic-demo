@@ -9,7 +9,7 @@ import { useApiStatus } from '../hooks/use-api-status';
 import { useResetWorkspace } from '../hooks/use-workspace';
 
 const NAV = [
-  { to: '/orquestacion', label: 'Orquestación', icon: Workflow },
+  { to: '/solicitudes', label: 'Solicitudes', icon: Workflow },
   { to: '/ciclo', label: 'Ciclo del consultor', icon: Users },
   { to: '/equipos', label: 'Equipos', icon: Building2 },
 ];

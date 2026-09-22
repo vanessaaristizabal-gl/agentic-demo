@@ -69,23 +69,24 @@ puntuación se leería como un registro auténtico aunque no lo sea.
 
 ## Qué hace cada vista
 
-### Orquestación
+### Solicitudes
 
-La vista principal. Arriba, cuatro cifras de cabecera —en curso, listas para entregar, sin poder
-avanzar y consultores activos— junto a la gráfica **«Qué frena el flujo»**: los requisitos sin
-cumplir agrupados por la etapa que los pide. Como los requisitos se acumulan, deja ver que una
-etapa temprana sigue frenando solicitudes que ya van por el final.
+La vista principal, y el único sitio donde se actúa. El protagonista es un **tablero de siete
+columnas**, una por etapa. Cada columna es a la vez la etapa y la bandeja de su rol responsable
+—hay exactamente un rol por etapa—, así que la cabecera lleva el agente, cuántas solicitudes
+esperan por él y cuántas no podrían avanzar hoy. Cada tarjeta lleva una barra de siete tramos que
+muestra de un vistazo por dónde va.
 
-Debajo, los siete roles como agentes del sistema: cada uno con su bandeja, cuántas solicitudes
-esperan por él y cuántas de ellas no podrían avanzar hoy. Después, un tablero con las solicitudes
-repartidas por etapa; cada tarjeta lleva una barra de siete tramos que muestra de un vistazo por
-dónde va.
+Encima del tablero, tres cifras que además lo **filtran**: en curso, listas para entregar y sin
+poder avanzar. Al pulsarlas, el tablero se acota; volver a pulsarlas quita el filtro.
 
 Al abrir una solicitud, un **stepper** marca las siete etapas: recorridas con una marca, la actual
 con un anillo y las pendientes en hueco, con el pie «Etapa N de 7». Debajo, el formulario de su
 responsable y la lista completa de **requisitos acumulados**, con la etapa que introdujo cada uno.
-Al final de la vista, la **traza de orquestación**: qué agente entregó qué a quién, cuándo y con
-qué comprobaciones.
+
+Al pie, plegadas porque se consultan y no se usan, dos secciones: **«Qué frena el flujo»**, con los
+requisitos sin cumplir agrupados por la etapa que los pide, y la **traza de orquestación**: qué
+agente entregó qué a quién, cuándo y con qué comprobaciones.
 
 ### Ciclo del consultor
 

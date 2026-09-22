@@ -1,5 +1,4 @@
 import { createSlice, nanoid, type PayloadAction } from '@reduxjs/toolkit';
-import type { RoleId } from '@/domain';
 
 export interface Toast {
   id: string;
@@ -8,14 +7,17 @@ export interface Toast {
   variant: 'default' | 'success' | 'error';
 }
 
+/** Filtro del tablero. Se aplica desde la fila de cifras de la cabecera. */
+export type BoardFilter = 'todas' | 'listas' | 'bloqueadas';
+
 export interface UiState {
-  /** Solicitud abierta en el panel lateral de Orquestación. */
+  /** Solicitud abierta en la ficha. */
   selectedRequestId: string | null;
   /** Persona elegida en la vista Ciclo del consultor. */
   selectedConsultantId: string | null;
-  /** Filtro por rol en el tablero de Orquestación. */
-  roleFilter: RoleId | null;
-  /** Traza de orquestación desplegada. */
+  boardFilter: BoardFilter;
+  /** Secciones de apoyo del pie, plegadas por defecto. */
+  blockersOpen: boolean;
   traceOpen: boolean;
   toasts: Toast[];
 }
@@ -23,7 +25,8 @@ export interface UiState {
 const initialState: UiState = {
   selectedRequestId: null,
   selectedConsultantId: null,
-  roleFilter: null,
+  boardFilter: 'todas',
+  blockersOpen: false,
   traceOpen: false,
   toasts: [],
 };
@@ -38,8 +41,12 @@ const uiSlice = createSlice({
     selectConsultant(state, action: PayloadAction<string | null>) {
       state.selectedConsultantId = action.payload;
     },
-    setRoleFilter(state, action: PayloadAction<RoleId | null>) {
-      state.roleFilter = state.roleFilter === action.payload ? null : action.payload;
+    setBoardFilter(state, action: PayloadAction<BoardFilter>) {
+      // Volver a pulsar el filtro activo lo quita.
+      state.boardFilter = state.boardFilter === action.payload ? 'todas' : action.payload;
+    },
+    toggleBlockers(state) {
+      state.blockersOpen = !state.blockersOpen;
     },
     toggleTrace(state) {
       state.traceOpen = !state.traceOpen;
@@ -61,7 +68,8 @@ const uiSlice = createSlice({
 export const {
   selectRequest,
   selectConsultant,
-  setRoleFilter,
+  setBoardFilter,
+  toggleBlockers,
   toggleTrace,
   pushToast,
   dismissToast,

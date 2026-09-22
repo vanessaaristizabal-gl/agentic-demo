@@ -48,7 +48,7 @@ export type BillingModel = 'time-and-materials' | 'precio-fijo' | 'capacity';
 export type Priority = 'baja' | 'media' | 'alta' | 'critica';
 
 /** Donde se resuelve un requisito incumplido. */
-export type ResolutionView = 'orquestacion' | 'equipos';
+export type ResolutionView = 'solicitudes' | 'equipos';
 
 /** Identificador estable de cada requisito del flujo. */
 export type RequirementId = string;

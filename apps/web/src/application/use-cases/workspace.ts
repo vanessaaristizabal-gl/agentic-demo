@@ -1,7 +1,5 @@
 import {
-  buildInboxes,
   inspect,
-  type AgentInbox,
   type Consultant,
   type StaffingRequest,
   type Inspection,
@@ -18,7 +16,6 @@ export interface Workspace {
   positions: Position[];
   consultants: Consultant[];
   events: OrchestrationEvent[];
-  inboxes: AgentInbox[];
   /** Diagnóstico del orquestador para cada solicitud, indexado por id. */
   inspections: Record<string, Inspection>;
 }
@@ -43,7 +40,6 @@ export async function loadWorkspace(container: Container): Promise<Workspace> {
     positions,
     consultants,
     events,
-    inboxes: buildInboxes(requests, teams, positions),
     inspections,
   };
 }

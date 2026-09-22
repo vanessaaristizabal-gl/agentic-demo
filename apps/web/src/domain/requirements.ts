@@ -77,7 +77,7 @@ export const REQUIREMENTS: Requirement[] = [
     id: 'intake.client',
     stage: 'registro',
     label: 'Cliente',
-    resolveIn: 'orquestacion',
+    resolveIn: 'solicitudes',
     where: 'el formulario de la solicitud',
     isSatisfied: ({ request }) => filled(request.intake.clientName),
     explain: () =>
@@ -87,7 +87,7 @@ export const REQUIREMENTS: Requirement[] = [
     id: 'intake.practice',
     stage: 'registro',
     label: 'Práctica',
-    resolveIn: 'orquestacion',
+    resolveIn: 'solicitudes',
     where: 'el formulario de la solicitud',
     isSatisfied: ({ request }) => filled(request.intake.practice),
     explain: () =>
@@ -97,7 +97,7 @@ export const REQUIREMENTS: Requirement[] = [
     id: 'intake.cost-center',
     stage: 'registro',
     label: 'Centro de costo',
-    resolveIn: 'orquestacion',
+    resolveIn: 'solicitudes',
     where: 'el formulario de la solicitud',
     isSatisfied: ({ request }) => filled(request.intake.costCenter),
     explain: () =>
@@ -109,7 +109,7 @@ export const REQUIREMENTS: Requirement[] = [
     id: 'intake.stack',
     stage: 'perfil',
     label: 'Stack tecnológico',
-    resolveIn: 'orquestacion',
+    resolveIn: 'solicitudes',
     where: 'el formulario de la solicitud',
     isSatisfied: ({ request }) => filled(request.intake.stack),
     explain: ({ request }) =>
@@ -121,7 +121,7 @@ export const REQUIREMENTS: Requirement[] = [
     id: 'profile.seniority',
     stage: 'perfil',
     label: 'Seniority',
-    resolveIn: 'orquestacion',
+    resolveIn: 'solicitudes',
     where: 'el panel del Solution Architect',
     isSatisfied: ({ request }) => filled(request.profile.seniority),
     explain: () =>
@@ -131,7 +131,7 @@ export const REQUIREMENTS: Requirement[] = [
     id: 'profile.role',
     stage: 'perfil',
     label: 'Rol del consultor',
-    resolveIn: 'orquestacion',
+    resolveIn: 'solicitudes',
     where: 'el panel del Solution Architect',
     isSatisfied: ({ request }) => filled(request.profile.consultantRole),
     explain: () =>
@@ -141,7 +141,7 @@ export const REQUIREMENTS: Requirement[] = [
     id: 'profile.skills',
     stage: 'perfil',
     label: 'Habilidades (mínimo 3)',
-    resolveIn: 'orquestacion',
+    resolveIn: 'solicitudes',
     where: 'el panel del Solution Architect',
     isSatisfied: ({ request }) => request.profile.skills.length >= 3,
     explain: ({ request }) => {
@@ -153,7 +153,7 @@ export const REQUIREMENTS: Requirement[] = [
     id: 'profile.english',
     stage: 'perfil',
     label: 'Nivel de inglés',
-    resolveIn: 'orquestacion',
+    resolveIn: 'solicitudes',
     where: 'el panel del Solution Architect',
     isSatisfied: ({ request }) => filled(request.profile.englishLevel),
     explain: () =>
@@ -165,7 +165,7 @@ export const REQUIREMENTS: Requirement[] = [
     id: 'assignment.team',
     stage: 'equipo',
     label: 'Equipo asignado',
-    resolveIn: 'orquestacion',
+    resolveIn: 'solicitudes',
     where: 'el panel del Delivery Manager',
     isSatisfied: (context) => {
       const { request } = context;
@@ -189,7 +189,7 @@ export const REQUIREMENTS: Requirement[] = [
     id: 'assignment.join-date',
     stage: 'equipo',
     label: 'Fecha de incorporación al equipo',
-    resolveIn: 'orquestacion',
+    resolveIn: 'solicitudes',
     where: 'el panel del Delivery Manager',
     isSatisfied: ({ request }) => filled(request.assignment.joinDate),
     explain: () =>
@@ -199,7 +199,7 @@ export const REQUIREMENTS: Requirement[] = [
     id: 'assignment.referent',
     stage: 'equipo',
     label: 'Referente técnico',
-    resolveIn: 'orquestacion',
+    resolveIn: 'solicitudes',
     where: 'el panel del Delivery Manager',
     isSatisfied: ({ request }) => filled(request.assignment.technicalReferent),
     explain: () =>
@@ -211,7 +211,7 @@ export const REQUIREMENTS: Requirement[] = [
     id: 'vacancy.title',
     stage: 'vacante',
     label: 'Título de la vacante',
-    resolveIn: 'orquestacion',
+    resolveIn: 'solicitudes',
     where: 'el panel del Recruiter',
     isSatisfied: ({ request }) => filled(request.vacancy.title),
     explain: () =>
@@ -221,7 +221,7 @@ export const REQUIREMENTS: Requirement[] = [
     id: 'vacancy.description',
     stage: 'vacante',
     label: 'Descripción del puesto (mínimo 120 caracteres)',
-    resolveIn: 'orquestacion',
+    resolveIn: 'solicitudes',
     where: 'el panel del Recruiter',
     isSatisfied: ({ request }) => request.vacancy.jobDescription.trim().length >= 120,
     explain: ({ request }) => {
@@ -236,7 +236,7 @@ export const REQUIREMENTS: Requirement[] = [
     id: 'vacancy.channels',
     stage: 'vacante',
     label: 'Canales de publicación',
-    resolveIn: 'orquestacion',
+    resolveIn: 'solicitudes',
     where: 'el panel del Recruiter',
     isSatisfied: ({ request }) => request.vacancy.channels.length >= 1,
     explain: () =>
@@ -246,7 +246,7 @@ export const REQUIREMENTS: Requirement[] = [
     id: 'vacancy.salary-band',
     stage: 'vacante',
     label: 'Banda salarial',
-    resolveIn: 'orquestacion',
+    resolveIn: 'solicitudes',
     where: 'el panel del Recruiter',
     isSatisfied: ({ request }) => filled(request.vacancy.salaryBand),
     explain: () =>
@@ -258,7 +258,7 @@ export const REQUIREMENTS: Requirement[] = [
     id: 'interview.candidate',
     stage: 'entrevista',
     label: 'Candidato evaluado',
-    resolveIn: 'orquestacion',
+    resolveIn: 'solicitudes',
     where: 'el panel del Engineering Manager',
     isSatisfied: ({ request }) => filled(request.interview.candidateName),
     explain: () =>
@@ -268,7 +268,7 @@ export const REQUIREMENTS: Requirement[] = [
     id: 'interview.score',
     stage: 'entrevista',
     label: 'Puntuación técnica de 7 o más',
-    resolveIn: 'orquestacion',
+    resolveIn: 'solicitudes',
     where: 'el panel del Engineering Manager',
     isSatisfied: ({ request }) => (request.interview.technicalScore ?? -1) >= 7,
     explain: ({ request }) => {
@@ -283,7 +283,7 @@ export const REQUIREMENTS: Requirement[] = [
     id: 'interview.decision',
     stage: 'entrevista',
     label: 'Decisión de contratación',
-    resolveIn: 'orquestacion',
+    resolveIn: 'solicitudes',
     where: 'el panel del Engineering Manager',
     isSatisfied: ({ request }) => request.interview.decision === 'contratar',
     explain: ({ request }) => {
@@ -301,7 +301,7 @@ export const REQUIREMENTS: Requirement[] = [
     id: 'interview.feedback',
     stage: 'entrevista',
     label: 'Feedback escrito (mínimo 40 caracteres)',
-    resolveIn: 'orquestacion',
+    resolveIn: 'solicitudes',
     where: 'el panel del Engineering Manager',
     isSatisfied: ({ request }) => request.interview.feedback.trim().length >= 40,
     explain: ({ request }) => {
@@ -317,7 +317,7 @@ export const REQUIREMENTS: Requirement[] = [
     id: 'onboarding.contract',
     stage: 'onboarding',
     label: 'Tipo de contrato',
-    resolveIn: 'orquestacion',
+    resolveIn: 'solicitudes',
     where: 'el panel de Recursos Humanos',
     isSatisfied: ({ request }) => filled(request.onboarding.contractType),
     explain: () =>
@@ -327,7 +327,7 @@ export const REQUIREMENTS: Requirement[] = [
     id: 'onboarding.equipment',
     stage: 'onboarding',
     label: 'Equipo de trabajo entregado',
-    resolveIn: 'orquestacion',
+    resolveIn: 'solicitudes',
     where: 'el panel de Recursos Humanos',
     isSatisfied: ({ request }) => request.onboarding.equipmentDelivered,
     explain: () =>
@@ -337,7 +337,7 @@ export const REQUIREMENTS: Requirement[] = [
     id: 'onboarding.accesses',
     stage: 'onboarding',
     label: 'Accesos concedidos (mínimo 3)',
-    resolveIn: 'orquestacion',
+    resolveIn: 'solicitudes',
     where: 'el panel de Recursos Humanos',
     isSatisfied: ({ request }) => request.onboarding.accesses.length >= 3,
     explain: ({ request }) => {
@@ -349,7 +349,7 @@ export const REQUIREMENTS: Requirement[] = [
     id: 'onboarding.buddy',
     stage: 'onboarding',
     label: 'Buddy asignado',
-    resolveIn: 'orquestacion',
+    resolveIn: 'solicitudes',
     where: 'el panel de Recursos Humanos',
     isSatisfied: ({ request }) => filled(request.onboarding.buddyName),
     explain: () =>

@@ -3,7 +3,7 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import { AppShell } from './components/app-shell';
 import { Toaster } from './components/toaster';
 import { ConsultantView } from './views/consultant/consultant-view';
-import { OrchestrationView } from './views/orchestration/orchestration-view';
+import { RequestsView } from './views/requests/requests-view';
 import { TeamsView } from './views/teams/teams-view';
 
 export function App() {
@@ -11,11 +11,11 @@ export function App() {
     <TooltipProvider delayDuration={200}>
       <AppShell>
         <Routes>
-          <Route path="/" element={<Navigate to="/orquestacion" replace />} />
-          <Route path="/orquestacion" element={<OrchestrationView />} />
+          <Route path="/" element={<Navigate to="/solicitudes" replace />} />
+          <Route path="/solicitudes" element={<RequestsView />} />
           <Route path="/ciclo" element={<ConsultantView />} />
           <Route path="/equipos" element={<TeamsView />} />
-          <Route path="*" element={<Navigate to="/orquestacion" replace />} />
+          <Route path="*" element={<Navigate to="/solicitudes" replace />} />
         </Routes>
       </AppShell>
       <Toaster />

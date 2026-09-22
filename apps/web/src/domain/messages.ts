@@ -16,7 +16,7 @@ export interface BlockingItem {
   sentence: string;
   originLabel: string;
   inherited: boolean;
-  resolveIn: 'orquestacion' | 'equipos';
+  resolveIn: 'solicitudes' | 'equipos';
   where: string;
 }
 

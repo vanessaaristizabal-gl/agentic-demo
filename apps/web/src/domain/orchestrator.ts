@@ -1,4 +1,4 @@
-import { AGENTS, agentForStage, type AgentDefinition } from './agents';
+import { agentForStage, type AgentDefinition } from './agents';
 import type { Consultant, StaffingRequest, OrchestrationEvent, Position } from './entities';
 import { buildConsultantFromRequest } from './lifecycle';
 import { composeBlockingReport, composeHandoffMessage, type BlockingReport } from './messages';
@@ -218,40 +218,4 @@ function blockedEvent(
     summary,
     checks,
   };
-}
-
-/** Bandeja de cada agente: solicitudes cuya etapa actual le pertenece. */
-export interface AgentInbox {
-  agent: AgentDefinition;
-  requests: StaffingRequest[];
-  /** Solicitudes de su bandeja que hoy no podrían avanzar. */
-  blocked: number;
-  ready: number;
-}
-
-export function buildInboxes(
-  requests: StaffingRequest[],
-  teams: EvaluationContext['teams'],
-  positions: Position[],
-): AgentInbox[] {
-  // Los siete agentes aparecen siempre, tengan o no trabajo pendiente.
-  const inboxes: AgentInbox[] = AGENTS.map((agent) => ({
-    agent,
-    requests: [],
-    blocked: 0,
-    ready: 0,
-  }));
-  const byAgent = new Map(inboxes.map((inbox) => [inbox.agent.id, inbox]));
-
-  for (const request of requests) {
-    const inbox = byAgent.get(agentForStage(request.stage).id);
-    if (!inbox) continue;
-    inbox.requests.push(request);
-    const inspection = inspect({ request, teams, positions });
-    if (inspection.isFinal) continue;
-    if (inspection.canAdvance) inbox.ready += 1;
-    else inbox.blocked += 1;
-  }
-
-  return inboxes;
 }
