@@ -1,0 +1,102 @@
+import type { Demand } from './entities';
+import type { RequirementCheck } from './requirements';
+import { stageLabel } from './stages';
+import type { StageId } from './types';
+
+/**
+ * Composición de mensajes de error.
+ *
+ * Regla del producto: cuando algo falta, se nombra TODO lo que falta de una
+ * vez, en un solo mensaje. Nunca de a uno, nunca «hay errores en el
+ * formulario». Cada frase dice qué falta, por qué se pide y dónde se arregla.
+ */
+
+export interface BlockingItem {
+  requirementId: string;
+  sentence: string;
+  originLabel: string;
+  inherited: boolean;
+  resolveIn: 'orquestacion' | 'equipos';
+  where: string;
+}
+
+export interface BlockingReport {
+  headline: string;
+  /** Frase adicional cuando parte de lo que falta se resuelve en otra pantalla. */
+  aside: string | null;
+  items: BlockingItem[];
+  /** Todo el mensaje en texto plano, para portapapeles o avisos cortos. */
+  text: string;
+}
+
+const COUNT_WORDS = ['cero', 'un', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve'];
+
+function countWord(value: number): string {
+  return COUNT_WORDS[value] ?? String(value);
+}
+
+export function composeBlockingReport(
+  demand: Demand,
+  targetStage: StageId,
+  missing: RequirementCheck[],
+): BlockingReport {
+  const total = missing.length;
+  const target = stageLabel(targetStage);
+
+  const headline =
+    total === 1
+      ? `La demanda ${demand.code} no puede pasar a la etapa ${target}: falta un requisito por cumplir.`
+      : `La demanda ${demand.code} no puede pasar a la etapa ${target}: quedan ${countWord(total)} requisitos sin cumplir.`;
+
+  const inheritedCount = missing.filter((check) => check.inherited).length;
+  const elsewhere = missing.filter((check) => check.requirement.resolveIn === 'equipos');
+
+  const asideParts: string[] = [];
+  if (elsewhere.length === 1) {
+    asideParts.push(
+      'Uno de ellos no se resuelve en esta pantalla: la dedicación de la posición se fija en la vista Equipos.',
+    );
+  } else if (elsewhere.length > 1) {
+    asideParts.push(
+      `${countWord(elsewhere.length).replace(/^un$/, 'Uno')} de ellos no se resuelven en esta pantalla, sino en la vista Equipos.`,
+    );
+  }
+  if (inheritedCount > 0) {
+    asideParts.push(
+      inheritedCount === 1
+        ? 'Uno viene de una etapa anterior: los requisitos no se cierran al avanzar, se siguen exigiendo hasta el final.'
+        : `${countWord(inheritedCount).charAt(0).toUpperCase()}${countWord(inheritedCount).slice(1)} vienen de etapas anteriores: los requisitos no se cierran al avanzar, se siguen exigiendo hasta el final.`,
+    );
+  }
+
+  const items: BlockingItem[] = missing.map((check) => ({
+    requirementId: check.requirement.id,
+    sentence: check.sentence,
+    originLabel: check.originLabel,
+    inherited: check.inherited,
+    resolveIn: check.requirement.resolveIn,
+    where: check.requirement.where,
+  }));
+
+  const aside = asideParts.length > 0 ? asideParts.join(' ') : null;
+
+  const text = [headline, aside, ...items.map((item) => `· ${item.sentence}`)]
+    .filter(Boolean)
+    .join('\n');
+
+  return { headline, aside, items, text };
+}
+
+/** Mensaje de confirmación cuando un agente entrega el trabajo al siguiente. */
+export function composeHandoffMessage(
+  demand: Demand,
+  fromStage: StageId,
+  toStage: StageId,
+  toAgentName: string,
+  checksPassed: number,
+): string {
+  if (toStage === 'activo') {
+    return `${demand.code} queda activa. El consultor ya figura trabajando en el equipo y se han verificado ${checksPassed} requisitos acumulados desde la etapa ${stageLabel('demanda')}.`;
+  }
+  return `${demand.code} pasa de ${stageLabel(fromStage)} a ${stageLabel(toStage)} y entra en la bandeja de ${toAgentName}. Se verificaron ${checksPassed} requisitos acumulados.`;
+}
